@@ -1,0 +1,12 @@
+# ListCapabilitiesResponseBody
+
+A list of capabilities.
+
+
+## Fields
+
+| Field                                                                                      | Type                                                                                       | Required                                                                                   | Description                                                                                | Example                                                                                    |
+| ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ |
+| `count`                                                                                    | *int*                                                                                      | :heavy_check_mark:                                                                         | The number of items in this result set.                                                    | 2                                                                                          |
+| `embedded`                                                                                 | [Operations\ListCapabilitiesEmbedded](../../Models/Operations/ListCapabilitiesEmbedded.md) | :heavy_check_mark:                                                                         | N/A                                                                                        |                                                                                            |
+| `links`                                                                                    | [Operations\ListCapabilitiesLinks](../../Models/Operations/ListCapabilitiesLinks.md)       | :heavy_check_mark:                                                                         | N/A                                                                                        |                                                                                            |

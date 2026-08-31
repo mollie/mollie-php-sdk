@@ -1,0 +1,9 @@
+# SubGroup
+
+
+## Fields
+
+| Field                                                                                             | Type                                                                                              | Required                                                                                          | Description                                                                                       |
+| ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `amount`                                                                                          | [?Components\Amount](../../Models/Components/Amount.md)                                           | :heavy_minus_sign:                                                                                | In v2 endpoints, monetary amounts are represented as objects with a `currency` and `value` field. |
+| `subtotals`                                                                                       | array<[Components\SubTotals2](../../Models/Components/SubTotals2.md)>                             | :heavy_minus_sign:                                                                                | N/A                                                                                               |

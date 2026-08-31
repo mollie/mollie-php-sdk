@@ -1,0 +1,11 @@
+# EntityUnmatchedCreditTransferLinks
+
+Links to related resources.
+
+
+## Fields
+
+| Field                                                                                                                           | Type                                                                                                                            | Required                                                                                                                        | Description                                                                                                                     |
+| ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `self`                                                                                                                          | [?Components\EntityUnmatchedCreditTransferSelf](../../Models/Components/EntityUnmatchedCreditTransferSelf.md)                   | :heavy_minus_sign:                                                                                                              | The URL to this unmatched credit transfer.                                                                                      |
+| `documentation`                                                                                                                 | [?Components\EntityUnmatchedCreditTransferDocumentation](../../Models/Components/EntityUnmatchedCreditTransferDocumentation.md) | :heavy_minus_sign:                                                                                                              | The URL to the documentation of this endpoint.                                                                                  |

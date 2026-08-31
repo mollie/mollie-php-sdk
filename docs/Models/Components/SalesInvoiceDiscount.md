@@ -1,0 +1,9 @@
+# SalesInvoiceDiscount
+
+
+## Fields
+
+| Field                                                                                      | Type                                                                                       | Required                                                                                   | Description                                                                                | Example                                                                                    |
+| ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ |
+| `type`                                                                                     | [Components\SalesInvoiceDiscountType](../../Models/Components/SalesInvoiceDiscountType.md) | :heavy_check_mark:                                                                         | The type of discount.                                                                      | amount                                                                                     |
+| `value`                                                                                    | *string*                                                                                   | :heavy_check_mark:                                                                         | A string containing an exact monetary amount in the given currency, or the percentage.     | 10.00                                                                                      |

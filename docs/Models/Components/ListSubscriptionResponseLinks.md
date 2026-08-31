@@ -1,0 +1,14 @@
+# ListSubscriptionResponseLinks
+
+An object with several relevant URLs. Every URL object will contain an `href` and a `type` field.
+
+
+## Fields
+
+| Field                                                                                      | Type                                                                                       | Required                                                                                   | Description                                                                                |
+| ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ |
+| `self`                                                                                     | [Components\Url](../../Models/Components/Url.md)                                           | :heavy_check_mark:                                                                         | In v2 endpoints, URLs are commonly represented as objects with an `href` and `type` field. |
+| `customer`                                                                                 | [Components\Url](../../Models/Components/Url.md)                                           | :heavy_check_mark:                                                                         | In v2 endpoints, URLs are commonly represented as objects with an `href` and `type` field. |
+| `mandate`                                                                                  | [?Components\UrlNullable](../../Models/Components/UrlNullable.md)                          | :heavy_minus_sign:                                                                         | In v2 endpoints, URLs are commonly represented as objects with an `href` and `type` field. |
+| `profile`                                                                                  | [Components\Url](../../Models/Components/Url.md)                                           | :heavy_check_mark:                                                                         | In v2 endpoints, URLs are commonly represented as objects with an `href` and `type` field. |
+| `payments`                                                                                 | [?Components\UrlNullable](../../Models/Components/UrlNullable.md)                          | :heavy_minus_sign:                                                                         | In v2 endpoints, URLs are commonly represented as objects with an `href` and `type` field. |

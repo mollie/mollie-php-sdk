@@ -1,0 +1,9 @@
+# OauthRevokeTokensRequestBody
+
+
+## Fields
+
+| Field                                                                          | Type                                                                           | Required                                                                       | Description                                                                    | Example                                                                        |
+| ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ |
+| `tokenTypeHint`                                                                | [Components\OauthTokenTypeHint](../../Models/Components/OauthTokenTypeHint.md) | :heavy_check_mark:                                                             | N/A                                                                            | access_token                                                                   |
+| `token`                                                                        | *string*                                                                       | :heavy_check_mark:                                                             | The token you want to revoke.                                                  | access_...                                                                     |

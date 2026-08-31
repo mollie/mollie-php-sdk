@@ -1,0 +1,37 @@
+speakeasyVersion: 1.796.2
+sources:
+    Mollie API:
+        sourceNamespace: mollie-api
+        sourceRevisionDigest: sha256:02543677871bd5bddd954b0ad1df24fd5234adc9229e03141917f2eb53a2da71
+        sourceBlobDigest: sha256:e7de262a1bf6403e1a97eb61ae14412f510817f1e85abc56ca014f2dd7d40f8f
+        tags:
+            - latest
+            - 1.0.0
+targets:
+    client:
+        source: Mollie API
+        sourceNamespace: mollie-api
+        sourceRevisionDigest: sha256:02543677871bd5bddd954b0ad1df24fd5234adc9229e03141917f2eb53a2da71
+        sourceBlobDigest: sha256:e7de262a1bf6403e1a97eb61ae14412f510817f1e85abc56ca014f2dd7d40f8f
+        codeSamplesNamespace: mollie-api-php-code-samples
+        codeSamplesRevisionDigest: sha256:596b5613c08fae7fd1d6b2b2e0b4479b4bfacc22c940a06ce77d5f47e5193a58
+workflow:
+    workflowVersion: 1.0.0
+    speakeasyVersion: latest
+    sources:
+        Mollie API:
+            inputs:
+                - location: https://raw.githubusercontent.com/mollie/openapi-specs/main/specs.yaml
+            output: .speakeasy/out.openapi.yaml
+            registry:
+                location: registry.speakeasyapi.dev/mollie-oom/mollie/mollie-api
+    targets:
+        client:
+            target: php
+            source: Mollie API
+            codeSamples:
+                registry:
+                    location: registry.speakeasyapi.dev/mollie-oom/mollie/mollie-api-php-code-samples
+                labelOverride:
+                    fixedValue: Php (SDK)
+                blocking: false
