@@ -11,6 +11,10 @@ targets:
     client:
         target: php
         source: Mollie API
+        publish:
+            packagist:
+                username: $packagist_username
+                token: $packagist_token
         codeSamples:
             registry:
                 location: registry.speakeasyapi.dev/mollie-oom/mollie/mollie-api-php-code-samples
