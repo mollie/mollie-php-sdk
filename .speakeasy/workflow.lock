@@ -14,7 +14,7 @@ targets:
         sourceRevisionDigest: sha256:653884e7e50a8fa4c0bc5222568b5c8025d3dc4775c0f92204946293cc7262b1
         sourceBlobDigest: sha256:3f060a6dabf9d59df9a9de6d32609a81c5da341dda5287e2da25c316097cf691
         codeSamplesNamespace: mollie-api-php-code-samples
-        codeSamplesRevisionDigest: sha256:404dc0abdf6f9497455cfb5847ad2ac4fd932d0aa6dba2570ee4245605c17f04
+        codeSamplesRevisionDigest: sha256:c8cd4c192039909eb8766d44a4ae1e59652c162dd9ad7e2554589dd606db68c2
 workflow:
     workflowVersion: 1.0.0
     speakeasyVersion: latest
