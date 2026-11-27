@@ -4,20 +4,41 @@ declare(strict_types=1);
 
 namespace Mollie\Api\Hooks;
 
+use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\ClientInterface as GuzzleClientInterface;
+use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Utils as Psr7Utils;
+use Mollie\Api\SDKConfiguration;
 use Psr\Http\Message\RequestInterface;
 
 /**
- * Custom before-request hook ported from Mollie's other generated SDKs (see
- * mollie-api-py's MollieHooks). It validates path parameters, auto-generates
- * an idempotency key, appends a custom User-Agent suffix, and injects global
- * fields (profileId/testmode) into the request body for operations that
- * support them.
+ * Custom hook ported from Mollie's other generated SDKs (see mollie-api-py's
+ * MollieHooks). It validates path parameters, auto-generates an idempotency
+ * key, appends a custom User-Agent suffix, and injects global fields
+ * (profileId/testmode) into the request body for operations that support
+ * them.
+ *
+ * Speakeasy's generated PHP resource methods call `beforeRequest()` with a
+ * blank PSR-7 request (no headers, no body yet) and only merge the caller's
+ * real headers/body into it afterwards. That means idempotency-key handling
+ * and body-field injection can't safely happen in `beforeRequest()` alone:
+ * doing so there would either clobber a caller-supplied idempotency key or
+ * operate on an always-empty body. Instead, `beforeRequest()` only tags the
+ * request with short-lived internal headers, and an `SDKInitHook`-installed
+ * Guzzle middleware (which sees the fully-merged, final request on every
+ * real send attempt, including retries) reads those tags, strips them, and
+ * performs the actual idempotency-key and global-field logic.
  */
-class MollieHooks implements BeforeRequestHook
+class MollieHooks implements BeforeRequestHook, SDKInitHook
 {
+    private const FALLBACK_IDEMPOTENCY_KEY_HEADER = 'x-mollie-sdk-fallback-idempotency-key';
+
+    private const OPERATION_ID_HEADER = 'x-mollie-sdk-operation-id';
+
     /** @var array<string, array<int, string>> */
     private array $globalUsage;
+
+    private ?SDKConfiguration $config = null;
 
     public function __construct()
     {
@@ -28,14 +49,38 @@ class MollieHooks implements BeforeRequestHook
     {
         $this->validatePathParameters($request);
 
-        $request = $this->handleIdempotencyKey($request);
         $request = $this->customizeUserAgent($request, $context);
 
+        // Generated once per logical call (not per retry attempt), so the
+        // fallback stays stable across retries of the same request.
+        $request = $request->withHeader(self::FALLBACK_IDEMPOTENCY_KEY_HEADER, $this->generateIdempotencyKey());
+
         if ($this->canInjectGlobalFields($context)) {
-            $request = $this->injectGlobalFields($request, $context);
+            $request = $request->withHeader(self::OPERATION_ID_HEADER, $context->operationID);
         }
 
         return $request;
+    }
+
+    public function sdkInit(SDKConfiguration $config): SDKConfiguration
+    {
+        $this->config = $config;
+
+        $config->defaultClient = $this->wrapClientWithMiddleware(
+            $config->defaultClient ?? $config->client ?? new GuzzleClient(['timeout' => 60])
+        );
+
+        // Most resource classes send requests via `defaultClient` (re-wrapping it
+        // for security per call), but Oauth.php sends directly via `client`. Wrap
+        // it too when it's a plain Guzzle client; if it's already been wrapped for
+        // security (an instance Speakeasy's own SecurityClient), leave it alone
+        // rather than risk breaking it - OAuth endpoints don't use idempotency
+        // keys or global fields anyway.
+        if ($config->client instanceof GuzzleClient) {
+            $config->client = $this->wrapClientWithMiddleware($config->client);
+        }
+
+        return $config;
     }
 
     private function validatePathParameters(RequestInterface $request): void
@@ -56,15 +101,6 @@ class MollieHooks implements BeforeRequestHook
         }
     }
 
-    private function handleIdempotencyKey(RequestInterface $request): RequestInterface
-    {
-        if ($request->hasHeader('idempotency-key') && $request->getHeaderLine('idempotency-key') !== '') {
-            return $request;
-        }
-
-        return $request->withHeader('idempotency-key', $this->generateIdempotencyKey());
-    }
-
     private function generateIdempotencyKey(): string
     {
         $data = random_bytes(16);
@@ -76,7 +112,7 @@ class MollieHooks implements BeforeRequestHook
 
     private function customizeUserAgent(RequestInterface $request, BeforeRequestContext $context): RequestInterface
     {
-        $customUserAgent = $this->flattenGlobals($context)['customUserAgent'] ?? null;
+        $customUserAgent = $this->flattenGlobals($context->config)['customUserAgent'] ?? null;
 
         if (! is_string($customUserAgent) || $customUserAgent === '') {
             return $request;
@@ -103,10 +139,70 @@ class MollieHooks implements BeforeRequestHook
         return $security->oAuth === null && ($security->apiKey !== null || $security->advancedAccessToken !== null);
     }
 
-    private function injectGlobalFields(RequestInterface $request, BeforeRequestContext $context): RequestInterface
+    /**
+     * Wraps a plain Guzzle client with a middleware that finalizes the
+     * idempotency key and injects global fields on the fully-merged request.
+     * Non-Guzzle `ClientInterface` implementations (e.g. test doubles, or a
+     * client Speakeasy has already wrapped for security) are returned as-is
+     * rather than risk breaking them.
+     */
+    private function wrapClientWithMiddleware(GuzzleClientInterface $client): GuzzleClientInterface
     {
-        $operationId = $context->operationID;
-        $globals = $this->flattenGlobals($context);
+        if (! $client instanceof GuzzleClient) {
+            return $client;
+        }
+
+        $clientConfig = $client->getConfig();
+        $handlerStack = $clientConfig['handler'] ?? null;
+
+        if (! $handlerStack instanceof HandlerStack) {
+            $handlerStack = HandlerStack::create($handlerStack);
+        }
+
+        $handlerStack->push($this->middleware(), 'mollie-request-finalizer');
+        $clientConfig['handler'] = $handlerStack;
+
+        return new GuzzleClient($clientConfig);
+    }
+
+    private function middleware(): callable
+    {
+        return function (callable $handler) {
+            return function (RequestInterface $request, array $options) use ($handler) {
+                $request = $this->applyIdempotencyKeyFallback($request);
+                $request = $this->finalizeGlobalFieldInjection($request);
+
+                return $handler($request, $options);
+            };
+        };
+    }
+
+    private function applyIdempotencyKeyFallback(RequestInterface $request): RequestInterface
+    {
+        $fallback = $request->getHeaderLine(self::FALLBACK_IDEMPOTENCY_KEY_HEADER);
+        $request = $request->withoutHeader(self::FALLBACK_IDEMPOTENCY_KEY_HEADER);
+
+        if ($fallback === '') {
+            return $request;
+        }
+
+        if ($request->hasHeader('idempotency-key') && $request->getHeaderLine('idempotency-key') !== '') {
+            return $request;
+        }
+
+        return $request->withHeader('idempotency-key', $fallback);
+    }
+
+    private function finalizeGlobalFieldInjection(RequestInterface $request): RequestInterface
+    {
+        $operationId = $request->getHeaderLine(self::OPERATION_ID_HEADER);
+        $request = $request->withoutHeader(self::OPERATION_ID_HEADER);
+
+        if ($operationId === '' || $this->config === null) {
+            return $request;
+        }
+
+        $globals = $this->flattenGlobals($this->config);
 
         $fieldsToInject = [];
         foreach ($this->globalUsage as $field => $operations) {
@@ -146,9 +242,9 @@ class MollieHooks implements BeforeRequestHook
      *
      * @return array<string, mixed>
      */
-    private function flattenGlobals(BeforeRequestContext $context): array
+    private function flattenGlobals(SDKConfiguration $config): array
     {
-        $parameters = $context->config->globals['parameters'] ?? [];
+        $parameters = $config->globals['parameters'] ?? [];
         $flat = [];
 
         foreach ($parameters as $fields) {
