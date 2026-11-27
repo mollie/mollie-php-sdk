@@ -32,9 +32,9 @@ class SignatureValidator
      * @param  string  $payload  Raw request body as a string.
      * @param  string|string[]  $signingSecrets  One or more signing secrets.
      * @param  string|string[]|null  $signatures  One or more signatures to validate against.
-     * @return bool  True if a valid signature is found, false if legacy webhook (no signature).
+     * @return bool True if a valid signature is found, false if legacy webhook (no signature).
      *
-     * @throws InvalidSignatureException  If all signatures are invalid.
+     * @throws InvalidSignatureException If all signatures are invalid.
      */
     public static function validate(string $payload, string|array $signingSecrets, string|array|null $signatures = null): bool
     {
@@ -46,9 +46,9 @@ class SignatureValidator
      *
      * @param  string  $payload  Raw request body as a string.
      * @param  string|string[]|null  $signatures  One or more signatures to validate against.
-     * @return bool  True if any signature is valid, false if no signatures were provided (legacy webhook).
+     * @return bool True if any signature is valid, false if no signatures were provided (legacy webhook).
      *
-     * @throws InvalidSignatureException  If all signatures are invalid.
+     * @throws InvalidSignatureException If all signatures are invalid.
      */
     public function validatePayload(string $payload, string|array|null $signatures): bool
     {
