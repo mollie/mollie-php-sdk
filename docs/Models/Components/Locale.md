@@ -14,6 +14,7 @@ Sets the language for customer-facing content and communications.
 | `DeCH` | de_CH  |
 | `DEDE` | de_DE  |
 | `DeLU` | de_LU  |
+| `ElGR` | el_GR  |
 | `EnBE` | en_BE  |
 | `EnGB` | en_GB  |
 | `EnNL` | en_NL  |
@@ -34,4 +35,6 @@ Sets the language for customer-facing content and communications.
 | `PLPL` | pl_PL  |
 | `PTPT` | pt_PT  |
 | `SKSK` | sk_SK  |
+| `SlSI` | sl_SI  |
 | `SvSE` | sv_SE  |
+| `TRTR` | tr_TR  |

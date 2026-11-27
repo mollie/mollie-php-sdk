@@ -29,6 +29,7 @@ require 'vendor/autoload.php';
 
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setSecurity(
@@ -38,20 +39,23 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-$body = new Components\EntityCapture(
-    description: 'Capture for cart #12345',
-    amount: new Components\AmountNullable(
-        currency: 'EUR',
-        value: '10.00',
+$request = new Operations\CreateCaptureRequest(
+    paymentId: 'tr_5B8cwPMGnU',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+    body: new Components\EntityCapture(
+        description: 'Capture for cart #12345',
+        amount: new Components\AmountNullable(
+            currency: 'EUR',
+            value: '10.00',
+        ),
+        testmode: false,
     ),
-    testmode: false,
 );
 
 $response = $sdk->captures->create(
-    paymentId: 'tr_5B8cwPMGnU',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426',
-    body: $body
-
+    request: $request
 );
 
 if ($response->captureResponse !== null) {
@@ -68,6 +72,7 @@ require 'vendor/autoload.php';
 
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setSecurity(
@@ -77,20 +82,23 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-$body = new Components\EntityCapture(
-    description: 'Capture for cart #12345',
-    amount: new Components\AmountNullable(
-        currency: 'EUR',
-        value: '10.00',
+$request = new Operations\CreateCaptureRequest(
+    paymentId: 'tr_5B8cwPMGnU',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+    body: new Components\EntityCapture(
+        description: 'Capture for cart #12345',
+        amount: new Components\AmountNullable(
+            currency: 'EUR',
+            value: '10.00',
+        ),
+        testmode: false,
     ),
-    testmode: false,
 );
 
 $response = $sdk->captures->create(
-    paymentId: 'tr_5B8cwPMGnU',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426',
-    body: $body
-
+    request: $request
 );
 
 if ($response->captureResponse !== null) {
@@ -100,11 +108,9 @@ if ($response->captureResponse !== null) {
 
 ### Parameters
 
-| Parameter                                                                        | Type                                                                             | Required                                                                         | Description                                                                      | Example                                                                          |
-| -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| `paymentId`                                                                      | *string*                                                                         | :heavy_check_mark:                                                               | Provide the ID of the related payment.                                           | tr_5B8cwPMGnU                                                                    |
-| `idempotencyKey`                                                                 | *?string*                                                                        | :heavy_minus_sign:                                                               | A unique key to ensure idempotent requests. This key should be a UUID v4 string. | 123e4567-e89b-12d3-a456-426                                                      |
-| `body`                                                                           | [?Components\EntityCapture](../../Models/Components/EntityCapture.md)            | :heavy_minus_sign:                                                               | N/A                                                                              |                                                                                  |
+| Parameter                                                                          | Type                                                                               | Required                                                                           | Description                                                                        |
+| ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `$request`                                                                         | [Operations\CreateCaptureRequest](../../Models/Operations/CreateCaptureRequest.md) | :heavy_check_mark:                                                                 | The request object to use for the request.                                         |
 
 ### Response
 
@@ -149,6 +155,8 @@ $request = new Operations\ListCapturesRequest(
     from: 'cpt_vytxeTZskVKR7C7WgdSP3d',
     limit: 50,
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $responses = $sdk->captures->list(
@@ -188,6 +196,8 @@ $request = new Operations\ListCapturesRequest(
     from: 'cpt_vytxeTZskVKR7C7WgdSP3d',
     limit: 50,
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $responses = $sdk->captures->list(
@@ -249,6 +259,8 @@ $request = new Operations\GetCaptureRequest(
     paymentId: 'tr_5B8cwPMGnU',
     captureId: 'cpt_vytxeTZskVKR7C7WgdSP3d',
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $response = $sdk->captures->get(
@@ -284,6 +296,8 @@ $request = new Operations\GetCaptureRequest(
     paymentId: 'tr_5B8cwPMGnU',
     captureId: 'cpt_vytxeTZskVKR7C7WgdSP3d',
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $response = $sdk->captures->get(

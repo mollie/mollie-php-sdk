@@ -1,9 +1,9 @@
-speakeasyVersion: 1.796.2
+speakeasyVersion: 1.812.1
 sources:
     Mollie API:
         sourceNamespace: mollie-api
-        sourceRevisionDigest: sha256:02543677871bd5bddd954b0ad1df24fd5234adc9229e03141917f2eb53a2da71
-        sourceBlobDigest: sha256:e7de262a1bf6403e1a97eb61ae14412f510817f1e85abc56ca014f2dd7d40f8f
+        sourceRevisionDigest: sha256:653884e7e50a8fa4c0bc5222568b5c8025d3dc4775c0f92204946293cc7262b1
+        sourceBlobDigest: sha256:3f060a6dabf9d59df9a9de6d32609a81c5da341dda5287e2da25c316097cf691
         tags:
             - latest
             - 1.0.0
@@ -11,10 +11,10 @@ targets:
     client:
         source: Mollie API
         sourceNamespace: mollie-api
-        sourceRevisionDigest: sha256:02543677871bd5bddd954b0ad1df24fd5234adc9229e03141917f2eb53a2da71
-        sourceBlobDigest: sha256:e7de262a1bf6403e1a97eb61ae14412f510817f1e85abc56ca014f2dd7d40f8f
+        sourceRevisionDigest: sha256:653884e7e50a8fa4c0bc5222568b5c8025d3dc4775c0f92204946293cc7262b1
+        sourceBlobDigest: sha256:3f060a6dabf9d59df9a9de6d32609a81c5da341dda5287e2da25c316097cf691
         codeSamplesNamespace: mollie-api-php-code-samples
-        codeSamplesRevisionDigest: sha256:596b5613c08fae7fd1d6b2b2e0b4479b4bfacc22c940a06ce77d5f47e5193a58
+        codeSamplesRevisionDigest: sha256:404dc0abdf6f9497455cfb5847ad2ac4fd932d0aa6dba2570ee4245605c17f04
 workflow:
     workflowVersion: 1.0.0
     speakeasyVersion: latest
@@ -29,6 +29,10 @@ workflow:
         client:
             target: php
             source: Mollie API
+            publish:
+                packagist:
+                    username: $packagist_username
+                    token: $packagist_token
             codeSamples:
                 registry:
                     location: registry.speakeasyapi.dev/mollie-oom/mollie/mollie-api-php-code-samples

@@ -25,6 +25,7 @@ require 'vendor/autoload.php';
 
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setSecurity(
@@ -34,37 +35,36 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-$body = new Components\RefundRequest(
-    description: 'Refunding a Chess Board',
-    amount: new Components\Amount(
-        currency: 'EUR',
-        value: '10.00',
-    ),
-    externalReference: new Components\RefundRequestExternalReference(
-        type: Components\RefundExternalReferenceType::AcquirerReference,
-        id: '123456789012345',
-    ),
-    reverseRouting: false,
-    routingReversals: [
-        new Components\RefundRequestRoutingReversal(
-            amount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            source: new Components\RefundRequestSource(
-                type: Components\RefundRequestType::Organization,
-                organizationId: 'org_1234567',
-            ),
+$request = new Operations\CreateRefundRequest(
+    paymentId: 'tr_5B8cwPMGnU',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+    body: new Components\RefundRequest(
+        description: 'Refunding a Chess Board',
+        amount: new Components\Amount(
+            currency: 'EUR',
+            value: '10.00',
         ),
-    ],
-    testmode: false,
+        reverseRouting: false,
+        routingReversals: [
+            new Components\RefundRequestRoutingReversal(
+                amount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                source: new Components\RefundRequestSource(
+                    type: Components\RefundRequestType::Organization,
+                    organizationId: 'org_1234567',
+                ),
+            ),
+        ],
+        testmode: false,
+    ),
 );
 
 $response = $sdk->refunds->create(
-    paymentId: 'tr_5B8cwPMGnU',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426',
-    body: $body
-
+    request: $request
 );
 
 if ($response->refundResponse !== null) {
@@ -81,6 +81,7 @@ require 'vendor/autoload.php';
 
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setSecurity(
@@ -90,37 +91,36 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-$body = new Components\RefundRequest(
-    description: 'Refunding a Chess Board',
-    amount: new Components\Amount(
-        currency: 'EUR',
-        value: '10.00',
-    ),
-    externalReference: new Components\RefundRequestExternalReference(
-        type: Components\RefundExternalReferenceType::AcquirerReference,
-        id: '123456789012345',
-    ),
-    reverseRouting: false,
-    routingReversals: [
-        new Components\RefundRequestRoutingReversal(
-            amount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            source: new Components\RefundRequestSource(
-                type: Components\RefundRequestType::Organization,
-                organizationId: 'org_1234567',
-            ),
+$request = new Operations\CreateRefundRequest(
+    paymentId: 'tr_5B8cwPMGnU',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+    body: new Components\RefundRequest(
+        description: 'Refunding a Chess Board',
+        amount: new Components\Amount(
+            currency: 'EUR',
+            value: '10.00',
         ),
-    ],
-    testmode: false,
+        reverseRouting: false,
+        routingReversals: [
+            new Components\RefundRequestRoutingReversal(
+                amount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                source: new Components\RefundRequestSource(
+                    type: Components\RefundRequestType::Organization,
+                    organizationId: 'org_1234567',
+                ),
+            ),
+        ],
+        testmode: false,
+    ),
 );
 
 $response = $sdk->refunds->create(
-    paymentId: 'tr_5B8cwPMGnU',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426',
-    body: $body
-
+    request: $request
 );
 
 if ($response->refundResponse !== null) {
@@ -130,11 +130,9 @@ if ($response->refundResponse !== null) {
 
 ### Parameters
 
-| Parameter                                                                        | Type                                                                             | Required                                                                         | Description                                                                      | Example                                                                          |
-| -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| `paymentId`                                                                      | *string*                                                                         | :heavy_check_mark:                                                               | Provide the ID of the related payment.                                           | tr_5B8cwPMGnU                                                                    |
-| `idempotencyKey`                                                                 | *?string*                                                                        | :heavy_minus_sign:                                                               | A unique key to ensure idempotent requests. This key should be a UUID v4 string. | 123e4567-e89b-12d3-a456-426                                                      |
-| `body`                                                                           | [?Components\RefundRequest](../../Models/Components/RefundRequest.md)            | :heavy_minus_sign:                                                               | N/A                                                                              |                                                                                  |
+| Parameter                                                                        | Type                                                                             | Required                                                                         | Description                                                                      |
+| -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `$request`                                                                       | [Operations\CreateRefundRequest](../../Models/Operations/CreateRefundRequest.md) | :heavy_check_mark:                                                               | The request object to use for the request.                                       |
 
 ### Response
 
@@ -179,6 +177,8 @@ $request = new Operations\ListRefundsRequest(
     from: 're_5B8cwPMGnU',
     limit: 50,
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $responses = $sdk->refunds->list(
@@ -239,6 +239,8 @@ $request = new Operations\GetRefundRequest(
     paymentId: 'tr_5B8cwPMGnU',
     refundId: 're_5B8cwPMGnU',
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $response = $sdk->refunds->get(
@@ -285,6 +287,7 @@ require 'vendor/autoload.php';
 
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setTestmode(true)
@@ -295,13 +298,16 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-
-
-$response = $sdk->refunds->cancel(
+$request = new Operations\CancelRefundRequest(
     paymentId: 'tr_5B8cwPMGnU',
     refundId: 're_5B8cwPMGnU',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426'
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+);
 
+$response = $sdk->refunds->cancel(
+    request: $request
 );
 
 if ($response->statusCode === 200) {
@@ -311,12 +317,9 @@ if ($response->statusCode === 200) {
 
 ### Parameters
 
-| Parameter                                                                                                                                                                                                                                                                                                                                                                                | Type                                                                                                                                                                                                                                                                                                                                                                                     | Required                                                                                                                                                                                                                                                                                                                                                                                 | Description                                                                                                                                                                                                                                                                                                                                                                              | Example                                                                                                                                                                                                                                                                                                                                                                                  |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `paymentId`                                                                                                                                                                                                                                                                                                                                                                              | *string*                                                                                                                                                                                                                                                                                                                                                                                 | :heavy_check_mark:                                                                                                                                                                                                                                                                                                                                                                       | Provide the ID of the related payment.                                                                                                                                                                                                                                                                                                                                                   | tr_5B8cwPMGnU                                                                                                                                                                                                                                                                                                                                                                            |
-| `refundId`                                                                                                                                                                                                                                                                                                                                                                               | *string*                                                                                                                                                                                                                                                                                                                                                                                 | :heavy_check_mark:                                                                                                                                                                                                                                                                                                                                                                       | Provide the ID of the related refund.                                                                                                                                                                                                                                                                                                                                                    | re_5B8cwPMGnU                                                                                                                                                                                                                                                                                                                                                                            |
-| `testmode`                                                                                                                                                                                                                                                                                                                                                                               | *?bool*                                                                                                                                                                                                                                                                                                                                                                                  | :heavy_minus_sign:                                                                                                                                                                                                                                                                                                                                                                       | Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br/>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br/>setting the `testmode` query parameter to `true`.<br/><br/>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa. |                                                                                                                                                                                                                                                                                                                                                                                          |
-| `idempotencyKey`                                                                                                                                                                                                                                                                                                                                                                         | *?string*                                                                                                                                                                                                                                                                                                                                                                                | :heavy_minus_sign:                                                                                                                                                                                                                                                                                                                                                                       | A unique key to ensure idempotent requests. This key should be a UUID v4 string.                                                                                                                                                                                                                                                                                                         | 123e4567-e89b-12d3-a456-426                                                                                                                                                                                                                                                                                                                                                              |
+| Parameter                                                                        | Type                                                                             | Required                                                                         | Description                                                                      |
+| -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `$request`                                                                       | [Operations\CancelRefundRequest](../../Models/Operations/CancelRefundRequest.md) | :heavy_check_mark:                                                               | The request object to use for the request.                                       |
 
 ### Response
 
@@ -362,6 +365,8 @@ $request = new Operations\ListAllRefundsRequest(
     limit: 50,
     sort: Components\Sorting::Desc,
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $responses = $sdk->refunds->all(

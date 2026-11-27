@@ -61,6 +61,8 @@ $body = new Components\VerificationOfPayeeRequest(
 
 $response = $sdk->verifyPayee->create(
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
     body: $body
 
 );
@@ -99,6 +101,8 @@ $body = new Components\VerificationOfPayeeRequest(
 
 $response = $sdk->verifyPayee->create(
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
     body: $body
 
 );
@@ -137,6 +141,8 @@ $body = new Components\VerificationOfPayeeRequest(
 
 $response = $sdk->verifyPayee->create(
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
     body: $body
 
 );
@@ -175,6 +181,8 @@ $body = new Components\VerificationOfPayeeRequest(
 
 $response = $sdk->verifyPayee->create(
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
     body: $body
 
 );
@@ -186,10 +194,12 @@ if ($response->verificationOfPayeeResponse !== null) {
 
 ### Parameters
 
-| Parameter                                                                                       | Type                                                                                            | Required                                                                                        | Description                                                                                     | Example                                                                                         |
-| ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| `idempotencyKey`                                                                                | *?string*                                                                                       | :heavy_minus_sign:                                                                              | A unique key to ensure idempotent requests. This key should be a UUID v4 string.                | 123e4567-e89b-12d3-a456-426                                                                     |
-| `body`                                                                                          | [?Components\VerificationOfPayeeRequest](../../Models/Components/VerificationOfPayeeRequest.md) | :heavy_minus_sign:                                                                              | N/A                                                                                             |                                                                                                 |
+| Parameter                                                                                                                                                                               | Type                                                                                                                                                                                    | Required                                                                                                                                                                                | Description                                                                                                                                                                             | Example                                                                                                                                                                                 |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `idempotencyKey`                                                                                                                                                                        | *?string*                                                                                                                                                                               | :heavy_minus_sign:                                                                                                                                                                      | A unique key to ensure idempotent requests. This key should be a UUID v4 string.                                                                                                        | 123e4567-e89b-12d3-a456-426                                                                                                                                                             |
+| `xClientSignature`                                                                                                                                                                      | *?string*                                                                                                                                                                               | :heavy_minus_sign:                                                                                                                                                                      | A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.        | MEUCIQDx8sJvK3z...                                                                                                                                                                      |
+| `xClientSignedAt`                                                                                                                                                                       | *?string*                                                                                                                                                                               | :heavy_minus_sign:                                                                                                                                                                      | The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration. | 2025-01-01T12:00:00Z                                                                                                                                                                    |
+| `body`                                                                                                                                                                                  | [?Components\VerificationOfPayeeRequest](../../Models/Components/VerificationOfPayeeRequest.md)                                                                                         | :heavy_minus_sign:                                                                                                                                                                      | N/A                                                                                                                                                                                     |                                                                                                                                                                                         |
 
 ### Response
 

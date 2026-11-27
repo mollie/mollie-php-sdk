@@ -40,6 +40,7 @@
 | `Twint`          | twint            |
 | `Vipps`          | vipps            |
 | `Voucher`        | voucher          |
+| `Wero`           | wero             |
 | `Klarnapaylater` | klarnapaylater   |
 | `Klarnapaynow`   | klarnapaynow     |
 | `Klarnasliceit`  | klarnasliceit    |

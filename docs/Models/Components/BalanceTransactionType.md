@@ -12,6 +12,7 @@
 | `BalanceReserve`                     | balance-reserve                      |
 | `BalanceReserveReturn`               | balance-reserve-return               |
 | `BalanceTopup`                       | balance-topup                        |
+| `BankChargedFailureFee`              | bank-charged-failure-fee             |
 | `CanceledTransfer`                   | canceled-transfer                    |
 | `Capture`                            | capture                              |
 | `CashCollateralIssuance`             | cash-collateral-issuance             |
@@ -20,6 +21,7 @@
 | `ChargebackCompensation`             | chargeback-compensation              |
 | `ChargebackReversal`                 | chargeback-reversal                  |
 | `FailedPayment`                      | failed-payment                       |
+| `FailedPaymentFee`                   | failed-payment-fee                   |
 | `FailedPlatformSplitPayment`         | failed-platform-split-payment        |
 | `FailedSplitPaymentCompensation`     | failed-split-payment-compensation    |
 | `FeePrepayment`                      | fee-prepayment                       |

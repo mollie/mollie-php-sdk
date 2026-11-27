@@ -75,3 +75,21 @@ Components\SalesInvoiceResponse $value = /* values here */
 Components\TransferResponse $value = /* values here */
 ```
 
+### `Components\DraftTransferResponse`
+
+```php
+/**
+* @var \Mollie\Api\Models\Components\DraftTransferResponse
+*/
+Components\DraftTransferResponse $value = /* values here */
+```
+
+### `Components\BusinessAccountResponse`
+
+```php
+/**
+* @var \Mollie\Api\Models\Components\BusinessAccountResponse
+*/
+Components\BusinessAccountResponse $value = /* values here */
+```
+

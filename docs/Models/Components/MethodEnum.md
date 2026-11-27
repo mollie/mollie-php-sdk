@@ -40,3 +40,4 @@
 | `Twint`        | twint          |
 | `Vipps`        | vipps          |
 | `Voucher`      | voucher        |
+| `Wero`         | wero           |

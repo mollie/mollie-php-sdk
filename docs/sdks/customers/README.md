@@ -47,6 +47,8 @@ $body = new Components\EntityCustomer(
 
 $response = $sdk->customers->create(
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
     body: $body
 
 );
@@ -58,10 +60,12 @@ if ($response->customerResponse !== null) {
 
 ### Parameters
 
-| Parameter                                                                        | Type                                                                             | Required                                                                         | Description                                                                      | Example                                                                          |
-| -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| `idempotencyKey`                                                                 | *?string*                                                                        | :heavy_minus_sign:                                                               | A unique key to ensure idempotent requests. This key should be a UUID v4 string. | 123e4567-e89b-12d3-a456-426                                                      |
-| `body`                                                                           | [?Components\EntityCustomer](../../Models/Components/EntityCustomer.md)          | :heavy_minus_sign:                                                               | N/A                                                                              |                                                                                  |
+| Parameter                                                                                                                                                                               | Type                                                                                                                                                                                    | Required                                                                                                                                                                                | Description                                                                                                                                                                             | Example                                                                                                                                                                                 |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `idempotencyKey`                                                                                                                                                                        | *?string*                                                                                                                                                                               | :heavy_minus_sign:                                                                                                                                                                      | A unique key to ensure idempotent requests. This key should be a UUID v4 string.                                                                                                        | 123e4567-e89b-12d3-a456-426                                                                                                                                                             |
+| `xClientSignature`                                                                                                                                                                      | *?string*                                                                                                                                                                               | :heavy_minus_sign:                                                                                                                                                                      | A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.        | MEUCIQDx8sJvK3z...                                                                                                                                                                      |
+| `xClientSignedAt`                                                                                                                                                                       | *?string*                                                                                                                                                                               | :heavy_minus_sign:                                                                                                                                                                      | The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration. | 2025-01-01T12:00:00Z                                                                                                                                                                    |
+| `body`                                                                                                                                                                                  | [?Components\EntityCustomer](../../Models/Components/EntityCustomer.md)                                                                                                                 | :heavy_minus_sign:                                                                                                                                                                      | N/A                                                                                                                                                                                     |                                                                                                                                                                                         |
 
 ### Response
 
@@ -106,6 +110,8 @@ $request = new Operations\ListCustomersRequest(
     limit: 50,
     sort: Components\Sorting::Desc,
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $responses = $sdk->customers->list(
@@ -151,6 +157,7 @@ require 'vendor/autoload.php';
 
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setTestmode(true)
@@ -161,12 +168,15 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-
+$request = new Operations\GetCustomerRequest(
+    customerId: 'cst_5B8cwPMGnU',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+);
 
 $response = $sdk->customers->get(
-    customerId: 'cst_5B8cwPMGnU',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426'
-
+    request: $request
 );
 
 if ($response->customerResponse !== null) {
@@ -176,11 +186,9 @@ if ($response->customerResponse !== null) {
 
 ### Parameters
 
-| Parameter                                                                                                                                                                                                                                                                                                                                                                                | Type                                                                                                                                                                                                                                                                                                                                                                                     | Required                                                                                                                                                                                                                                                                                                                                                                                 | Description                                                                                                                                                                                                                                                                                                                                                                              | Example                                                                                                                                                                                                                                                                                                                                                                                  |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `customerId`                                                                                                                                                                                                                                                                                                                                                                             | *string*                                                                                                                                                                                                                                                                                                                                                                                 | :heavy_check_mark:                                                                                                                                                                                                                                                                                                                                                                       | Provide the ID of the related customer.                                                                                                                                                                                                                                                                                                                                                  | cst_5B8cwPMGnU                                                                                                                                                                                                                                                                                                                                                                           |
-| `testmode`                                                                                                                                                                                                                                                                                                                                                                               | *?bool*                                                                                                                                                                                                                                                                                                                                                                                  | :heavy_minus_sign:                                                                                                                                                                                                                                                                                                                                                                       | Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br/>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br/>setting the `testmode` query parameter to `true`.<br/><br/>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa. |                                                                                                                                                                                                                                                                                                                                                                                          |
-| `idempotencyKey`                                                                                                                                                                                                                                                                                                                                                                         | *?string*                                                                                                                                                                                                                                                                                                                                                                                | :heavy_minus_sign:                                                                                                                                                                                                                                                                                                                                                                       | A unique key to ensure idempotent requests. This key should be a UUID v4 string.                                                                                                                                                                                                                                                                                                         | 123e4567-e89b-12d3-a456-426                                                                                                                                                                                                                                                                                                                                                              |
+| Parameter                                                                      | Type                                                                           | Required                                                                       | Description                                                                    |
+| ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ |
+| `$request`                                                                     | [Operations\GetCustomerRequest](../../Models/Operations/GetCustomerRequest.md) | :heavy_check_mark:                                                             | The request object to use for the request.                                     |
 
 ### Response
 
@@ -219,18 +227,21 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-$body = new Operations\UpdateCustomerRequestBody(
-    name: 'John Doe',
-    email: 'example@email.com',
-    locale: Components\LocaleResponse::EnUS,
-    testmode: false,
+$request = new Operations\UpdateCustomerRequest(
+    customerId: 'cst_5B8cwPMGnU',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+    body: new Operations\UpdateCustomerRequestBody(
+        name: 'John Doe',
+        email: 'example@email.com',
+        locale: Components\LocaleResponse::EnUS,
+        testmode: false,
+    ),
 );
 
 $response = $sdk->customers->update(
-    customerId: 'cst_5B8cwPMGnU',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426',
-    body: $body
-
+    request: $request
 );
 
 if ($response->customerResponse !== null) {
@@ -257,18 +268,21 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-$body = new Operations\UpdateCustomerRequestBody(
-    name: 'John Doe',
-    email: 'example@email.com',
-    locale: Components\LocaleResponse::EnUS,
-    testmode: false,
+$request = new Operations\UpdateCustomerRequest(
+    customerId: 'cst_5B8cwPMGnU',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+    body: new Operations\UpdateCustomerRequestBody(
+        name: 'John Doe',
+        email: 'example@email.com',
+        locale: Components\LocaleResponse::EnUS,
+        testmode: false,
+    ),
 );
 
 $response = $sdk->customers->update(
-    customerId: 'cst_5B8cwPMGnU',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426',
-    body: $body
-
+    request: $request
 );
 
 if ($response->customerResponse !== null) {
@@ -278,11 +292,9 @@ if ($response->customerResponse !== null) {
 
 ### Parameters
 
-| Parameter                                                                                     | Type                                                                                          | Required                                                                                      | Description                                                                                   | Example                                                                                       |
-| --------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| `customerId`                                                                                  | *string*                                                                                      | :heavy_check_mark:                                                                            | Provide the ID of the related customer.                                                       | cst_5B8cwPMGnU                                                                                |
-| `idempotencyKey`                                                                              | *?string*                                                                                     | :heavy_minus_sign:                                                                            | A unique key to ensure idempotent requests. This key should be a UUID v4 string.              | 123e4567-e89b-12d3-a456-426                                                                   |
-| `body`                                                                                        | [?Operations\UpdateCustomerRequestBody](../../Models/Operations/UpdateCustomerRequestBody.md) | :heavy_minus_sign:                                                                            | N/A                                                                                           |                                                                                               |
+| Parameter                                                                            | Type                                                                                 | Required                                                                             | Description                                                                          |
+| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| `$request`                                                                           | [Operations\UpdateCustomerRequest](../../Models/Operations/UpdateCustomerRequest.md) | :heavy_check_mark:                                                                   | The request object to use for the request.                                           |
 
 ### Response
 
@@ -319,15 +331,18 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-$body = new Operations\DeleteCustomerRequestBody(
-    testmode: false,
+$request = new Operations\DeleteCustomerRequest(
+    customerId: 'cst_5B8cwPMGnU',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+    body: new Operations\DeleteCustomerRequestBody(
+        testmode: false,
+    ),
 );
 
 $response = $sdk->customers->delete(
-    customerId: 'cst_5B8cwPMGnU',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426',
-    body: $body
-
+    request: $request
 );
 
 if ($response->statusCode === 200) {
@@ -337,11 +352,9 @@ if ($response->statusCode === 200) {
 
 ### Parameters
 
-| Parameter                                                                                     | Type                                                                                          | Required                                                                                      | Description                                                                                   | Example                                                                                       |
-| --------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| `customerId`                                                                                  | *string*                                                                                      | :heavy_check_mark:                                                                            | Provide the ID of the related customer.                                                       | cst_5B8cwPMGnU                                                                                |
-| `idempotencyKey`                                                                              | *?string*                                                                                     | :heavy_minus_sign:                                                                            | A unique key to ensure idempotent requests. This key should be a UUID v4 string.              | 123e4567-e89b-12d3-a456-426                                                                   |
-| `body`                                                                                        | [?Operations\DeleteCustomerRequestBody](../../Models/Operations/DeleteCustomerRequestBody.md) | :heavy_minus_sign:                                                                            | N/A                                                                                           |                                                                                               |
+| Parameter                                                                            | Type                                                                                 | Required                                                                             | Description                                                                          |
+| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| `$request`                                                                           | [Operations\DeleteCustomerRequest](../../Models/Operations/DeleteCustomerRequest.md) | :heavy_check_mark:                                                                   | The request object to use for the request.                                           |
 
 ### Response
 
@@ -379,6 +392,7 @@ require 'vendor/autoload.php';
 use Brick\DateTime\LocalDate;
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setSecurity(
@@ -388,138 +402,141 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-$body = new Components\PaymentRequest(
-    description: 'Chess Board',
-    amount: new Components\Amount(
-        currency: 'EUR',
-        value: '10.00',
-    ),
-    redirectUrl: 'https://example.org/redirect',
-    cancelUrl: 'https://example.org/cancel',
-    webhookUrl: 'https://example.org/webhooks',
-    lines: [
-        new Components\PaymentRequestLine(
-            type: Components\PaymentLineType::Physical,
-            description: 'LEGO 4440 Forest Police Station',
-            quantity: 1,
-            quantityUnit: 'pcs',
-            unitPrice: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            discountAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            totalAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            vatRate: '21.00',
-            vatAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            sku: '9780241661628',
-            categories: [
-                Components\LineCategories::Meal,
-                Components\LineCategories::Eco,
-            ],
-            imageUrl: 'https://...',
-            productUrl: 'https://...',
-            recurring: new Components\RecurringLineItem(
-                description: 'Gym subscription',
-                interval: '12 months',
-                amount: new Components\Amount(
-                    currency: 'EUR',
-                    value: '10.00',
-                ),
-                times: 1,
-                startDate: '2024-12-12',
-            ),
-        ),
-    ],
-    billingAddress: new Components\PaymentRequestBillingAddress(
-        title: 'Mr.',
-        givenName: 'Piet',
-        familyName: 'Mondriaan',
-        streetAndNumber: 'Keizersgracht 126',
-        streetAdditional: 'Apt. 1',
-        postalCode: '1234AB',
-        email: 'piet@example.org',
-        phone: '31208202070',
-        city: 'Amsterdam',
-        region: 'Noord-Holland',
-        country: 'NL',
-    ),
-    shippingAddress: new Components\PaymentAddress(
-        title: 'Mr.',
-        givenName: 'Piet',
-        familyName: 'Mondriaan',
-        organizationName: 'Mollie B.V.',
-        streetAndNumber: 'Keizersgracht 126',
-        streetAdditional: 'Apt. 1',
-        postalCode: '1234AB',
-        email: 'piet@example.org',
-        phone: '31208202070',
-        city: 'Amsterdam',
-        region: 'Noord-Holland',
-        country: 'NL',
-    ),
-    locale: Components\Locale::EnUS,
-    method: Components\MethodEnum::Ideal,
-    issuer: 'ideal_INGBNL2A',
-    restrictPaymentMethodsToCountry: 'NL',
-    captureMode: Components\CaptureMode::Manual,
-    captureDelay: '8 hours',
-    applicationFee: new Components\PaymentRequestApplicationFee(
+$request = new Operations\CreateCustomerPaymentRequest(
+    customerId: 'cst_5B8cwPMGnU',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+    body: new Components\PaymentRequest(
+        description: 'Chess Board',
         amount: new Components\Amount(
             currency: 'EUR',
             value: '10.00',
         ),
-        description: '10',
-    ),
-    routing: [
-        new Components\EntityPaymentRoute(
+        redirectUrl: 'https://example.org/redirect',
+        cancelUrl: 'https://example.org/cancel',
+        webhookUrl: 'https://example.org/webhooks',
+        lines: [
+            new Components\PaymentRequestLine(
+                type: Components\PaymentLineType::Physical,
+                description: 'LEGO 4440 Forest Police Station',
+                quantity: 1,
+                quantityUnit: 'pcs',
+                unitPrice: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                discountAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                totalAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                vatRate: '21.00',
+                vatAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                sku: '9780241661628',
+                categories: [
+                    Components\LineCategories::Meal,
+                    Components\LineCategories::Eco,
+                ],
+                imageUrl: 'https://...',
+                productUrl: 'https://...',
+                recurring: new Components\RecurringLineItem(
+                    description: 'Gym subscription',
+                    interval: '12 months',
+                    amount: new Components\Amount(
+                        currency: 'EUR',
+                        value: '10.00',
+                    ),
+                    times: 1,
+                    startDate: '2024-12-12',
+                ),
+            ),
+        ],
+        billingAddress: new Components\PaymentRequestBillingAddress(
+            title: 'Mr.',
+            givenName: 'Piet',
+            familyName: 'Mondriaan',
+            streetAndNumber: 'Keizersgracht 126',
+            streetAdditional: 'Apt. 1',
+            postalCode: '1234AB',
+            email: 'piet@example.org',
+            phone: '31208202070',
+            city: 'Amsterdam',
+            region: 'Noord-Holland',
+            country: 'NL',
+        ),
+        shippingAddress: new Components\PaymentAddress(
+            title: 'Mr.',
+            givenName: 'Piet',
+            familyName: 'Mondriaan',
+            organizationName: 'Mollie B.V.',
+            streetAndNumber: 'Keizersgracht 126',
+            streetAdditional: 'Apt. 1',
+            postalCode: '1234AB',
+            email: 'piet@example.org',
+            phone: '31208202070',
+            city: 'Amsterdam',
+            region: 'Noord-Holland',
+            country: 'NL',
+        ),
+        locale: Components\Locale::EnUS,
+        method: Components\MethodEnum::Ideal,
+        issuer: 'ideal_INGBNL2A',
+        restrictPaymentMethodsToCountry: 'NL',
+        captureMode: Components\CaptureMode::Manual,
+        captureDelay: '8 hours',
+        applicationFee: new Components\PaymentRequestApplicationFee(
             amount: new Components\Amount(
                 currency: 'EUR',
                 value: '10.00',
             ),
-            destination: new Components\EntityPaymentRouteDestination(
-                type: Components\RouteDestinationType::Organization,
-                organizationId: 'org_1234567',
-            ),
-            releaseDate: '2024-12-12',
+            description: '10',
         ),
-    ],
-    sequenceType: Components\SequenceType::Oneoff,
-    mandateId: 'mdt_5B8cwPMGnU',
-    customerId: 'cst_5B8cwPMGnU',
-    profileId: 'pfl_5B8cwPMGnU',
-    dueDate: '2025-12-08',
-    storeCredentials: true,
-    testmode: false,
-    applePayPaymentToken: '{"paymentData": {"version": "EC_v1", "data": "vK3BbrCbI/...."}}',
-    company: new Components\Company(
-        registrationNumber: '12345678',
-        vatNumber: 'NL123456789B01',
-        entityType: 'LLC',
+        routing: [
+            new Components\EntityPaymentRoute(
+                amount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                destination: new Components\EntityPaymentRouteDestination(
+                    type: Components\RouteDestinationType::Organization,
+                    organizationId: 'org_1234567',
+                ),
+                releaseDate: '2024-12-12',
+            ),
+        ],
+        sequenceType: Components\SequenceType::Oneoff,
+        mandateId: 'mdt_5B8cwPMGnU',
+        customerId: 'cst_5B8cwPMGnU',
+        profileId: 'pfl_5B8cwPMGnU',
+        dueDate: '2025-12-08',
+        storeCredentials: true,
+        testmode: false,
+        applePayPaymentToken: '{"paymentData": {"version": "EC_v1", "data": "vK3BbrCbI/...."}}',
+        company: new Components\Company(
+            registrationNumber: '12345678',
+            vatNumber: 'NL123456789B01',
+            entityType: 'LLC',
+        ),
+        cardToken: 'tkn_12345',
+        googlePayPaymentToken: '{"signature": "MEYCIQCv...", "protocolVersion": "ECv2", "signedMessage": "{\\"encryptedMessage\\":\\"...\\",\\"ephemeralPublicKey\\":\\"...\\",\\"tag\\":\\"...\\"}"}',
+        voucherNumber: '1234567890',
+        voucherPin: '1234',
+        consumerDateOfBirth: LocalDate::parse('2000-01-01'),
+        digitalGoods: true,
+        customerReference: '1234567890',
+        terminalId: 'term_1234567890',
     ),
-    cardToken: 'tkn_12345',
-    googlePayPaymentToken: '{"signature": "MEYCIQCv...", "protocolVersion": "ECv2", "signedMessage": "{\\"encryptedMessage\\":\\"...\\",\\"ephemeralPublicKey\\":\\"...\\",\\"tag\\":\\"...\\"}"}',
-    voucherNumber: '1234567890',
-    voucherPin: '1234',
-    consumerDateOfBirth: LocalDate::parse('2000-01-01'),
-    digitalGoods: true,
-    customerReference: '1234567890',
-    terminalId: 'term_1234567890',
 );
 
 $response = $sdk->customers->createPayment(
-    customerId: 'cst_5B8cwPMGnU',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426',
-    body: $body
-
+    request: $request
 );
 
 if ($response->paymentResponse !== null) {
@@ -537,6 +554,7 @@ require 'vendor/autoload.php';
 use Brick\DateTime\LocalDate;
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setSecurity(
@@ -546,138 +564,141 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-$body = new Components\PaymentRequest(
-    description: 'Chess Board',
-    amount: new Components\Amount(
-        currency: 'EUR',
-        value: '10.00',
-    ),
-    redirectUrl: 'https://example.org/redirect',
-    cancelUrl: 'https://example.org/cancel',
-    webhookUrl: 'https://example.org/webhooks',
-    lines: [
-        new Components\PaymentRequestLine(
-            type: Components\PaymentLineType::Physical,
-            description: 'LEGO 4440 Forest Police Station',
-            quantity: 1,
-            quantityUnit: 'pcs',
-            unitPrice: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            discountAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            totalAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            vatRate: '21.00',
-            vatAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            sku: '9780241661628',
-            categories: [
-                Components\LineCategories::Meal,
-                Components\LineCategories::Eco,
-            ],
-            imageUrl: 'https://...',
-            productUrl: 'https://...',
-            recurring: new Components\RecurringLineItem(
-                description: 'Gym subscription',
-                interval: '12 months',
-                amount: new Components\Amount(
-                    currency: 'EUR',
-                    value: '10.00',
-                ),
-                times: 1,
-                startDate: '2024-12-12',
-            ),
-        ),
-    ],
-    billingAddress: new Components\PaymentRequestBillingAddress(
-        title: 'Mr.',
-        givenName: 'Piet',
-        familyName: 'Mondriaan',
-        streetAndNumber: 'Keizersgracht 126',
-        streetAdditional: 'Apt. 1',
-        postalCode: '1234AB',
-        email: 'piet@example.org',
-        phone: '31208202070',
-        city: 'Amsterdam',
-        region: 'Noord-Holland',
-        country: 'NL',
-    ),
-    shippingAddress: new Components\PaymentAddress(
-        title: 'Mr.',
-        givenName: 'Piet',
-        familyName: 'Mondriaan',
-        organizationName: 'Mollie B.V.',
-        streetAndNumber: 'Keizersgracht 126',
-        streetAdditional: 'Apt. 1',
-        postalCode: '1234AB',
-        email: 'piet@example.org',
-        phone: '31208202070',
-        city: 'Amsterdam',
-        region: 'Noord-Holland',
-        country: 'NL',
-    ),
-    locale: Components\Locale::EnUS,
-    method: Components\MethodEnum::Ideal,
-    issuer: 'ideal_INGBNL2A',
-    restrictPaymentMethodsToCountry: 'NL',
-    captureMode: Components\CaptureMode::Manual,
-    captureDelay: '8 hours',
-    applicationFee: new Components\PaymentRequestApplicationFee(
+$request = new Operations\CreateCustomerPaymentRequest(
+    customerId: 'cst_5B8cwPMGnU',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+    body: new Components\PaymentRequest(
+        description: 'Chess Board',
         amount: new Components\Amount(
             currency: 'EUR',
             value: '10.00',
         ),
-        description: '10',
-    ),
-    routing: [
-        new Components\EntityPaymentRoute(
+        redirectUrl: 'https://example.org/redirect',
+        cancelUrl: 'https://example.org/cancel',
+        webhookUrl: 'https://example.org/webhooks',
+        lines: [
+            new Components\PaymentRequestLine(
+                type: Components\PaymentLineType::Physical,
+                description: 'LEGO 4440 Forest Police Station',
+                quantity: 1,
+                quantityUnit: 'pcs',
+                unitPrice: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                discountAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                totalAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                vatRate: '21.00',
+                vatAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                sku: '9780241661628',
+                categories: [
+                    Components\LineCategories::Meal,
+                    Components\LineCategories::Eco,
+                ],
+                imageUrl: 'https://...',
+                productUrl: 'https://...',
+                recurring: new Components\RecurringLineItem(
+                    description: 'Gym subscription',
+                    interval: '12 months',
+                    amount: new Components\Amount(
+                        currency: 'EUR',
+                        value: '10.00',
+                    ),
+                    times: 1,
+                    startDate: '2024-12-12',
+                ),
+            ),
+        ],
+        billingAddress: new Components\PaymentRequestBillingAddress(
+            title: 'Mr.',
+            givenName: 'Piet',
+            familyName: 'Mondriaan',
+            streetAndNumber: 'Keizersgracht 126',
+            streetAdditional: 'Apt. 1',
+            postalCode: '1234AB',
+            email: 'piet@example.org',
+            phone: '31208202070',
+            city: 'Amsterdam',
+            region: 'Noord-Holland',
+            country: 'NL',
+        ),
+        shippingAddress: new Components\PaymentAddress(
+            title: 'Mr.',
+            givenName: 'Piet',
+            familyName: 'Mondriaan',
+            organizationName: 'Mollie B.V.',
+            streetAndNumber: 'Keizersgracht 126',
+            streetAdditional: 'Apt. 1',
+            postalCode: '1234AB',
+            email: 'piet@example.org',
+            phone: '31208202070',
+            city: 'Amsterdam',
+            region: 'Noord-Holland',
+            country: 'NL',
+        ),
+        locale: Components\Locale::EnUS,
+        method: Components\MethodEnum::Ideal,
+        issuer: 'ideal_INGBNL2A',
+        restrictPaymentMethodsToCountry: 'NL',
+        captureMode: Components\CaptureMode::Manual,
+        captureDelay: '8 hours',
+        applicationFee: new Components\PaymentRequestApplicationFee(
             amount: new Components\Amount(
                 currency: 'EUR',
                 value: '10.00',
             ),
-            destination: new Components\EntityPaymentRouteDestination(
-                type: Components\RouteDestinationType::Organization,
-                organizationId: 'org_1234567',
-            ),
-            releaseDate: '2024-12-12',
+            description: '10',
         ),
-    ],
-    sequenceType: Components\SequenceType::Oneoff,
-    mandateId: 'mdt_5B8cwPMGnU',
-    customerId: 'cst_5B8cwPMGnU',
-    profileId: 'pfl_5B8cwPMGnU',
-    dueDate: '2025-12-08',
-    storeCredentials: true,
-    testmode: false,
-    applePayPaymentToken: '{"paymentData": {"version": "EC_v1", "data": "vK3BbrCbI/...."}}',
-    company: new Components\Company(
-        registrationNumber: '12345678',
-        vatNumber: 'NL123456789B01',
-        entityType: 'LLC',
+        routing: [
+            new Components\EntityPaymentRoute(
+                amount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                destination: new Components\EntityPaymentRouteDestination(
+                    type: Components\RouteDestinationType::Organization,
+                    organizationId: 'org_1234567',
+                ),
+                releaseDate: '2024-12-12',
+            ),
+        ],
+        sequenceType: Components\SequenceType::Oneoff,
+        mandateId: 'mdt_5B8cwPMGnU',
+        customerId: 'cst_5B8cwPMGnU',
+        profileId: 'pfl_5B8cwPMGnU',
+        dueDate: '2025-12-08',
+        storeCredentials: true,
+        testmode: false,
+        applePayPaymentToken: '{"paymentData": {"version": "EC_v1", "data": "vK3BbrCbI/...."}}',
+        company: new Components\Company(
+            registrationNumber: '12345678',
+            vatNumber: 'NL123456789B01',
+            entityType: 'LLC',
+        ),
+        cardToken: 'tkn_12345',
+        googlePayPaymentToken: '{"signature": "MEYCIQCv...", "protocolVersion": "ECv2", "signedMessage": "{\\"encryptedMessage\\":\\"...\\",\\"ephemeralPublicKey\\":\\"...\\",\\"tag\\":\\"...\\"}"}',
+        voucherNumber: '1234567890',
+        voucherPin: '1234',
+        consumerDateOfBirth: LocalDate::parse('2000-01-01'),
+        digitalGoods: true,
+        customerReference: '1234567890',
+        terminalId: 'term_1234567890',
     ),
-    cardToken: 'tkn_12345',
-    googlePayPaymentToken: '{"signature": "MEYCIQCv...", "protocolVersion": "ECv2", "signedMessage": "{\\"encryptedMessage\\":\\"...\\",\\"ephemeralPublicKey\\":\\"...\\",\\"tag\\":\\"...\\"}"}',
-    voucherNumber: '1234567890',
-    voucherPin: '1234',
-    consumerDateOfBirth: LocalDate::parse('2000-01-01'),
-    digitalGoods: true,
-    customerReference: '1234567890',
-    terminalId: 'term_1234567890',
 );
 
 $response = $sdk->customers->createPayment(
-    customerId: 'cst_5B8cwPMGnU',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426',
-    body: $body
-
+    request: $request
 );
 
 if ($response->paymentResponse !== null) {
@@ -695,6 +716,7 @@ require 'vendor/autoload.php';
 use Brick\DateTime\LocalDate;
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setSecurity(
@@ -704,138 +726,141 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-$body = new Components\PaymentRequest(
-    description: 'Chess Board',
-    amount: new Components\Amount(
-        currency: 'EUR',
-        value: '10.00',
-    ),
-    redirectUrl: 'https://example.org/redirect',
-    cancelUrl: 'https://example.org/cancel',
-    webhookUrl: 'https://example.org/webhooks',
-    lines: [
-        new Components\PaymentRequestLine(
-            type: Components\PaymentLineType::Physical,
-            description: 'LEGO 4440 Forest Police Station',
-            quantity: 1,
-            quantityUnit: 'pcs',
-            unitPrice: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            discountAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            totalAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            vatRate: '21.00',
-            vatAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            sku: '9780241661628',
-            categories: [
-                Components\LineCategories::Meal,
-                Components\LineCategories::Eco,
-            ],
-            imageUrl: 'https://...',
-            productUrl: 'https://...',
-            recurring: new Components\RecurringLineItem(
-                description: 'Gym subscription',
-                interval: '12 months',
-                amount: new Components\Amount(
-                    currency: 'EUR',
-                    value: '10.00',
-                ),
-                times: 1,
-                startDate: '2024-12-12',
-            ),
-        ),
-    ],
-    billingAddress: new Components\PaymentRequestBillingAddress(
-        title: 'Mr.',
-        givenName: 'Piet',
-        familyName: 'Mondriaan',
-        streetAndNumber: 'Keizersgracht 126',
-        streetAdditional: 'Apt. 1',
-        postalCode: '1234AB',
-        email: 'piet@example.org',
-        phone: '31208202070',
-        city: 'Amsterdam',
-        region: 'Noord-Holland',
-        country: 'NL',
-    ),
-    shippingAddress: new Components\PaymentAddress(
-        title: 'Mr.',
-        givenName: 'Piet',
-        familyName: 'Mondriaan',
-        organizationName: 'Mollie B.V.',
-        streetAndNumber: 'Keizersgracht 126',
-        streetAdditional: 'Apt. 1',
-        postalCode: '1234AB',
-        email: 'piet@example.org',
-        phone: '31208202070',
-        city: 'Amsterdam',
-        region: 'Noord-Holland',
-        country: 'NL',
-    ),
-    locale: Components\Locale::EnUS,
-    method: Components\MethodEnum::Ideal,
-    issuer: 'ideal_INGBNL2A',
-    restrictPaymentMethodsToCountry: 'NL',
-    captureMode: Components\CaptureMode::Manual,
-    captureDelay: '8 hours',
-    applicationFee: new Components\PaymentRequestApplicationFee(
+$request = new Operations\CreateCustomerPaymentRequest(
+    customerId: 'cst_5B8cwPMGnU',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+    body: new Components\PaymentRequest(
+        description: 'Chess Board',
         amount: new Components\Amount(
             currency: 'EUR',
             value: '10.00',
         ),
-        description: '10',
-    ),
-    routing: [
-        new Components\EntityPaymentRoute(
+        redirectUrl: 'https://example.org/redirect',
+        cancelUrl: 'https://example.org/cancel',
+        webhookUrl: 'https://example.org/webhooks',
+        lines: [
+            new Components\PaymentRequestLine(
+                type: Components\PaymentLineType::Physical,
+                description: 'LEGO 4440 Forest Police Station',
+                quantity: 1,
+                quantityUnit: 'pcs',
+                unitPrice: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                discountAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                totalAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                vatRate: '21.00',
+                vatAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                sku: '9780241661628',
+                categories: [
+                    Components\LineCategories::Meal,
+                    Components\LineCategories::Eco,
+                ],
+                imageUrl: 'https://...',
+                productUrl: 'https://...',
+                recurring: new Components\RecurringLineItem(
+                    description: 'Gym subscription',
+                    interval: '12 months',
+                    amount: new Components\Amount(
+                        currency: 'EUR',
+                        value: '10.00',
+                    ),
+                    times: 1,
+                    startDate: '2024-12-12',
+                ),
+            ),
+        ],
+        billingAddress: new Components\PaymentRequestBillingAddress(
+            title: 'Mr.',
+            givenName: 'Piet',
+            familyName: 'Mondriaan',
+            streetAndNumber: 'Keizersgracht 126',
+            streetAdditional: 'Apt. 1',
+            postalCode: '1234AB',
+            email: 'piet@example.org',
+            phone: '31208202070',
+            city: 'Amsterdam',
+            region: 'Noord-Holland',
+            country: 'NL',
+        ),
+        shippingAddress: new Components\PaymentAddress(
+            title: 'Mr.',
+            givenName: 'Piet',
+            familyName: 'Mondriaan',
+            organizationName: 'Mollie B.V.',
+            streetAndNumber: 'Keizersgracht 126',
+            streetAdditional: 'Apt. 1',
+            postalCode: '1234AB',
+            email: 'piet@example.org',
+            phone: '31208202070',
+            city: 'Amsterdam',
+            region: 'Noord-Holland',
+            country: 'NL',
+        ),
+        locale: Components\Locale::EnUS,
+        method: Components\MethodEnum::Ideal,
+        issuer: 'ideal_INGBNL2A',
+        restrictPaymentMethodsToCountry: 'NL',
+        captureMode: Components\CaptureMode::Manual,
+        captureDelay: '8 hours',
+        applicationFee: new Components\PaymentRequestApplicationFee(
             amount: new Components\Amount(
                 currency: 'EUR',
                 value: '10.00',
             ),
-            destination: new Components\EntityPaymentRouteDestination(
-                type: Components\RouteDestinationType::Organization,
-                organizationId: 'org_1234567',
-            ),
-            releaseDate: '2024-12-12',
+            description: '10',
         ),
-    ],
-    sequenceType: Components\SequenceType::Oneoff,
-    mandateId: 'mdt_5B8cwPMGnU',
-    customerId: 'cst_5B8cwPMGnU',
-    profileId: 'pfl_5B8cwPMGnU',
-    dueDate: '2025-12-08',
-    storeCredentials: true,
-    testmode: false,
-    applePayPaymentToken: '{"paymentData": {"version": "EC_v1", "data": "vK3BbrCbI/...."}}',
-    company: new Components\Company(
-        registrationNumber: '12345678',
-        vatNumber: 'NL123456789B01',
-        entityType: 'LLC',
+        routing: [
+            new Components\EntityPaymentRoute(
+                amount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                destination: new Components\EntityPaymentRouteDestination(
+                    type: Components\RouteDestinationType::Organization,
+                    organizationId: 'org_1234567',
+                ),
+                releaseDate: '2024-12-12',
+            ),
+        ],
+        sequenceType: Components\SequenceType::Oneoff,
+        mandateId: 'mdt_5B8cwPMGnU',
+        customerId: 'cst_5B8cwPMGnU',
+        profileId: 'pfl_5B8cwPMGnU',
+        dueDate: '2025-12-08',
+        storeCredentials: true,
+        testmode: false,
+        applePayPaymentToken: '{"paymentData": {"version": "EC_v1", "data": "vK3BbrCbI/...."}}',
+        company: new Components\Company(
+            registrationNumber: '12345678',
+            vatNumber: 'NL123456789B01',
+            entityType: 'LLC',
+        ),
+        cardToken: 'tkn_12345',
+        googlePayPaymentToken: '{"signature": "MEYCIQCv...", "protocolVersion": "ECv2", "signedMessage": "{\\"encryptedMessage\\":\\"...\\",\\"ephemeralPublicKey\\":\\"...\\",\\"tag\\":\\"...\\"}"}',
+        voucherNumber: '1234567890',
+        voucherPin: '1234',
+        consumerDateOfBirth: LocalDate::parse('2000-01-01'),
+        digitalGoods: true,
+        customerReference: '1234567890',
+        terminalId: 'term_1234567890',
     ),
-    cardToken: 'tkn_12345',
-    googlePayPaymentToken: '{"signature": "MEYCIQCv...", "protocolVersion": "ECv2", "signedMessage": "{\\"encryptedMessage\\":\\"...\\",\\"ephemeralPublicKey\\":\\"...\\",\\"tag\\":\\"...\\"}"}',
-    voucherNumber: '1234567890',
-    voucherPin: '1234',
-    consumerDateOfBirth: LocalDate::parse('2000-01-01'),
-    digitalGoods: true,
-    customerReference: '1234567890',
-    terminalId: 'term_1234567890',
 );
 
 $response = $sdk->customers->createPayment(
-    customerId: 'cst_5B8cwPMGnU',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426',
-    body: $body
-
+    request: $request
 );
 
 if ($response->paymentResponse !== null) {
@@ -853,6 +878,7 @@ require 'vendor/autoload.php';
 use Brick\DateTime\LocalDate;
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setSecurity(
@@ -862,138 +888,141 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-$body = new Components\PaymentRequest(
-    description: 'Chess Board',
-    amount: new Components\Amount(
-        currency: 'EUR',
-        value: '10.00',
-    ),
-    redirectUrl: 'https://example.org/redirect',
-    cancelUrl: 'https://example.org/cancel',
-    webhookUrl: 'https://example.org/webhooks',
-    lines: [
-        new Components\PaymentRequestLine(
-            type: Components\PaymentLineType::Physical,
-            description: 'LEGO 4440 Forest Police Station',
-            quantity: 1,
-            quantityUnit: 'pcs',
-            unitPrice: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            discountAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            totalAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            vatRate: '21.00',
-            vatAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            sku: '9780241661628',
-            categories: [
-                Components\LineCategories::Meal,
-                Components\LineCategories::Eco,
-            ],
-            imageUrl: 'https://...',
-            productUrl: 'https://...',
-            recurring: new Components\RecurringLineItem(
-                description: 'Gym subscription',
-                interval: '12 months',
-                amount: new Components\Amount(
-                    currency: 'EUR',
-                    value: '10.00',
-                ),
-                times: 1,
-                startDate: '2024-12-12',
-            ),
-        ),
-    ],
-    billingAddress: new Components\PaymentRequestBillingAddress(
-        title: 'Mr.',
-        givenName: 'Piet',
-        familyName: 'Mondriaan',
-        streetAndNumber: 'Keizersgracht 126',
-        streetAdditional: 'Apt. 1',
-        postalCode: '1234AB',
-        email: 'piet@example.org',
-        phone: '31208202070',
-        city: 'Amsterdam',
-        region: 'Noord-Holland',
-        country: 'NL',
-    ),
-    shippingAddress: new Components\PaymentAddress(
-        title: 'Mr.',
-        givenName: 'Piet',
-        familyName: 'Mondriaan',
-        organizationName: 'Mollie B.V.',
-        streetAndNumber: 'Keizersgracht 126',
-        streetAdditional: 'Apt. 1',
-        postalCode: '1234AB',
-        email: 'piet@example.org',
-        phone: '31208202070',
-        city: 'Amsterdam',
-        region: 'Noord-Holland',
-        country: 'NL',
-    ),
-    locale: Components\Locale::EnUS,
-    method: Components\MethodEnum::Ideal,
-    issuer: 'ideal_INGBNL2A',
-    restrictPaymentMethodsToCountry: 'NL',
-    captureMode: Components\CaptureMode::Manual,
-    captureDelay: '8 hours',
-    applicationFee: new Components\PaymentRequestApplicationFee(
+$request = new Operations\CreateCustomerPaymentRequest(
+    customerId: 'cst_5B8cwPMGnU',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+    body: new Components\PaymentRequest(
+        description: 'Chess Board',
         amount: new Components\Amount(
             currency: 'EUR',
             value: '10.00',
         ),
-        description: '10',
-    ),
-    routing: [
-        new Components\EntityPaymentRoute(
+        redirectUrl: 'https://example.org/redirect',
+        cancelUrl: 'https://example.org/cancel',
+        webhookUrl: 'https://example.org/webhooks',
+        lines: [
+            new Components\PaymentRequestLine(
+                type: Components\PaymentLineType::Physical,
+                description: 'LEGO 4440 Forest Police Station',
+                quantity: 1,
+                quantityUnit: 'pcs',
+                unitPrice: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                discountAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                totalAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                vatRate: '21.00',
+                vatAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                sku: '9780241661628',
+                categories: [
+                    Components\LineCategories::Meal,
+                    Components\LineCategories::Eco,
+                ],
+                imageUrl: 'https://...',
+                productUrl: 'https://...',
+                recurring: new Components\RecurringLineItem(
+                    description: 'Gym subscription',
+                    interval: '12 months',
+                    amount: new Components\Amount(
+                        currency: 'EUR',
+                        value: '10.00',
+                    ),
+                    times: 1,
+                    startDate: '2024-12-12',
+                ),
+            ),
+        ],
+        billingAddress: new Components\PaymentRequestBillingAddress(
+            title: 'Mr.',
+            givenName: 'Piet',
+            familyName: 'Mondriaan',
+            streetAndNumber: 'Keizersgracht 126',
+            streetAdditional: 'Apt. 1',
+            postalCode: '1234AB',
+            email: 'piet@example.org',
+            phone: '31208202070',
+            city: 'Amsterdam',
+            region: 'Noord-Holland',
+            country: 'NL',
+        ),
+        shippingAddress: new Components\PaymentAddress(
+            title: 'Mr.',
+            givenName: 'Piet',
+            familyName: 'Mondriaan',
+            organizationName: 'Mollie B.V.',
+            streetAndNumber: 'Keizersgracht 126',
+            streetAdditional: 'Apt. 1',
+            postalCode: '1234AB',
+            email: 'piet@example.org',
+            phone: '31208202070',
+            city: 'Amsterdam',
+            region: 'Noord-Holland',
+            country: 'NL',
+        ),
+        locale: Components\Locale::EnUS,
+        method: Components\MethodEnum::Ideal,
+        issuer: 'ideal_INGBNL2A',
+        restrictPaymentMethodsToCountry: 'NL',
+        captureMode: Components\CaptureMode::Manual,
+        captureDelay: '8 hours',
+        applicationFee: new Components\PaymentRequestApplicationFee(
             amount: new Components\Amount(
                 currency: 'EUR',
                 value: '10.00',
             ),
-            destination: new Components\EntityPaymentRouteDestination(
-                type: Components\RouteDestinationType::Organization,
-                organizationId: 'org_1234567',
-            ),
-            releaseDate: '2024-12-12',
+            description: '10',
         ),
-    ],
-    sequenceType: Components\SequenceType::Oneoff,
-    mandateId: 'mdt_5B8cwPMGnU',
-    customerId: 'cst_5B8cwPMGnU',
-    profileId: 'pfl_5B8cwPMGnU',
-    dueDate: '2025-12-08',
-    storeCredentials: true,
-    testmode: false,
-    applePayPaymentToken: '{"paymentData": {"version": "EC_v1", "data": "vK3BbrCbI/...."}}',
-    company: new Components\Company(
-        registrationNumber: '12345678',
-        vatNumber: 'NL123456789B01',
-        entityType: 'LLC',
+        routing: [
+            new Components\EntityPaymentRoute(
+                amount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                destination: new Components\EntityPaymentRouteDestination(
+                    type: Components\RouteDestinationType::Organization,
+                    organizationId: 'org_1234567',
+                ),
+                releaseDate: '2024-12-12',
+            ),
+        ],
+        sequenceType: Components\SequenceType::Oneoff,
+        mandateId: 'mdt_5B8cwPMGnU',
+        customerId: 'cst_5B8cwPMGnU',
+        profileId: 'pfl_5B8cwPMGnU',
+        dueDate: '2025-12-08',
+        storeCredentials: true,
+        testmode: false,
+        applePayPaymentToken: '{"paymentData": {"version": "EC_v1", "data": "vK3BbrCbI/...."}}',
+        company: new Components\Company(
+            registrationNumber: '12345678',
+            vatNumber: 'NL123456789B01',
+            entityType: 'LLC',
+        ),
+        cardToken: 'tkn_12345',
+        googlePayPaymentToken: '{"signature": "MEYCIQCv...", "protocolVersion": "ECv2", "signedMessage": "{\\"encryptedMessage\\":\\"...\\",\\"ephemeralPublicKey\\":\\"...\\",\\"tag\\":\\"...\\"}"}',
+        voucherNumber: '1234567890',
+        voucherPin: '1234',
+        consumerDateOfBirth: LocalDate::parse('2000-01-01'),
+        digitalGoods: true,
+        customerReference: '1234567890',
+        terminalId: 'term_1234567890',
     ),
-    cardToken: 'tkn_12345',
-    googlePayPaymentToken: '{"signature": "MEYCIQCv...", "protocolVersion": "ECv2", "signedMessage": "{\\"encryptedMessage\\":\\"...\\",\\"ephemeralPublicKey\\":\\"...\\",\\"tag\\":\\"...\\"}"}',
-    voucherNumber: '1234567890',
-    voucherPin: '1234',
-    consumerDateOfBirth: LocalDate::parse('2000-01-01'),
-    digitalGoods: true,
-    customerReference: '1234567890',
-    terminalId: 'term_1234567890',
 );
 
 $response = $sdk->customers->createPayment(
-    customerId: 'cst_5B8cwPMGnU',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426',
-    body: $body
-
+    request: $request
 );
 
 if ($response->paymentResponse !== null) {
@@ -1011,6 +1040,7 @@ require 'vendor/autoload.php';
 use Brick\DateTime\LocalDate;
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setSecurity(
@@ -1020,138 +1050,141 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-$body = new Components\PaymentRequest(
-    description: 'Chess Board',
-    amount: new Components\Amount(
-        currency: 'EUR',
-        value: '10.00',
-    ),
-    redirectUrl: 'https://example.org/redirect',
-    cancelUrl: 'https://example.org/cancel',
-    webhookUrl: 'https://example.org/webhooks',
-    lines: [
-        new Components\PaymentRequestLine(
-            type: Components\PaymentLineType::Physical,
-            description: 'LEGO 4440 Forest Police Station',
-            quantity: 1,
-            quantityUnit: 'pcs',
-            unitPrice: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            discountAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            totalAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            vatRate: '21.00',
-            vatAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            sku: '9780241661628',
-            categories: [
-                Components\LineCategories::Meal,
-                Components\LineCategories::Eco,
-            ],
-            imageUrl: 'https://...',
-            productUrl: 'https://...',
-            recurring: new Components\RecurringLineItem(
-                description: 'Gym subscription',
-                interval: '12 months',
-                amount: new Components\Amount(
-                    currency: 'EUR',
-                    value: '10.00',
-                ),
-                times: 1,
-                startDate: '2024-12-12',
-            ),
-        ),
-    ],
-    billingAddress: new Components\PaymentRequestBillingAddress(
-        title: 'Mr.',
-        givenName: 'Piet',
-        familyName: 'Mondriaan',
-        streetAndNumber: 'Keizersgracht 126',
-        streetAdditional: 'Apt. 1',
-        postalCode: '1234AB',
-        email: 'piet@example.org',
-        phone: '31208202070',
-        city: 'Amsterdam',
-        region: 'Noord-Holland',
-        country: 'NL',
-    ),
-    shippingAddress: new Components\PaymentAddress(
-        title: 'Mr.',
-        givenName: 'Piet',
-        familyName: 'Mondriaan',
-        organizationName: 'Mollie B.V.',
-        streetAndNumber: 'Keizersgracht 126',
-        streetAdditional: 'Apt. 1',
-        postalCode: '1234AB',
-        email: 'piet@example.org',
-        phone: '31208202070',
-        city: 'Amsterdam',
-        region: 'Noord-Holland',
-        country: 'NL',
-    ),
-    locale: Components\Locale::EnUS,
-    method: Components\MethodEnum::Ideal,
-    issuer: 'ideal_INGBNL2A',
-    restrictPaymentMethodsToCountry: 'NL',
-    captureMode: Components\CaptureMode::Manual,
-    captureDelay: '8 hours',
-    applicationFee: new Components\PaymentRequestApplicationFee(
+$request = new Operations\CreateCustomerPaymentRequest(
+    customerId: 'cst_5B8cwPMGnU',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+    body: new Components\PaymentRequest(
+        description: 'Chess Board',
         amount: new Components\Amount(
             currency: 'EUR',
             value: '10.00',
         ),
-        description: '10',
-    ),
-    routing: [
-        new Components\EntityPaymentRoute(
+        redirectUrl: 'https://example.org/redirect',
+        cancelUrl: 'https://example.org/cancel',
+        webhookUrl: 'https://example.org/webhooks',
+        lines: [
+            new Components\PaymentRequestLine(
+                type: Components\PaymentLineType::Physical,
+                description: 'LEGO 4440 Forest Police Station',
+                quantity: 1,
+                quantityUnit: 'pcs',
+                unitPrice: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                discountAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                totalAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                vatRate: '21.00',
+                vatAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                sku: '9780241661628',
+                categories: [
+                    Components\LineCategories::Meal,
+                    Components\LineCategories::Eco,
+                ],
+                imageUrl: 'https://...',
+                productUrl: 'https://...',
+                recurring: new Components\RecurringLineItem(
+                    description: 'Gym subscription',
+                    interval: '12 months',
+                    amount: new Components\Amount(
+                        currency: 'EUR',
+                        value: '10.00',
+                    ),
+                    times: 1,
+                    startDate: '2024-12-12',
+                ),
+            ),
+        ],
+        billingAddress: new Components\PaymentRequestBillingAddress(
+            title: 'Mr.',
+            givenName: 'Piet',
+            familyName: 'Mondriaan',
+            streetAndNumber: 'Keizersgracht 126',
+            streetAdditional: 'Apt. 1',
+            postalCode: '1234AB',
+            email: 'piet@example.org',
+            phone: '31208202070',
+            city: 'Amsterdam',
+            region: 'Noord-Holland',
+            country: 'NL',
+        ),
+        shippingAddress: new Components\PaymentAddress(
+            title: 'Mr.',
+            givenName: 'Piet',
+            familyName: 'Mondriaan',
+            organizationName: 'Mollie B.V.',
+            streetAndNumber: 'Keizersgracht 126',
+            streetAdditional: 'Apt. 1',
+            postalCode: '1234AB',
+            email: 'piet@example.org',
+            phone: '31208202070',
+            city: 'Amsterdam',
+            region: 'Noord-Holland',
+            country: 'NL',
+        ),
+        locale: Components\Locale::EnUS,
+        method: Components\MethodEnum::Ideal,
+        issuer: 'ideal_INGBNL2A',
+        restrictPaymentMethodsToCountry: 'NL',
+        captureMode: Components\CaptureMode::Manual,
+        captureDelay: '8 hours',
+        applicationFee: new Components\PaymentRequestApplicationFee(
             amount: new Components\Amount(
                 currency: 'EUR',
                 value: '10.00',
             ),
-            destination: new Components\EntityPaymentRouteDestination(
-                type: Components\RouteDestinationType::Organization,
-                organizationId: 'org_1234567',
-            ),
-            releaseDate: '2024-12-12',
+            description: '10',
         ),
-    ],
-    sequenceType: Components\SequenceType::Oneoff,
-    mandateId: 'mdt_5B8cwPMGnU',
-    customerId: 'cst_5B8cwPMGnU',
-    profileId: 'pfl_5B8cwPMGnU',
-    dueDate: '2025-12-08',
-    storeCredentials: true,
-    testmode: false,
-    applePayPaymentToken: '{"paymentData": {"version": "EC_v1", "data": "vK3BbrCbI/...."}}',
-    company: new Components\Company(
-        registrationNumber: '12345678',
-        vatNumber: 'NL123456789B01',
-        entityType: 'LLC',
+        routing: [
+            new Components\EntityPaymentRoute(
+                amount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                destination: new Components\EntityPaymentRouteDestination(
+                    type: Components\RouteDestinationType::Organization,
+                    organizationId: 'org_1234567',
+                ),
+                releaseDate: '2024-12-12',
+            ),
+        ],
+        sequenceType: Components\SequenceType::Oneoff,
+        mandateId: 'mdt_5B8cwPMGnU',
+        customerId: 'cst_5B8cwPMGnU',
+        profileId: 'pfl_5B8cwPMGnU',
+        dueDate: '2025-12-08',
+        storeCredentials: true,
+        testmode: false,
+        applePayPaymentToken: '{"paymentData": {"version": "EC_v1", "data": "vK3BbrCbI/...."}}',
+        company: new Components\Company(
+            registrationNumber: '12345678',
+            vatNumber: 'NL123456789B01',
+            entityType: 'LLC',
+        ),
+        cardToken: 'tkn_12345',
+        googlePayPaymentToken: '{"signature": "MEYCIQCv...", "protocolVersion": "ECv2", "signedMessage": "{\\"encryptedMessage\\":\\"...\\",\\"ephemeralPublicKey\\":\\"...\\",\\"tag\\":\\"...\\"}"}',
+        voucherNumber: '1234567890',
+        voucherPin: '1234',
+        consumerDateOfBirth: LocalDate::parse('2000-01-01'),
+        digitalGoods: true,
+        customerReference: '1234567890',
+        terminalId: 'term_1234567890',
     ),
-    cardToken: 'tkn_12345',
-    googlePayPaymentToken: '{"signature": "MEYCIQCv...", "protocolVersion": "ECv2", "signedMessage": "{\\"encryptedMessage\\":\\"...\\",\\"ephemeralPublicKey\\":\\"...\\",\\"tag\\":\\"...\\"}"}',
-    voucherNumber: '1234567890',
-    voucherPin: '1234',
-    consumerDateOfBirth: LocalDate::parse('2000-01-01'),
-    digitalGoods: true,
-    customerReference: '1234567890',
-    terminalId: 'term_1234567890',
 );
 
 $response = $sdk->customers->createPayment(
-    customerId: 'cst_5B8cwPMGnU',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426',
-    body: $body
-
+    request: $request
 );
 
 if ($response->paymentResponse !== null) {
@@ -1169,6 +1202,7 @@ require 'vendor/autoload.php';
 use Brick\DateTime\LocalDate;
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setSecurity(
@@ -1178,138 +1212,141 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-$body = new Components\PaymentRequest(
-    description: 'Chess Board',
-    amount: new Components\Amount(
-        currency: 'EUR',
-        value: '10.00',
-    ),
-    redirectUrl: 'https://example.org/redirect',
-    cancelUrl: 'https://example.org/cancel',
-    webhookUrl: 'https://example.org/webhooks',
-    lines: [
-        new Components\PaymentRequestLine(
-            type: Components\PaymentLineType::Physical,
-            description: 'LEGO 4440 Forest Police Station',
-            quantity: 1,
-            quantityUnit: 'pcs',
-            unitPrice: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            discountAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            totalAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            vatRate: '21.00',
-            vatAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            sku: '9780241661628',
-            categories: [
-                Components\LineCategories::Meal,
-                Components\LineCategories::Eco,
-            ],
-            imageUrl: 'https://...',
-            productUrl: 'https://...',
-            recurring: new Components\RecurringLineItem(
-                description: 'Gym subscription',
-                interval: '12 months',
-                amount: new Components\Amount(
-                    currency: 'EUR',
-                    value: '10.00',
-                ),
-                times: 1,
-                startDate: '2024-12-12',
-            ),
-        ),
-    ],
-    billingAddress: new Components\PaymentRequestBillingAddress(
-        title: 'Mr.',
-        givenName: 'Piet',
-        familyName: 'Mondriaan',
-        streetAndNumber: 'Keizersgracht 126',
-        streetAdditional: 'Apt. 1',
-        postalCode: '1234AB',
-        email: 'piet@example.org',
-        phone: '31208202070',
-        city: 'Amsterdam',
-        region: 'Noord-Holland',
-        country: 'NL',
-    ),
-    shippingAddress: new Components\PaymentAddress(
-        title: 'Mr.',
-        givenName: 'Piet',
-        familyName: 'Mondriaan',
-        organizationName: 'Mollie B.V.',
-        streetAndNumber: 'Keizersgracht 126',
-        streetAdditional: 'Apt. 1',
-        postalCode: '1234AB',
-        email: 'piet@example.org',
-        phone: '31208202070',
-        city: 'Amsterdam',
-        region: 'Noord-Holland',
-        country: 'NL',
-    ),
-    locale: Components\Locale::EnUS,
-    method: Components\MethodEnum::Ideal,
-    issuer: 'ideal_INGBNL2A',
-    restrictPaymentMethodsToCountry: 'NL',
-    captureMode: Components\CaptureMode::Manual,
-    captureDelay: '8 hours',
-    applicationFee: new Components\PaymentRequestApplicationFee(
+$request = new Operations\CreateCustomerPaymentRequest(
+    customerId: 'cst_5B8cwPMGnU',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+    body: new Components\PaymentRequest(
+        description: 'Chess Board',
         amount: new Components\Amount(
             currency: 'EUR',
             value: '10.00',
         ),
-        description: '10',
-    ),
-    routing: [
-        new Components\EntityPaymentRoute(
+        redirectUrl: 'https://example.org/redirect',
+        cancelUrl: 'https://example.org/cancel',
+        webhookUrl: 'https://example.org/webhooks',
+        lines: [
+            new Components\PaymentRequestLine(
+                type: Components\PaymentLineType::Physical,
+                description: 'LEGO 4440 Forest Police Station',
+                quantity: 1,
+                quantityUnit: 'pcs',
+                unitPrice: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                discountAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                totalAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                vatRate: '21.00',
+                vatAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                sku: '9780241661628',
+                categories: [
+                    Components\LineCategories::Meal,
+                    Components\LineCategories::Eco,
+                ],
+                imageUrl: 'https://...',
+                productUrl: 'https://...',
+                recurring: new Components\RecurringLineItem(
+                    description: 'Gym subscription',
+                    interval: '12 months',
+                    amount: new Components\Amount(
+                        currency: 'EUR',
+                        value: '10.00',
+                    ),
+                    times: 1,
+                    startDate: '2024-12-12',
+                ),
+            ),
+        ],
+        billingAddress: new Components\PaymentRequestBillingAddress(
+            title: 'Mr.',
+            givenName: 'Piet',
+            familyName: 'Mondriaan',
+            streetAndNumber: 'Keizersgracht 126',
+            streetAdditional: 'Apt. 1',
+            postalCode: '1234AB',
+            email: 'piet@example.org',
+            phone: '31208202070',
+            city: 'Amsterdam',
+            region: 'Noord-Holland',
+            country: 'NL',
+        ),
+        shippingAddress: new Components\PaymentAddress(
+            title: 'Mr.',
+            givenName: 'Piet',
+            familyName: 'Mondriaan',
+            organizationName: 'Mollie B.V.',
+            streetAndNumber: 'Keizersgracht 126',
+            streetAdditional: 'Apt. 1',
+            postalCode: '1234AB',
+            email: 'piet@example.org',
+            phone: '31208202070',
+            city: 'Amsterdam',
+            region: 'Noord-Holland',
+            country: 'NL',
+        ),
+        locale: Components\Locale::EnUS,
+        method: Components\MethodEnum::Ideal,
+        issuer: 'ideal_INGBNL2A',
+        restrictPaymentMethodsToCountry: 'NL',
+        captureMode: Components\CaptureMode::Manual,
+        captureDelay: '8 hours',
+        applicationFee: new Components\PaymentRequestApplicationFee(
             amount: new Components\Amount(
                 currency: 'EUR',
                 value: '10.00',
             ),
-            destination: new Components\EntityPaymentRouteDestination(
-                type: Components\RouteDestinationType::Organization,
-                organizationId: 'org_1234567',
-            ),
-            releaseDate: '2024-12-12',
+            description: '10',
         ),
-    ],
-    sequenceType: Components\SequenceType::Oneoff,
-    mandateId: 'mdt_5B8cwPMGnU',
-    customerId: 'cst_5B8cwPMGnU',
-    profileId: 'pfl_5B8cwPMGnU',
-    dueDate: '2025-12-08',
-    storeCredentials: true,
-    testmode: false,
-    applePayPaymentToken: '{"paymentData": {"version": "EC_v1", "data": "vK3BbrCbI/...."}}',
-    company: new Components\Company(
-        registrationNumber: '12345678',
-        vatNumber: 'NL123456789B01',
-        entityType: 'LLC',
+        routing: [
+            new Components\EntityPaymentRoute(
+                amount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                destination: new Components\EntityPaymentRouteDestination(
+                    type: Components\RouteDestinationType::Organization,
+                    organizationId: 'org_1234567',
+                ),
+                releaseDate: '2024-12-12',
+            ),
+        ],
+        sequenceType: Components\SequenceType::Oneoff,
+        mandateId: 'mdt_5B8cwPMGnU',
+        customerId: 'cst_5B8cwPMGnU',
+        profileId: 'pfl_5B8cwPMGnU',
+        dueDate: '2025-12-08',
+        storeCredentials: true,
+        testmode: false,
+        applePayPaymentToken: '{"paymentData": {"version": "EC_v1", "data": "vK3BbrCbI/...."}}',
+        company: new Components\Company(
+            registrationNumber: '12345678',
+            vatNumber: 'NL123456789B01',
+            entityType: 'LLC',
+        ),
+        cardToken: 'tkn_12345',
+        googlePayPaymentToken: '{"signature": "MEYCIQCv...", "protocolVersion": "ECv2", "signedMessage": "{\\"encryptedMessage\\":\\"...\\",\\"ephemeralPublicKey\\":\\"...\\",\\"tag\\":\\"...\\"}"}',
+        voucherNumber: '1234567890',
+        voucherPin: '1234',
+        consumerDateOfBirth: LocalDate::parse('2000-01-01'),
+        digitalGoods: true,
+        customerReference: '1234567890',
+        terminalId: 'term_1234567890',
     ),
-    cardToken: 'tkn_12345',
-    googlePayPaymentToken: '{"signature": "MEYCIQCv...", "protocolVersion": "ECv2", "signedMessage": "{\\"encryptedMessage\\":\\"...\\",\\"ephemeralPublicKey\\":\\"...\\",\\"tag\\":\\"...\\"}"}',
-    voucherNumber: '1234567890',
-    voucherPin: '1234',
-    consumerDateOfBirth: LocalDate::parse('2000-01-01'),
-    digitalGoods: true,
-    customerReference: '1234567890',
-    terminalId: 'term_1234567890',
 );
 
 $response = $sdk->customers->createPayment(
-    customerId: 'cst_5B8cwPMGnU',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426',
-    body: $body
-
+    request: $request
 );
 
 if ($response->paymentResponse !== null) {
@@ -1327,6 +1364,7 @@ require 'vendor/autoload.php';
 use Brick\DateTime\LocalDate;
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setSecurity(
@@ -1336,138 +1374,141 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-$body = new Components\PaymentRequest(
-    description: 'Chess Board',
-    amount: new Components\Amount(
-        currency: 'EUR',
-        value: '10.00',
-    ),
-    redirectUrl: 'https://example.org/redirect',
-    cancelUrl: 'https://example.org/cancel',
-    webhookUrl: 'https://example.org/webhooks',
-    lines: [
-        new Components\PaymentRequestLine(
-            type: Components\PaymentLineType::Physical,
-            description: 'LEGO 4440 Forest Police Station',
-            quantity: 1,
-            quantityUnit: 'pcs',
-            unitPrice: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            discountAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            totalAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            vatRate: '21.00',
-            vatAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            sku: '9780241661628',
-            categories: [
-                Components\LineCategories::Meal,
-                Components\LineCategories::Eco,
-            ],
-            imageUrl: 'https://...',
-            productUrl: 'https://...',
-            recurring: new Components\RecurringLineItem(
-                description: 'Gym subscription',
-                interval: '12 months',
-                amount: new Components\Amount(
-                    currency: 'EUR',
-                    value: '10.00',
-                ),
-                times: 1,
-                startDate: '2024-12-12',
-            ),
-        ),
-    ],
-    billingAddress: new Components\PaymentRequestBillingAddress(
-        title: 'Mr.',
-        givenName: 'Piet',
-        familyName: 'Mondriaan',
-        streetAndNumber: 'Keizersgracht 126',
-        streetAdditional: 'Apt. 1',
-        postalCode: '1234AB',
-        email: 'piet@example.org',
-        phone: '31208202070',
-        city: 'Amsterdam',
-        region: 'Noord-Holland',
-        country: 'NL',
-    ),
-    shippingAddress: new Components\PaymentAddress(
-        title: 'Mr.',
-        givenName: 'Piet',
-        familyName: 'Mondriaan',
-        organizationName: 'Mollie B.V.',
-        streetAndNumber: 'Keizersgracht 126',
-        streetAdditional: 'Apt. 1',
-        postalCode: '1234AB',
-        email: 'piet@example.org',
-        phone: '31208202070',
-        city: 'Amsterdam',
-        region: 'Noord-Holland',
-        country: 'NL',
-    ),
-    locale: Components\Locale::EnUS,
-    method: Components\MethodEnum::Ideal,
-    issuer: 'ideal_INGBNL2A',
-    restrictPaymentMethodsToCountry: 'NL',
-    captureMode: Components\CaptureMode::Manual,
-    captureDelay: '8 hours',
-    applicationFee: new Components\PaymentRequestApplicationFee(
+$request = new Operations\CreateCustomerPaymentRequest(
+    customerId: 'cst_5B8cwPMGnU',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+    body: new Components\PaymentRequest(
+        description: 'Chess Board',
         amount: new Components\Amount(
             currency: 'EUR',
             value: '10.00',
         ),
-        description: '10',
-    ),
-    routing: [
-        new Components\EntityPaymentRoute(
+        redirectUrl: 'https://example.org/redirect',
+        cancelUrl: 'https://example.org/cancel',
+        webhookUrl: 'https://example.org/webhooks',
+        lines: [
+            new Components\PaymentRequestLine(
+                type: Components\PaymentLineType::Physical,
+                description: 'LEGO 4440 Forest Police Station',
+                quantity: 1,
+                quantityUnit: 'pcs',
+                unitPrice: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                discountAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                totalAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                vatRate: '21.00',
+                vatAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                sku: '9780241661628',
+                categories: [
+                    Components\LineCategories::Meal,
+                    Components\LineCategories::Eco,
+                ],
+                imageUrl: 'https://...',
+                productUrl: 'https://...',
+                recurring: new Components\RecurringLineItem(
+                    description: 'Gym subscription',
+                    interval: '12 months',
+                    amount: new Components\Amount(
+                        currency: 'EUR',
+                        value: '10.00',
+                    ),
+                    times: 1,
+                    startDate: '2024-12-12',
+                ),
+            ),
+        ],
+        billingAddress: new Components\PaymentRequestBillingAddress(
+            title: 'Mr.',
+            givenName: 'Piet',
+            familyName: 'Mondriaan',
+            streetAndNumber: 'Keizersgracht 126',
+            streetAdditional: 'Apt. 1',
+            postalCode: '1234AB',
+            email: 'piet@example.org',
+            phone: '31208202070',
+            city: 'Amsterdam',
+            region: 'Noord-Holland',
+            country: 'NL',
+        ),
+        shippingAddress: new Components\PaymentAddress(
+            title: 'Mr.',
+            givenName: 'Piet',
+            familyName: 'Mondriaan',
+            organizationName: 'Mollie B.V.',
+            streetAndNumber: 'Keizersgracht 126',
+            streetAdditional: 'Apt. 1',
+            postalCode: '1234AB',
+            email: 'piet@example.org',
+            phone: '31208202070',
+            city: 'Amsterdam',
+            region: 'Noord-Holland',
+            country: 'NL',
+        ),
+        locale: Components\Locale::EnUS,
+        method: Components\MethodEnum::Ideal,
+        issuer: 'ideal_INGBNL2A',
+        restrictPaymentMethodsToCountry: 'NL',
+        captureMode: Components\CaptureMode::Manual,
+        captureDelay: '8 hours',
+        applicationFee: new Components\PaymentRequestApplicationFee(
             amount: new Components\Amount(
                 currency: 'EUR',
                 value: '10.00',
             ),
-            destination: new Components\EntityPaymentRouteDestination(
-                type: Components\RouteDestinationType::Organization,
-                organizationId: 'org_1234567',
-            ),
-            releaseDate: '2024-12-12',
+            description: '10',
         ),
-    ],
-    sequenceType: Components\SequenceType::Oneoff,
-    mandateId: 'mdt_5B8cwPMGnU',
-    customerId: 'cst_5B8cwPMGnU',
-    profileId: 'pfl_5B8cwPMGnU',
-    dueDate: '2025-12-08',
-    storeCredentials: true,
-    testmode: false,
-    applePayPaymentToken: '{"paymentData": {"version": "EC_v1", "data": "vK3BbrCbI/...."}}',
-    company: new Components\Company(
-        registrationNumber: '12345678',
-        vatNumber: 'NL123456789B01',
-        entityType: 'LLC',
+        routing: [
+            new Components\EntityPaymentRoute(
+                amount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                destination: new Components\EntityPaymentRouteDestination(
+                    type: Components\RouteDestinationType::Organization,
+                    organizationId: 'org_1234567',
+                ),
+                releaseDate: '2024-12-12',
+            ),
+        ],
+        sequenceType: Components\SequenceType::Oneoff,
+        mandateId: 'mdt_5B8cwPMGnU',
+        customerId: 'cst_5B8cwPMGnU',
+        profileId: 'pfl_5B8cwPMGnU',
+        dueDate: '2025-12-08',
+        storeCredentials: true,
+        testmode: false,
+        applePayPaymentToken: '{"paymentData": {"version": "EC_v1", "data": "vK3BbrCbI/...."}}',
+        company: new Components\Company(
+            registrationNumber: '12345678',
+            vatNumber: 'NL123456789B01',
+            entityType: 'LLC',
+        ),
+        cardToken: 'tkn_12345',
+        googlePayPaymentToken: '{"signature": "MEYCIQCv...", "protocolVersion": "ECv2", "signedMessage": "{\\"encryptedMessage\\":\\"...\\",\\"ephemeralPublicKey\\":\\"...\\",\\"tag\\":\\"...\\"}"}',
+        voucherNumber: '1234567890',
+        voucherPin: '1234',
+        consumerDateOfBirth: LocalDate::parse('2000-01-01'),
+        digitalGoods: true,
+        customerReference: '1234567890',
+        terminalId: 'term_1234567890',
     ),
-    cardToken: 'tkn_12345',
-    googlePayPaymentToken: '{"signature": "MEYCIQCv...", "protocolVersion": "ECv2", "signedMessage": "{\\"encryptedMessage\\":\\"...\\",\\"ephemeralPublicKey\\":\\"...\\",\\"tag\\":\\"...\\"}"}',
-    voucherNumber: '1234567890',
-    voucherPin: '1234',
-    consumerDateOfBirth: LocalDate::parse('2000-01-01'),
-    digitalGoods: true,
-    customerReference: '1234567890',
-    terminalId: 'term_1234567890',
 );
 
 $response = $sdk->customers->createPayment(
-    customerId: 'cst_5B8cwPMGnU',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426',
-    body: $body
-
+    request: $request
 );
 
 if ($response->paymentResponse !== null) {
@@ -1485,6 +1526,7 @@ require 'vendor/autoload.php';
 use Brick\DateTime\LocalDate;
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setSecurity(
@@ -1494,138 +1536,141 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-$body = new Components\PaymentRequest(
-    description: 'Chess Board',
-    amount: new Components\Amount(
-        currency: 'EUR',
-        value: '10.00',
-    ),
-    redirectUrl: 'https://example.org/redirect',
-    cancelUrl: 'https://example.org/cancel',
-    webhookUrl: 'https://example.org/webhooks',
-    lines: [
-        new Components\PaymentRequestLine(
-            type: Components\PaymentLineType::Physical,
-            description: 'LEGO 4440 Forest Police Station',
-            quantity: 1,
-            quantityUnit: 'pcs',
-            unitPrice: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            discountAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            totalAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            vatRate: '21.00',
-            vatAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            sku: '9780241661628',
-            categories: [
-                Components\LineCategories::Meal,
-                Components\LineCategories::Eco,
-            ],
-            imageUrl: 'https://...',
-            productUrl: 'https://...',
-            recurring: new Components\RecurringLineItem(
-                description: 'Gym subscription',
-                interval: '12 months',
-                amount: new Components\Amount(
-                    currency: 'EUR',
-                    value: '10.00',
-                ),
-                times: 1,
-                startDate: '2024-12-12',
-            ),
-        ),
-    ],
-    billingAddress: new Components\PaymentRequestBillingAddress(
-        title: 'Mr.',
-        givenName: 'Piet',
-        familyName: 'Mondriaan',
-        streetAndNumber: 'Keizersgracht 126',
-        streetAdditional: 'Apt. 1',
-        postalCode: '1234AB',
-        email: 'piet@example.org',
-        phone: '31208202070',
-        city: 'Amsterdam',
-        region: 'Noord-Holland',
-        country: 'NL',
-    ),
-    shippingAddress: new Components\PaymentAddress(
-        title: 'Mr.',
-        givenName: 'Piet',
-        familyName: 'Mondriaan',
-        organizationName: 'Mollie B.V.',
-        streetAndNumber: 'Keizersgracht 126',
-        streetAdditional: 'Apt. 1',
-        postalCode: '1234AB',
-        email: 'piet@example.org',
-        phone: '31208202070',
-        city: 'Amsterdam',
-        region: 'Noord-Holland',
-        country: 'NL',
-    ),
-    locale: Components\Locale::EnUS,
-    method: Components\MethodEnum::Ideal,
-    issuer: 'ideal_INGBNL2A',
-    restrictPaymentMethodsToCountry: 'NL',
-    captureMode: Components\CaptureMode::Manual,
-    captureDelay: '8 hours',
-    applicationFee: new Components\PaymentRequestApplicationFee(
+$request = new Operations\CreateCustomerPaymentRequest(
+    customerId: 'cst_5B8cwPMGnU',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+    body: new Components\PaymentRequest(
+        description: 'Chess Board',
         amount: new Components\Amount(
             currency: 'EUR',
             value: '10.00',
         ),
-        description: '10',
-    ),
-    routing: [
-        new Components\EntityPaymentRoute(
+        redirectUrl: 'https://example.org/redirect',
+        cancelUrl: 'https://example.org/cancel',
+        webhookUrl: 'https://example.org/webhooks',
+        lines: [
+            new Components\PaymentRequestLine(
+                type: Components\PaymentLineType::Physical,
+                description: 'LEGO 4440 Forest Police Station',
+                quantity: 1,
+                quantityUnit: 'pcs',
+                unitPrice: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                discountAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                totalAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                vatRate: '21.00',
+                vatAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                sku: '9780241661628',
+                categories: [
+                    Components\LineCategories::Meal,
+                    Components\LineCategories::Eco,
+                ],
+                imageUrl: 'https://...',
+                productUrl: 'https://...',
+                recurring: new Components\RecurringLineItem(
+                    description: 'Gym subscription',
+                    interval: '12 months',
+                    amount: new Components\Amount(
+                        currency: 'EUR',
+                        value: '10.00',
+                    ),
+                    times: 1,
+                    startDate: '2024-12-12',
+                ),
+            ),
+        ],
+        billingAddress: new Components\PaymentRequestBillingAddress(
+            title: 'Mr.',
+            givenName: 'Piet',
+            familyName: 'Mondriaan',
+            streetAndNumber: 'Keizersgracht 126',
+            streetAdditional: 'Apt. 1',
+            postalCode: '1234AB',
+            email: 'piet@example.org',
+            phone: '31208202070',
+            city: 'Amsterdam',
+            region: 'Noord-Holland',
+            country: 'NL',
+        ),
+        shippingAddress: new Components\PaymentAddress(
+            title: 'Mr.',
+            givenName: 'Piet',
+            familyName: 'Mondriaan',
+            organizationName: 'Mollie B.V.',
+            streetAndNumber: 'Keizersgracht 126',
+            streetAdditional: 'Apt. 1',
+            postalCode: '1234AB',
+            email: 'piet@example.org',
+            phone: '31208202070',
+            city: 'Amsterdam',
+            region: 'Noord-Holland',
+            country: 'NL',
+        ),
+        locale: Components\Locale::EnUS,
+        method: Components\MethodEnum::Ideal,
+        issuer: 'ideal_INGBNL2A',
+        restrictPaymentMethodsToCountry: 'NL',
+        captureMode: Components\CaptureMode::Manual,
+        captureDelay: '8 hours',
+        applicationFee: new Components\PaymentRequestApplicationFee(
             amount: new Components\Amount(
                 currency: 'EUR',
                 value: '10.00',
             ),
-            destination: new Components\EntityPaymentRouteDestination(
-                type: Components\RouteDestinationType::Organization,
-                organizationId: 'org_1234567',
-            ),
-            releaseDate: '2024-12-12',
+            description: '10',
         ),
-    ],
-    sequenceType: Components\SequenceType::Oneoff,
-    mandateId: 'mdt_5B8cwPMGnU',
-    customerId: 'cst_5B8cwPMGnU',
-    profileId: 'pfl_5B8cwPMGnU',
-    dueDate: '2025-12-08',
-    storeCredentials: true,
-    testmode: false,
-    applePayPaymentToken: '{"paymentData": {"version": "EC_v1", "data": "vK3BbrCbI/...."}}',
-    company: new Components\Company(
-        registrationNumber: '12345678',
-        vatNumber: 'NL123456789B01',
-        entityType: 'LLC',
+        routing: [
+            new Components\EntityPaymentRoute(
+                amount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                destination: new Components\EntityPaymentRouteDestination(
+                    type: Components\RouteDestinationType::Organization,
+                    organizationId: 'org_1234567',
+                ),
+                releaseDate: '2024-12-12',
+            ),
+        ],
+        sequenceType: Components\SequenceType::Oneoff,
+        mandateId: 'mdt_5B8cwPMGnU',
+        customerId: 'cst_5B8cwPMGnU',
+        profileId: 'pfl_5B8cwPMGnU',
+        dueDate: '2025-12-08',
+        storeCredentials: true,
+        testmode: false,
+        applePayPaymentToken: '{"paymentData": {"version": "EC_v1", "data": "vK3BbrCbI/...."}}',
+        company: new Components\Company(
+            registrationNumber: '12345678',
+            vatNumber: 'NL123456789B01',
+            entityType: 'LLC',
+        ),
+        cardToken: 'tkn_12345',
+        googlePayPaymentToken: '{"signature": "MEYCIQCv...", "protocolVersion": "ECv2", "signedMessage": "{\\"encryptedMessage\\":\\"...\\",\\"ephemeralPublicKey\\":\\"...\\",\\"tag\\":\\"...\\"}"}',
+        voucherNumber: '1234567890',
+        voucherPin: '1234',
+        consumerDateOfBirth: LocalDate::parse('2000-01-01'),
+        digitalGoods: true,
+        customerReference: '1234567890',
+        terminalId: 'term_1234567890',
     ),
-    cardToken: 'tkn_12345',
-    googlePayPaymentToken: '{"signature": "MEYCIQCv...", "protocolVersion": "ECv2", "signedMessage": "{\\"encryptedMessage\\":\\"...\\",\\"ephemeralPublicKey\\":\\"...\\",\\"tag\\":\\"...\\"}"}',
-    voucherNumber: '1234567890',
-    voucherPin: '1234',
-    consumerDateOfBirth: LocalDate::parse('2000-01-01'),
-    digitalGoods: true,
-    customerReference: '1234567890',
-    terminalId: 'term_1234567890',
 );
 
 $response = $sdk->customers->createPayment(
-    customerId: 'cst_5B8cwPMGnU',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426',
-    body: $body
-
+    request: $request
 );
 
 if ($response->paymentResponse !== null) {
@@ -1643,6 +1688,7 @@ require 'vendor/autoload.php';
 use Brick\DateTime\LocalDate;
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setSecurity(
@@ -1652,138 +1698,141 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-$body = new Components\PaymentRequest(
-    description: 'Chess Board',
-    amount: new Components\Amount(
-        currency: 'EUR',
-        value: '10.00',
-    ),
-    redirectUrl: 'https://example.org/redirect',
-    cancelUrl: 'https://example.org/cancel',
-    webhookUrl: 'https://example.org/webhooks',
-    lines: [
-        new Components\PaymentRequestLine(
-            type: Components\PaymentLineType::Physical,
-            description: 'LEGO 4440 Forest Police Station',
-            quantity: 1,
-            quantityUnit: 'pcs',
-            unitPrice: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            discountAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            totalAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            vatRate: '21.00',
-            vatAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            sku: '9780241661628',
-            categories: [
-                Components\LineCategories::Meal,
-                Components\LineCategories::Eco,
-            ],
-            imageUrl: 'https://...',
-            productUrl: 'https://...',
-            recurring: new Components\RecurringLineItem(
-                description: 'Gym subscription',
-                interval: '12 months',
-                amount: new Components\Amount(
-                    currency: 'EUR',
-                    value: '10.00',
-                ),
-                times: 1,
-                startDate: '2024-12-12',
-            ),
-        ),
-    ],
-    billingAddress: new Components\PaymentRequestBillingAddress(
-        title: 'Mr.',
-        givenName: 'Piet',
-        familyName: 'Mondriaan',
-        streetAndNumber: 'Keizersgracht 126',
-        streetAdditional: 'Apt. 1',
-        postalCode: '1234AB',
-        email: 'piet@example.org',
-        phone: '31208202070',
-        city: 'Amsterdam',
-        region: 'Noord-Holland',
-        country: 'NL',
-    ),
-    shippingAddress: new Components\PaymentAddress(
-        title: 'Mr.',
-        givenName: 'Piet',
-        familyName: 'Mondriaan',
-        organizationName: 'Mollie B.V.',
-        streetAndNumber: 'Keizersgracht 126',
-        streetAdditional: 'Apt. 1',
-        postalCode: '1234AB',
-        email: 'piet@example.org',
-        phone: '31208202070',
-        city: 'Amsterdam',
-        region: 'Noord-Holland',
-        country: 'NL',
-    ),
-    locale: Components\Locale::EnUS,
-    method: Components\MethodEnum::Ideal,
-    issuer: 'ideal_INGBNL2A',
-    restrictPaymentMethodsToCountry: 'NL',
-    captureMode: Components\CaptureMode::Manual,
-    captureDelay: '8 hours',
-    applicationFee: new Components\PaymentRequestApplicationFee(
+$request = new Operations\CreateCustomerPaymentRequest(
+    customerId: 'cst_5B8cwPMGnU',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+    body: new Components\PaymentRequest(
+        description: 'Chess Board',
         amount: new Components\Amount(
             currency: 'EUR',
             value: '10.00',
         ),
-        description: '10',
-    ),
-    routing: [
-        new Components\EntityPaymentRoute(
+        redirectUrl: 'https://example.org/redirect',
+        cancelUrl: 'https://example.org/cancel',
+        webhookUrl: 'https://example.org/webhooks',
+        lines: [
+            new Components\PaymentRequestLine(
+                type: Components\PaymentLineType::Physical,
+                description: 'LEGO 4440 Forest Police Station',
+                quantity: 1,
+                quantityUnit: 'pcs',
+                unitPrice: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                discountAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                totalAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                vatRate: '21.00',
+                vatAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                sku: '9780241661628',
+                categories: [
+                    Components\LineCategories::Meal,
+                    Components\LineCategories::Eco,
+                ],
+                imageUrl: 'https://...',
+                productUrl: 'https://...',
+                recurring: new Components\RecurringLineItem(
+                    description: 'Gym subscription',
+                    interval: '12 months',
+                    amount: new Components\Amount(
+                        currency: 'EUR',
+                        value: '10.00',
+                    ),
+                    times: 1,
+                    startDate: '2024-12-12',
+                ),
+            ),
+        ],
+        billingAddress: new Components\PaymentRequestBillingAddress(
+            title: 'Mr.',
+            givenName: 'Piet',
+            familyName: 'Mondriaan',
+            streetAndNumber: 'Keizersgracht 126',
+            streetAdditional: 'Apt. 1',
+            postalCode: '1234AB',
+            email: 'piet@example.org',
+            phone: '31208202070',
+            city: 'Amsterdam',
+            region: 'Noord-Holland',
+            country: 'NL',
+        ),
+        shippingAddress: new Components\PaymentAddress(
+            title: 'Mr.',
+            givenName: 'Piet',
+            familyName: 'Mondriaan',
+            organizationName: 'Mollie B.V.',
+            streetAndNumber: 'Keizersgracht 126',
+            streetAdditional: 'Apt. 1',
+            postalCode: '1234AB',
+            email: 'piet@example.org',
+            phone: '31208202070',
+            city: 'Amsterdam',
+            region: 'Noord-Holland',
+            country: 'NL',
+        ),
+        locale: Components\Locale::EnUS,
+        method: Components\MethodEnum::Ideal,
+        issuer: 'ideal_INGBNL2A',
+        restrictPaymentMethodsToCountry: 'NL',
+        captureMode: Components\CaptureMode::Manual,
+        captureDelay: '8 hours',
+        applicationFee: new Components\PaymentRequestApplicationFee(
             amount: new Components\Amount(
                 currency: 'EUR',
                 value: '10.00',
             ),
-            destination: new Components\EntityPaymentRouteDestination(
-                type: Components\RouteDestinationType::Organization,
-                organizationId: 'org_1234567',
-            ),
-            releaseDate: '2024-12-12',
+            description: '10',
         ),
-    ],
-    sequenceType: Components\SequenceType::Oneoff,
-    mandateId: 'mdt_5B8cwPMGnU',
-    customerId: 'cst_5B8cwPMGnU',
-    profileId: 'pfl_5B8cwPMGnU',
-    dueDate: '2025-12-08',
-    storeCredentials: true,
-    testmode: false,
-    applePayPaymentToken: '{"paymentData": {"version": "EC_v1", "data": "vK3BbrCbI/...."}}',
-    company: new Components\Company(
-        registrationNumber: '12345678',
-        vatNumber: 'NL123456789B01',
-        entityType: 'LLC',
+        routing: [
+            new Components\EntityPaymentRoute(
+                amount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                destination: new Components\EntityPaymentRouteDestination(
+                    type: Components\RouteDestinationType::Organization,
+                    organizationId: 'org_1234567',
+                ),
+                releaseDate: '2024-12-12',
+            ),
+        ],
+        sequenceType: Components\SequenceType::Oneoff,
+        mandateId: 'mdt_5B8cwPMGnU',
+        customerId: 'cst_5B8cwPMGnU',
+        profileId: 'pfl_5B8cwPMGnU',
+        dueDate: '2025-12-08',
+        storeCredentials: true,
+        testmode: false,
+        applePayPaymentToken: '{"paymentData": {"version": "EC_v1", "data": "vK3BbrCbI/...."}}',
+        company: new Components\Company(
+            registrationNumber: '12345678',
+            vatNumber: 'NL123456789B01',
+            entityType: 'LLC',
+        ),
+        cardToken: 'tkn_12345',
+        googlePayPaymentToken: '{"signature": "MEYCIQCv...", "protocolVersion": "ECv2", "signedMessage": "{\\"encryptedMessage\\":\\"...\\",\\"ephemeralPublicKey\\":\\"...\\",\\"tag\\":\\"...\\"}"}',
+        voucherNumber: '1234567890',
+        voucherPin: '1234',
+        consumerDateOfBirth: LocalDate::parse('2000-01-01'),
+        digitalGoods: true,
+        customerReference: '1234567890',
+        terminalId: 'term_1234567890',
     ),
-    cardToken: 'tkn_12345',
-    googlePayPaymentToken: '{"signature": "MEYCIQCv...", "protocolVersion": "ECv2", "signedMessage": "{\\"encryptedMessage\\":\\"...\\",\\"ephemeralPublicKey\\":\\"...\\",\\"tag\\":\\"...\\"}"}',
-    voucherNumber: '1234567890',
-    voucherPin: '1234',
-    consumerDateOfBirth: LocalDate::parse('2000-01-01'),
-    digitalGoods: true,
-    customerReference: '1234567890',
-    terminalId: 'term_1234567890',
 );
 
 $response = $sdk->customers->createPayment(
-    customerId: 'cst_5B8cwPMGnU',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426',
-    body: $body
-
+    request: $request
 );
 
 if ($response->paymentResponse !== null) {
@@ -1801,6 +1850,7 @@ require 'vendor/autoload.php';
 use Brick\DateTime\LocalDate;
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setSecurity(
@@ -1810,138 +1860,141 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-$body = new Components\PaymentRequest(
-    description: 'Chess Board',
-    amount: new Components\Amount(
-        currency: 'EUR',
-        value: '10.00',
-    ),
-    redirectUrl: 'https://example.org/redirect',
-    cancelUrl: 'https://example.org/cancel',
-    webhookUrl: 'https://example.org/webhooks',
-    lines: [
-        new Components\PaymentRequestLine(
-            type: Components\PaymentLineType::Physical,
-            description: 'LEGO 4440 Forest Police Station',
-            quantity: 1,
-            quantityUnit: 'pcs',
-            unitPrice: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            discountAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            totalAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            vatRate: '21.00',
-            vatAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            sku: '9780241661628',
-            categories: [
-                Components\LineCategories::Meal,
-                Components\LineCategories::Eco,
-            ],
-            imageUrl: 'https://...',
-            productUrl: 'https://...',
-            recurring: new Components\RecurringLineItem(
-                description: 'Gym subscription',
-                interval: '12 months',
-                amount: new Components\Amount(
-                    currency: 'EUR',
-                    value: '10.00',
-                ),
-                times: 1,
-                startDate: '2024-12-12',
-            ),
-        ),
-    ],
-    billingAddress: new Components\PaymentRequestBillingAddress(
-        title: 'Mr.',
-        givenName: 'Piet',
-        familyName: 'Mondriaan',
-        streetAndNumber: 'Keizersgracht 126',
-        streetAdditional: 'Apt. 1',
-        postalCode: '1234AB',
-        email: 'piet@example.org',
-        phone: '31208202070',
-        city: 'Amsterdam',
-        region: 'Noord-Holland',
-        country: 'NL',
-    ),
-    shippingAddress: new Components\PaymentAddress(
-        title: 'Mr.',
-        givenName: 'Piet',
-        familyName: 'Mondriaan',
-        organizationName: 'Mollie B.V.',
-        streetAndNumber: 'Keizersgracht 126',
-        streetAdditional: 'Apt. 1',
-        postalCode: '1234AB',
-        email: 'piet@example.org',
-        phone: '31208202070',
-        city: 'Amsterdam',
-        region: 'Noord-Holland',
-        country: 'NL',
-    ),
-    locale: Components\Locale::EnUS,
-    method: Components\MethodEnum::Ideal,
-    issuer: 'ideal_INGBNL2A',
-    restrictPaymentMethodsToCountry: 'NL',
-    captureMode: Components\CaptureMode::Manual,
-    captureDelay: '8 hours',
-    applicationFee: new Components\PaymentRequestApplicationFee(
+$request = new Operations\CreateCustomerPaymentRequest(
+    customerId: 'cst_5B8cwPMGnU',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+    body: new Components\PaymentRequest(
+        description: 'Chess Board',
         amount: new Components\Amount(
             currency: 'EUR',
             value: '10.00',
         ),
-        description: '10',
-    ),
-    routing: [
-        new Components\EntityPaymentRoute(
+        redirectUrl: 'https://example.org/redirect',
+        cancelUrl: 'https://example.org/cancel',
+        webhookUrl: 'https://example.org/webhooks',
+        lines: [
+            new Components\PaymentRequestLine(
+                type: Components\PaymentLineType::Physical,
+                description: 'LEGO 4440 Forest Police Station',
+                quantity: 1,
+                quantityUnit: 'pcs',
+                unitPrice: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                discountAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                totalAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                vatRate: '21.00',
+                vatAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                sku: '9780241661628',
+                categories: [
+                    Components\LineCategories::Meal,
+                    Components\LineCategories::Eco,
+                ],
+                imageUrl: 'https://...',
+                productUrl: 'https://...',
+                recurring: new Components\RecurringLineItem(
+                    description: 'Gym subscription',
+                    interval: '12 months',
+                    amount: new Components\Amount(
+                        currency: 'EUR',
+                        value: '10.00',
+                    ),
+                    times: 1,
+                    startDate: '2024-12-12',
+                ),
+            ),
+        ],
+        billingAddress: new Components\PaymentRequestBillingAddress(
+            title: 'Mr.',
+            givenName: 'Piet',
+            familyName: 'Mondriaan',
+            streetAndNumber: 'Keizersgracht 126',
+            streetAdditional: 'Apt. 1',
+            postalCode: '1234AB',
+            email: 'piet@example.org',
+            phone: '31208202070',
+            city: 'Amsterdam',
+            region: 'Noord-Holland',
+            country: 'NL',
+        ),
+        shippingAddress: new Components\PaymentAddress(
+            title: 'Mr.',
+            givenName: 'Piet',
+            familyName: 'Mondriaan',
+            organizationName: 'Mollie B.V.',
+            streetAndNumber: 'Keizersgracht 126',
+            streetAdditional: 'Apt. 1',
+            postalCode: '1234AB',
+            email: 'piet@example.org',
+            phone: '31208202070',
+            city: 'Amsterdam',
+            region: 'Noord-Holland',
+            country: 'NL',
+        ),
+        locale: Components\Locale::EnUS,
+        method: Components\MethodEnum::Ideal,
+        issuer: 'ideal_INGBNL2A',
+        restrictPaymentMethodsToCountry: 'NL',
+        captureMode: Components\CaptureMode::Manual,
+        captureDelay: '8 hours',
+        applicationFee: new Components\PaymentRequestApplicationFee(
             amount: new Components\Amount(
                 currency: 'EUR',
                 value: '10.00',
             ),
-            destination: new Components\EntityPaymentRouteDestination(
-                type: Components\RouteDestinationType::Organization,
-                organizationId: 'org_1234567',
-            ),
-            releaseDate: '2024-12-12',
+            description: '10',
         ),
-    ],
-    sequenceType: Components\SequenceType::Oneoff,
-    mandateId: 'mdt_5B8cwPMGnU',
-    customerId: 'cst_5B8cwPMGnU',
-    profileId: 'pfl_5B8cwPMGnU',
-    dueDate: '2025-12-08',
-    storeCredentials: true,
-    testmode: false,
-    applePayPaymentToken: '{"paymentData": {"version": "EC_v1", "data": "vK3BbrCbI/...."}}',
-    company: new Components\Company(
-        registrationNumber: '12345678',
-        vatNumber: 'NL123456789B01',
-        entityType: 'LLC',
+        routing: [
+            new Components\EntityPaymentRoute(
+                amount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                destination: new Components\EntityPaymentRouteDestination(
+                    type: Components\RouteDestinationType::Organization,
+                    organizationId: 'org_1234567',
+                ),
+                releaseDate: '2024-12-12',
+            ),
+        ],
+        sequenceType: Components\SequenceType::Oneoff,
+        mandateId: 'mdt_5B8cwPMGnU',
+        customerId: 'cst_5B8cwPMGnU',
+        profileId: 'pfl_5B8cwPMGnU',
+        dueDate: '2025-12-08',
+        storeCredentials: true,
+        testmode: false,
+        applePayPaymentToken: '{"paymentData": {"version": "EC_v1", "data": "vK3BbrCbI/...."}}',
+        company: new Components\Company(
+            registrationNumber: '12345678',
+            vatNumber: 'NL123456789B01',
+            entityType: 'LLC',
+        ),
+        cardToken: 'tkn_12345',
+        googlePayPaymentToken: '{"signature": "MEYCIQCv...", "protocolVersion": "ECv2", "signedMessage": "{\\"encryptedMessage\\":\\"...\\",\\"ephemeralPublicKey\\":\\"...\\",\\"tag\\":\\"...\\"}"}',
+        voucherNumber: '1234567890',
+        voucherPin: '1234',
+        consumerDateOfBirth: LocalDate::parse('2000-01-01'),
+        digitalGoods: true,
+        customerReference: '1234567890',
+        terminalId: 'term_1234567890',
     ),
-    cardToken: 'tkn_12345',
-    googlePayPaymentToken: '{"signature": "MEYCIQCv...", "protocolVersion": "ECv2", "signedMessage": "{\\"encryptedMessage\\":\\"...\\",\\"ephemeralPublicKey\\":\\"...\\",\\"tag\\":\\"...\\"}"}',
-    voucherNumber: '1234567890',
-    voucherPin: '1234',
-    consumerDateOfBirth: LocalDate::parse('2000-01-01'),
-    digitalGoods: true,
-    customerReference: '1234567890',
-    terminalId: 'term_1234567890',
 );
 
 $response = $sdk->customers->createPayment(
-    customerId: 'cst_5B8cwPMGnU',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426',
-    body: $body
-
+    request: $request
 );
 
 if ($response->paymentResponse !== null) {
@@ -1959,6 +2012,7 @@ require 'vendor/autoload.php';
 use Brick\DateTime\LocalDate;
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setSecurity(
@@ -1968,138 +2022,141 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-$body = new Components\PaymentRequest(
-    description: 'Chess Board',
-    amount: new Components\Amount(
-        currency: 'EUR',
-        value: '10.00',
-    ),
-    redirectUrl: 'https://example.org/redirect',
-    cancelUrl: 'https://example.org/cancel',
-    webhookUrl: 'https://example.org/webhooks',
-    lines: [
-        new Components\PaymentRequestLine(
-            type: Components\PaymentLineType::Physical,
-            description: 'LEGO 4440 Forest Police Station',
-            quantity: 1,
-            quantityUnit: 'pcs',
-            unitPrice: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            discountAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            totalAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            vatRate: '21.00',
-            vatAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            sku: '9780241661628',
-            categories: [
-                Components\LineCategories::Meal,
-                Components\LineCategories::Eco,
-            ],
-            imageUrl: 'https://...',
-            productUrl: 'https://...',
-            recurring: new Components\RecurringLineItem(
-                description: 'Gym subscription',
-                interval: '12 months',
-                amount: new Components\Amount(
-                    currency: 'EUR',
-                    value: '10.00',
-                ),
-                times: 1,
-                startDate: '2024-12-12',
-            ),
-        ),
-    ],
-    billingAddress: new Components\PaymentRequestBillingAddress(
-        title: 'Mr.',
-        givenName: 'Piet',
-        familyName: 'Mondriaan',
-        streetAndNumber: 'Keizersgracht 126',
-        streetAdditional: 'Apt. 1',
-        postalCode: '1234AB',
-        email: 'piet@example.org',
-        phone: '31208202070',
-        city: 'Amsterdam',
-        region: 'Noord-Holland',
-        country: 'NL',
-    ),
-    shippingAddress: new Components\PaymentAddress(
-        title: 'Mr.',
-        givenName: 'Piet',
-        familyName: 'Mondriaan',
-        organizationName: 'Mollie B.V.',
-        streetAndNumber: 'Keizersgracht 126',
-        streetAdditional: 'Apt. 1',
-        postalCode: '1234AB',
-        email: 'piet@example.org',
-        phone: '31208202070',
-        city: 'Amsterdam',
-        region: 'Noord-Holland',
-        country: 'NL',
-    ),
-    locale: Components\Locale::EnUS,
-    method: Components\MethodEnum::Ideal,
-    issuer: 'ideal_INGBNL2A',
-    restrictPaymentMethodsToCountry: 'NL',
-    captureMode: Components\CaptureMode::Manual,
-    captureDelay: '8 hours',
-    applicationFee: new Components\PaymentRequestApplicationFee(
+$request = new Operations\CreateCustomerPaymentRequest(
+    customerId: 'cst_5B8cwPMGnU',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+    body: new Components\PaymentRequest(
+        description: 'Chess Board',
         amount: new Components\Amount(
             currency: 'EUR',
             value: '10.00',
         ),
-        description: '10',
-    ),
-    routing: [
-        new Components\EntityPaymentRoute(
+        redirectUrl: 'https://example.org/redirect',
+        cancelUrl: 'https://example.org/cancel',
+        webhookUrl: 'https://example.org/webhooks',
+        lines: [
+            new Components\PaymentRequestLine(
+                type: Components\PaymentLineType::Physical,
+                description: 'LEGO 4440 Forest Police Station',
+                quantity: 1,
+                quantityUnit: 'pcs',
+                unitPrice: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                discountAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                totalAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                vatRate: '21.00',
+                vatAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                sku: '9780241661628',
+                categories: [
+                    Components\LineCategories::Meal,
+                    Components\LineCategories::Eco,
+                ],
+                imageUrl: 'https://...',
+                productUrl: 'https://...',
+                recurring: new Components\RecurringLineItem(
+                    description: 'Gym subscription',
+                    interval: '12 months',
+                    amount: new Components\Amount(
+                        currency: 'EUR',
+                        value: '10.00',
+                    ),
+                    times: 1,
+                    startDate: '2024-12-12',
+                ),
+            ),
+        ],
+        billingAddress: new Components\PaymentRequestBillingAddress(
+            title: 'Mr.',
+            givenName: 'Piet',
+            familyName: 'Mondriaan',
+            streetAndNumber: 'Keizersgracht 126',
+            streetAdditional: 'Apt. 1',
+            postalCode: '1234AB',
+            email: 'piet@example.org',
+            phone: '31208202070',
+            city: 'Amsterdam',
+            region: 'Noord-Holland',
+            country: 'NL',
+        ),
+        shippingAddress: new Components\PaymentAddress(
+            title: 'Mr.',
+            givenName: 'Piet',
+            familyName: 'Mondriaan',
+            organizationName: 'Mollie B.V.',
+            streetAndNumber: 'Keizersgracht 126',
+            streetAdditional: 'Apt. 1',
+            postalCode: '1234AB',
+            email: 'piet@example.org',
+            phone: '31208202070',
+            city: 'Amsterdam',
+            region: 'Noord-Holland',
+            country: 'NL',
+        ),
+        locale: Components\Locale::EnUS,
+        method: Components\MethodEnum::Ideal,
+        issuer: 'ideal_INGBNL2A',
+        restrictPaymentMethodsToCountry: 'NL',
+        captureMode: Components\CaptureMode::Manual,
+        captureDelay: '8 hours',
+        applicationFee: new Components\PaymentRequestApplicationFee(
             amount: new Components\Amount(
                 currency: 'EUR',
                 value: '10.00',
             ),
-            destination: new Components\EntityPaymentRouteDestination(
-                type: Components\RouteDestinationType::Organization,
-                organizationId: 'org_1234567',
-            ),
-            releaseDate: '2024-12-12',
+            description: '10',
         ),
-    ],
-    sequenceType: Components\SequenceType::Oneoff,
-    mandateId: 'mdt_5B8cwPMGnU',
-    customerId: 'cst_5B8cwPMGnU',
-    profileId: 'pfl_5B8cwPMGnU',
-    dueDate: '2025-12-08',
-    storeCredentials: true,
-    testmode: false,
-    applePayPaymentToken: '{"paymentData": {"version": "EC_v1", "data": "vK3BbrCbI/...."}}',
-    company: new Components\Company(
-        registrationNumber: '12345678',
-        vatNumber: 'NL123456789B01',
-        entityType: 'LLC',
+        routing: [
+            new Components\EntityPaymentRoute(
+                amount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                destination: new Components\EntityPaymentRouteDestination(
+                    type: Components\RouteDestinationType::Organization,
+                    organizationId: 'org_1234567',
+                ),
+                releaseDate: '2024-12-12',
+            ),
+        ],
+        sequenceType: Components\SequenceType::Oneoff,
+        mandateId: 'mdt_5B8cwPMGnU',
+        customerId: 'cst_5B8cwPMGnU',
+        profileId: 'pfl_5B8cwPMGnU',
+        dueDate: '2025-12-08',
+        storeCredentials: true,
+        testmode: false,
+        applePayPaymentToken: '{"paymentData": {"version": "EC_v1", "data": "vK3BbrCbI/...."}}',
+        company: new Components\Company(
+            registrationNumber: '12345678',
+            vatNumber: 'NL123456789B01',
+            entityType: 'LLC',
+        ),
+        cardToken: 'tkn_12345',
+        googlePayPaymentToken: '{"signature": "MEYCIQCv...", "protocolVersion": "ECv2", "signedMessage": "{\\"encryptedMessage\\":\\"...\\",\\"ephemeralPublicKey\\":\\"...\\",\\"tag\\":\\"...\\"}"}',
+        voucherNumber: '1234567890',
+        voucherPin: '1234',
+        consumerDateOfBirth: LocalDate::parse('2000-01-01'),
+        digitalGoods: true,
+        customerReference: '1234567890',
+        terminalId: 'term_1234567890',
     ),
-    cardToken: 'tkn_12345',
-    googlePayPaymentToken: '{"signature": "MEYCIQCv...", "protocolVersion": "ECv2", "signedMessage": "{\\"encryptedMessage\\":\\"...\\",\\"ephemeralPublicKey\\":\\"...\\",\\"tag\\":\\"...\\"}"}',
-    voucherNumber: '1234567890',
-    voucherPin: '1234',
-    consumerDateOfBirth: LocalDate::parse('2000-01-01'),
-    digitalGoods: true,
-    customerReference: '1234567890',
-    terminalId: 'term_1234567890',
 );
 
 $response = $sdk->customers->createPayment(
-    customerId: 'cst_5B8cwPMGnU',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426',
-    body: $body
-
+    request: $request
 );
 
 if ($response->paymentResponse !== null) {
@@ -2117,6 +2174,7 @@ require 'vendor/autoload.php';
 use Brick\DateTime\LocalDate;
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setSecurity(
@@ -2126,138 +2184,141 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-$body = new Components\PaymentRequest(
-    description: 'Chess Board',
-    amount: new Components\Amount(
-        currency: 'EUR',
-        value: '10.00',
-    ),
-    redirectUrl: 'https://example.org/redirect',
-    cancelUrl: 'https://example.org/cancel',
-    webhookUrl: 'https://example.org/webhooks',
-    lines: [
-        new Components\PaymentRequestLine(
-            type: Components\PaymentLineType::Physical,
-            description: 'LEGO 4440 Forest Police Station',
-            quantity: 1,
-            quantityUnit: 'pcs',
-            unitPrice: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            discountAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            totalAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            vatRate: '21.00',
-            vatAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            sku: '9780241661628',
-            categories: [
-                Components\LineCategories::Meal,
-                Components\LineCategories::Eco,
-            ],
-            imageUrl: 'https://...',
-            productUrl: 'https://...',
-            recurring: new Components\RecurringLineItem(
-                description: 'Gym subscription',
-                interval: '12 months',
-                amount: new Components\Amount(
-                    currency: 'EUR',
-                    value: '10.00',
-                ),
-                times: 1,
-                startDate: '2024-12-12',
-            ),
-        ),
-    ],
-    billingAddress: new Components\PaymentRequestBillingAddress(
-        title: 'Mr.',
-        givenName: 'Piet',
-        familyName: 'Mondriaan',
-        streetAndNumber: 'Keizersgracht 126',
-        streetAdditional: 'Apt. 1',
-        postalCode: '1234AB',
-        email: 'piet@example.org',
-        phone: '31208202070',
-        city: 'Amsterdam',
-        region: 'Noord-Holland',
-        country: 'NL',
-    ),
-    shippingAddress: new Components\PaymentAddress(
-        title: 'Mr.',
-        givenName: 'Piet',
-        familyName: 'Mondriaan',
-        organizationName: 'Mollie B.V.',
-        streetAndNumber: 'Keizersgracht 126',
-        streetAdditional: 'Apt. 1',
-        postalCode: '1234AB',
-        email: 'piet@example.org',
-        phone: '31208202070',
-        city: 'Amsterdam',
-        region: 'Noord-Holland',
-        country: 'NL',
-    ),
-    locale: Components\Locale::EnUS,
-    method: Components\MethodEnum::Ideal,
-    issuer: 'ideal_INGBNL2A',
-    restrictPaymentMethodsToCountry: 'NL',
-    captureMode: Components\CaptureMode::Manual,
-    captureDelay: '8 hours',
-    applicationFee: new Components\PaymentRequestApplicationFee(
+$request = new Operations\CreateCustomerPaymentRequest(
+    customerId: 'cst_5B8cwPMGnU',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+    body: new Components\PaymentRequest(
+        description: 'Chess Board',
         amount: new Components\Amount(
             currency: 'EUR',
             value: '10.00',
         ),
-        description: '10',
-    ),
-    routing: [
-        new Components\EntityPaymentRoute(
+        redirectUrl: 'https://example.org/redirect',
+        cancelUrl: 'https://example.org/cancel',
+        webhookUrl: 'https://example.org/webhooks',
+        lines: [
+            new Components\PaymentRequestLine(
+                type: Components\PaymentLineType::Physical,
+                description: 'LEGO 4440 Forest Police Station',
+                quantity: 1,
+                quantityUnit: 'pcs',
+                unitPrice: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                discountAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                totalAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                vatRate: '21.00',
+                vatAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                sku: '9780241661628',
+                categories: [
+                    Components\LineCategories::Meal,
+                    Components\LineCategories::Eco,
+                ],
+                imageUrl: 'https://...',
+                productUrl: 'https://...',
+                recurring: new Components\RecurringLineItem(
+                    description: 'Gym subscription',
+                    interval: '12 months',
+                    amount: new Components\Amount(
+                        currency: 'EUR',
+                        value: '10.00',
+                    ),
+                    times: 1,
+                    startDate: '2024-12-12',
+                ),
+            ),
+        ],
+        billingAddress: new Components\PaymentRequestBillingAddress(
+            title: 'Mr.',
+            givenName: 'Piet',
+            familyName: 'Mondriaan',
+            streetAndNumber: 'Keizersgracht 126',
+            streetAdditional: 'Apt. 1',
+            postalCode: '1234AB',
+            email: 'piet@example.org',
+            phone: '31208202070',
+            city: 'Amsterdam',
+            region: 'Noord-Holland',
+            country: 'NL',
+        ),
+        shippingAddress: new Components\PaymentAddress(
+            title: 'Mr.',
+            givenName: 'Piet',
+            familyName: 'Mondriaan',
+            organizationName: 'Mollie B.V.',
+            streetAndNumber: 'Keizersgracht 126',
+            streetAdditional: 'Apt. 1',
+            postalCode: '1234AB',
+            email: 'piet@example.org',
+            phone: '31208202070',
+            city: 'Amsterdam',
+            region: 'Noord-Holland',
+            country: 'NL',
+        ),
+        locale: Components\Locale::EnUS,
+        method: Components\MethodEnum::Ideal,
+        issuer: 'ideal_INGBNL2A',
+        restrictPaymentMethodsToCountry: 'NL',
+        captureMode: Components\CaptureMode::Manual,
+        captureDelay: '8 hours',
+        applicationFee: new Components\PaymentRequestApplicationFee(
             amount: new Components\Amount(
                 currency: 'EUR',
                 value: '10.00',
             ),
-            destination: new Components\EntityPaymentRouteDestination(
-                type: Components\RouteDestinationType::Organization,
-                organizationId: 'org_1234567',
-            ),
-            releaseDate: '2024-12-12',
+            description: '10',
         ),
-    ],
-    sequenceType: Components\SequenceType::Oneoff,
-    mandateId: 'mdt_5B8cwPMGnU',
-    customerId: 'cst_5B8cwPMGnU',
-    profileId: 'pfl_5B8cwPMGnU',
-    dueDate: '2025-12-08',
-    storeCredentials: true,
-    testmode: false,
-    applePayPaymentToken: '{"paymentData": {"version": "EC_v1", "data": "vK3BbrCbI/...."}}',
-    company: new Components\Company(
-        registrationNumber: '12345678',
-        vatNumber: 'NL123456789B01',
-        entityType: 'LLC',
+        routing: [
+            new Components\EntityPaymentRoute(
+                amount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                destination: new Components\EntityPaymentRouteDestination(
+                    type: Components\RouteDestinationType::Organization,
+                    organizationId: 'org_1234567',
+                ),
+                releaseDate: '2024-12-12',
+            ),
+        ],
+        sequenceType: Components\SequenceType::Oneoff,
+        mandateId: 'mdt_5B8cwPMGnU',
+        customerId: 'cst_5B8cwPMGnU',
+        profileId: 'pfl_5B8cwPMGnU',
+        dueDate: '2025-12-08',
+        storeCredentials: true,
+        testmode: false,
+        applePayPaymentToken: '{"paymentData": {"version": "EC_v1", "data": "vK3BbrCbI/...."}}',
+        company: new Components\Company(
+            registrationNumber: '12345678',
+            vatNumber: 'NL123456789B01',
+            entityType: 'LLC',
+        ),
+        cardToken: 'tkn_12345',
+        googlePayPaymentToken: '{"signature": "MEYCIQCv...", "protocolVersion": "ECv2", "signedMessage": "{\\"encryptedMessage\\":\\"...\\",\\"ephemeralPublicKey\\":\\"...\\",\\"tag\\":\\"...\\"}"}',
+        voucherNumber: '1234567890',
+        voucherPin: '1234',
+        consumerDateOfBirth: LocalDate::parse('2000-01-01'),
+        digitalGoods: true,
+        customerReference: '1234567890',
+        terminalId: 'term_1234567890',
     ),
-    cardToken: 'tkn_12345',
-    googlePayPaymentToken: '{"signature": "MEYCIQCv...", "protocolVersion": "ECv2", "signedMessage": "{\\"encryptedMessage\\":\\"...\\",\\"ephemeralPublicKey\\":\\"...\\",\\"tag\\":\\"...\\"}"}',
-    voucherNumber: '1234567890',
-    voucherPin: '1234',
-    consumerDateOfBirth: LocalDate::parse('2000-01-01'),
-    digitalGoods: true,
-    customerReference: '1234567890',
-    terminalId: 'term_1234567890',
 );
 
 $response = $sdk->customers->createPayment(
-    customerId: 'cst_5B8cwPMGnU',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426',
-    body: $body
-
+    request: $request
 );
 
 if ($response->paymentResponse !== null) {
@@ -2275,6 +2336,7 @@ require 'vendor/autoload.php';
 use Brick\DateTime\LocalDate;
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setSecurity(
@@ -2284,138 +2346,141 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-$body = new Components\PaymentRequest(
-    description: 'Chess Board',
-    amount: new Components\Amount(
-        currency: 'EUR',
-        value: '10.00',
-    ),
-    redirectUrl: 'https://example.org/redirect',
-    cancelUrl: 'https://example.org/cancel',
-    webhookUrl: 'https://example.org/webhooks',
-    lines: [
-        new Components\PaymentRequestLine(
-            type: Components\PaymentLineType::Physical,
-            description: 'LEGO 4440 Forest Police Station',
-            quantity: 1,
-            quantityUnit: 'pcs',
-            unitPrice: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            discountAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            totalAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            vatRate: '21.00',
-            vatAmount: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            sku: '9780241661628',
-            categories: [
-                Components\LineCategories::Meal,
-                Components\LineCategories::Eco,
-            ],
-            imageUrl: 'https://...',
-            productUrl: 'https://...',
-            recurring: new Components\RecurringLineItem(
-                description: 'Gym subscription',
-                interval: '12 months',
-                amount: new Components\Amount(
-                    currency: 'EUR',
-                    value: '10.00',
-                ),
-                times: 1,
-                startDate: '2024-12-12',
-            ),
-        ),
-    ],
-    billingAddress: new Components\PaymentRequestBillingAddress(
-        title: 'Mr.',
-        givenName: 'Piet',
-        familyName: 'Mondriaan',
-        streetAndNumber: 'Keizersgracht 126',
-        streetAdditional: 'Apt. 1',
-        postalCode: '1234AB',
-        email: 'piet@example.org',
-        phone: '31208202070',
-        city: 'Amsterdam',
-        region: 'Noord-Holland',
-        country: 'NL',
-    ),
-    shippingAddress: new Components\PaymentAddress(
-        title: 'Mr.',
-        givenName: 'Piet',
-        familyName: 'Mondriaan',
-        organizationName: 'Mollie B.V.',
-        streetAndNumber: 'Keizersgracht 126',
-        streetAdditional: 'Apt. 1',
-        postalCode: '1234AB',
-        email: 'piet@example.org',
-        phone: '31208202070',
-        city: 'Amsterdam',
-        region: 'Noord-Holland',
-        country: 'NL',
-    ),
-    locale: Components\Locale::EnUS,
-    method: Components\MethodEnum::Ideal,
-    issuer: 'ideal_INGBNL2A',
-    restrictPaymentMethodsToCountry: 'NL',
-    captureMode: Components\CaptureMode::Manual,
-    captureDelay: '8 hours',
-    applicationFee: new Components\PaymentRequestApplicationFee(
+$request = new Operations\CreateCustomerPaymentRequest(
+    customerId: 'cst_5B8cwPMGnU',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+    body: new Components\PaymentRequest(
+        description: 'Chess Board',
         amount: new Components\Amount(
             currency: 'EUR',
             value: '10.00',
         ),
-        description: '10',
-    ),
-    routing: [
-        new Components\EntityPaymentRoute(
+        redirectUrl: 'https://example.org/redirect',
+        cancelUrl: 'https://example.org/cancel',
+        webhookUrl: 'https://example.org/webhooks',
+        lines: [
+            new Components\PaymentRequestLine(
+                type: Components\PaymentLineType::Physical,
+                description: 'LEGO 4440 Forest Police Station',
+                quantity: 1,
+                quantityUnit: 'pcs',
+                unitPrice: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                discountAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                totalAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                vatRate: '21.00',
+                vatAmount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                sku: '9780241661628',
+                categories: [
+                    Components\LineCategories::Meal,
+                    Components\LineCategories::Eco,
+                ],
+                imageUrl: 'https://...',
+                productUrl: 'https://...',
+                recurring: new Components\RecurringLineItem(
+                    description: 'Gym subscription',
+                    interval: '12 months',
+                    amount: new Components\Amount(
+                        currency: 'EUR',
+                        value: '10.00',
+                    ),
+                    times: 1,
+                    startDate: '2024-12-12',
+                ),
+            ),
+        ],
+        billingAddress: new Components\PaymentRequestBillingAddress(
+            title: 'Mr.',
+            givenName: 'Piet',
+            familyName: 'Mondriaan',
+            streetAndNumber: 'Keizersgracht 126',
+            streetAdditional: 'Apt. 1',
+            postalCode: '1234AB',
+            email: 'piet@example.org',
+            phone: '31208202070',
+            city: 'Amsterdam',
+            region: 'Noord-Holland',
+            country: 'NL',
+        ),
+        shippingAddress: new Components\PaymentAddress(
+            title: 'Mr.',
+            givenName: 'Piet',
+            familyName: 'Mondriaan',
+            organizationName: 'Mollie B.V.',
+            streetAndNumber: 'Keizersgracht 126',
+            streetAdditional: 'Apt. 1',
+            postalCode: '1234AB',
+            email: 'piet@example.org',
+            phone: '31208202070',
+            city: 'Amsterdam',
+            region: 'Noord-Holland',
+            country: 'NL',
+        ),
+        locale: Components\Locale::EnUS,
+        method: Components\MethodEnum::Ideal,
+        issuer: 'ideal_INGBNL2A',
+        restrictPaymentMethodsToCountry: 'NL',
+        captureMode: Components\CaptureMode::Manual,
+        captureDelay: '8 hours',
+        applicationFee: new Components\PaymentRequestApplicationFee(
             amount: new Components\Amount(
                 currency: 'EUR',
                 value: '10.00',
             ),
-            destination: new Components\EntityPaymentRouteDestination(
-                type: Components\RouteDestinationType::Organization,
-                organizationId: 'org_1234567',
-            ),
-            releaseDate: '2024-12-12',
+            description: '10',
         ),
-    ],
-    sequenceType: Components\SequenceType::Oneoff,
-    mandateId: 'mdt_5B8cwPMGnU',
-    customerId: 'cst_5B8cwPMGnU',
-    profileId: 'pfl_5B8cwPMGnU',
-    dueDate: '2025-12-08',
-    storeCredentials: true,
-    testmode: false,
-    applePayPaymentToken: '{"paymentData": {"version": "EC_v1", "data": "vK3BbrCbI/...."}}',
-    company: new Components\Company(
-        registrationNumber: '12345678',
-        vatNumber: 'NL123456789B01',
-        entityType: 'LLC',
+        routing: [
+            new Components\EntityPaymentRoute(
+                amount: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                destination: new Components\EntityPaymentRouteDestination(
+                    type: Components\RouteDestinationType::Organization,
+                    organizationId: 'org_1234567',
+                ),
+                releaseDate: '2024-12-12',
+            ),
+        ],
+        sequenceType: Components\SequenceType::Oneoff,
+        mandateId: 'mdt_5B8cwPMGnU',
+        customerId: 'cst_5B8cwPMGnU',
+        profileId: 'pfl_5B8cwPMGnU',
+        dueDate: '2025-12-08',
+        storeCredentials: true,
+        testmode: false,
+        applePayPaymentToken: '{"paymentData": {"version": "EC_v1", "data": "vK3BbrCbI/...."}}',
+        company: new Components\Company(
+            registrationNumber: '12345678',
+            vatNumber: 'NL123456789B01',
+            entityType: 'LLC',
+        ),
+        cardToken: 'tkn_12345',
+        googlePayPaymentToken: '{"signature": "MEYCIQCv...", "protocolVersion": "ECv2", "signedMessage": "{\\"encryptedMessage\\":\\"...\\",\\"ephemeralPublicKey\\":\\"...\\",\\"tag\\":\\"...\\"}"}',
+        voucherNumber: '1234567890',
+        voucherPin: '1234',
+        consumerDateOfBirth: LocalDate::parse('2000-01-01'),
+        digitalGoods: true,
+        customerReference: '1234567890',
+        terminalId: 'term_1234567890',
     ),
-    cardToken: 'tkn_12345',
-    googlePayPaymentToken: '{"signature": "MEYCIQCv...", "protocolVersion": "ECv2", "signedMessage": "{\\"encryptedMessage\\":\\"...\\",\\"ephemeralPublicKey\\":\\"...\\",\\"tag\\":\\"...\\"}"}',
-    voucherNumber: '1234567890',
-    voucherPin: '1234',
-    consumerDateOfBirth: LocalDate::parse('2000-01-01'),
-    digitalGoods: true,
-    customerReference: '1234567890',
-    terminalId: 'term_1234567890',
 );
 
 $response = $sdk->customers->createPayment(
-    customerId: 'cst_5B8cwPMGnU',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426',
-    body: $body
-
+    request: $request
 );
 
 if ($response->paymentResponse !== null) {
@@ -2425,11 +2490,9 @@ if ($response->paymentResponse !== null) {
 
 ### Parameters
 
-| Parameter                                                                        | Type                                                                             | Required                                                                         | Description                                                                      | Example                                                                          |
-| -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| `customerId`                                                                     | *string*                                                                         | :heavy_check_mark:                                                               | Provide the ID of the related customer.                                          | cst_5B8cwPMGnU                                                                   |
-| `idempotencyKey`                                                                 | *?string*                                                                        | :heavy_minus_sign:                                                               | A unique key to ensure idempotent requests. This key should be a UUID v4 string. | 123e4567-e89b-12d3-a456-426                                                      |
-| `body`                                                                           | [?Components\PaymentRequest](../../Models/Components/PaymentRequest.md)          | :heavy_minus_sign:                                                               | N/A                                                                              |                                                                                  |
+| Parameter                                                                                          | Type                                                                                               | Required                                                                                           | Description                                                                                        |
+| -------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `$request`                                                                                         | [Operations\CreateCustomerPaymentRequest](../../Models/Operations/CreateCustomerPaymentRequest.md) | :heavy_check_mark:                                                                                 | The request object to use for the request.                                                         |
 
 ### Response
 
@@ -2475,6 +2538,8 @@ $request = new Operations\ListCustomerPaymentsRequest(
     limit: 50,
     sort: Components\Sorting::Desc,
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $responses = $sdk->customers->listPayments(
@@ -2516,6 +2581,8 @@ $request = new Operations\ListCustomerPaymentsRequest(
     limit: 50,
     sort: Components\Sorting::Desc,
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $responses = $sdk->customers->listPayments(
@@ -2557,6 +2624,8 @@ $request = new Operations\ListCustomerPaymentsRequest(
     limit: 50,
     sort: Components\Sorting::Desc,
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $responses = $sdk->customers->listPayments(

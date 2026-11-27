@@ -21,15 +21,17 @@ approves it there.
 
 ### Test mode
 
-Creating a draft transfer always returns a synthetic draft in `pending-review`, using synthetic data,
+Creating a draft transfer always returns a synthetic draft in `pending-review` status, using synthetic data,
 same as in live mode. No real funds move and nothing is sent to Mollie Apps.
 
-Shortly after, you can simulate the initiator's decision by adjusting the transfer amount:
+Editing a draft transfer after creation is not supported via the API. Instead, depending on the amount, you
+can simulate different outcomes for the initiator's decision at creation time:
 
 | Amount  | Simulated outcome                                    | Webhook sequence                                                                                  |
 |---------|-------------------------------------------------------|----------------------------------------------------------------------------------------------------|
 | `13.00` | Declined by the initiator, with a free-text reason     | `business-account-draft-transfer.created` → `business-account-draft-transfer.declined`             |
-| Other   | Approved by the initiator                              | `business-account-draft-transfer.created` → `business-account-draft-transfer.approved`              |
+| `14.00` | Approved                                               | `business-account-draft-transfer.created` → `business-account-draft-transfer.approved`             |
+| Other   | Default behavior (pending review)                      | `business-account-draft-transfer.created`                                                          |
 
 The webhooks fire asynchronously, with a short delay between them to mimic real timing. [Get](get-draft-transfer)
 and [list](list-draft-transfers) reflect the simulated outcome once it lands.
@@ -76,6 +78,8 @@ $body = new Components\CreateDraftTransferRequest(
 
 $response = $sdk->draftTransfers->create(
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
     body: $body
 
 );
@@ -87,10 +91,12 @@ if ($response->draftTransferResponse !== null) {
 
 ### Parameters
 
-| Parameter                                                                                       | Type                                                                                            | Required                                                                                        | Description                                                                                     | Example                                                                                         |
-| ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| `idempotencyKey`                                                                                | *?string*                                                                                       | :heavy_minus_sign:                                                                              | A unique key to ensure idempotent requests. This key should be a UUID v4 string.                | 123e4567-e89b-12d3-a456-426                                                                     |
-| `body`                                                                                          | [?Components\CreateDraftTransferRequest](../../Models/Components/CreateDraftTransferRequest.md) | :heavy_minus_sign:                                                                              | N/A                                                                                             |                                                                                                 |
+| Parameter                                                                                                                                                                               | Type                                                                                                                                                                                    | Required                                                                                                                                                                                | Description                                                                                                                                                                             | Example                                                                                                                                                                                 |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `idempotencyKey`                                                                                                                                                                        | *?string*                                                                                                                                                                               | :heavy_minus_sign:                                                                                                                                                                      | A unique key to ensure idempotent requests. This key should be a UUID v4 string.                                                                                                        | 123e4567-e89b-12d3-a456-426                                                                                                                                                             |
+| `xClientSignature`                                                                                                                                                                      | *?string*                                                                                                                                                                               | :heavy_minus_sign:                                                                                                                                                                      | A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.        | MEUCIQDx8sJvK3z...                                                                                                                                                                      |
+| `xClientSignedAt`                                                                                                                                                                       | *?string*                                                                                                                                                                               | :heavy_minus_sign:                                                                                                                                                                      | The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration. | 2025-01-01T12:00:00Z                                                                                                                                                                    |
+| `body`                                                                                                                                                                                  | [?Components\CreateDraftTransferRequest](../../Models/Components/CreateDraftTransferRequest.md)                                                                                         | :heavy_minus_sign:                                                                                                                                                                      | N/A                                                                                                                                                                                     |                                                                                                                                                                                         |
 
 ### Response
 
@@ -100,7 +106,7 @@ if ($response->draftTransferResponse !== null) {
 
 | Error Type           | Status Code          | Content Type         |
 | -------------------- | -------------------- | -------------------- |
-| Errors\ErrorResponse | 422, 429             | application/hal+json |
+| Errors\ErrorResponse | 400, 422, 429        | application/hal+json |
 | Errors\APIException  | 4XX, 5XX             | \*/\*                |
 
 ## list
@@ -113,8 +119,7 @@ Retrieves a list of draft transfers created via this API for the organization.
 
 The results are paginated.
 
-In test mode, this returns synthetic draft transfers only, not your real data. See [Create draft
-transfer](create-draft-transfer) for how to simulate `approved` and `declined` outcomes.
+In test mode, this returns synthetic draft transfers only, not your real data.
 
 ### Example Usage
 
@@ -141,6 +146,8 @@ $request = new Operations\ListDraftTransfersRequest(
     limit: 50,
     status: Components\DraftTransferStatus::PendingReview,
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $responses = $sdk->draftTransfers->list(
@@ -196,6 +203,7 @@ require 'vendor/autoload.php';
 
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setTestmode(true)
@@ -206,12 +214,15 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-
+$request = new Operations\GetDraftTransferRequest(
+    draftTransferId: 'badrt_87GByBuj4UCcUTEbs6aGJ',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+);
 
 $response = $sdk->draftTransfers->get(
-    draftTransferId: 'badrt_87GByBuj4UCcUTEbs6aGJ',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426'
-
+    request: $request
 );
 
 if ($response->draftTransferResponse !== null) {
@@ -228,6 +239,7 @@ require 'vendor/autoload.php';
 
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setTestmode(false)
@@ -238,12 +250,15 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-
+$request = new Operations\GetDraftTransferRequest(
+    draftTransferId: 'badrt_87GByBuj4UCcUTEbs6aGJ',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+);
 
 $response = $sdk->draftTransfers->get(
-    draftTransferId: 'badrt_87GByBuj4UCcUTEbs6aGJ',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426'
-
+    request: $request
 );
 
 if ($response->draftTransferResponse !== null) {
@@ -260,6 +275,7 @@ require 'vendor/autoload.php';
 
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setTestmode(false)
@@ -270,12 +286,15 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-
+$request = new Operations\GetDraftTransferRequest(
+    draftTransferId: 'badrt_87GByBuj4UCcUTEbs6aGJ',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+);
 
 $response = $sdk->draftTransfers->get(
-    draftTransferId: 'badrt_87GByBuj4UCcUTEbs6aGJ',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426'
-
+    request: $request
 );
 
 if ($response->draftTransferResponse !== null) {
@@ -285,11 +304,9 @@ if ($response->draftTransferResponse !== null) {
 
 ### Parameters
 
-| Parameter                                                                                                                                                                                                                                                                                                                                                                                | Type                                                                                                                                                                                                                                                                                                                                                                                     | Required                                                                                                                                                                                                                                                                                                                                                                                 | Description                                                                                                                                                                                                                                                                                                                                                                              | Example                                                                                                                                                                                                                                                                                                                                                                                  |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `draftTransferId`                                                                                                                                                                                                                                                                                                                                                                        | *string*                                                                                                                                                                                                                                                                                                                                                                                 | :heavy_check_mark:                                                                                                                                                                                                                                                                                                                                                                       | Provide the ID of the related draft transfer.                                                                                                                                                                                                                                                                                                                                            | badrt_87GByBuj4UCcUTEbs6aGJ                                                                                                                                                                                                                                                                                                                                                              |
-| `testmode`                                                                                                                                                                                                                                                                                                                                                                               | *?bool*                                                                                                                                                                                                                                                                                                                                                                                  | :heavy_minus_sign:                                                                                                                                                                                                                                                                                                                                                                       | Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br/>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br/>setting the `testmode` query parameter to `true`.<br/><br/>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa. |                                                                                                                                                                                                                                                                                                                                                                                          |
-| `idempotencyKey`                                                                                                                                                                                                                                                                                                                                                                         | *?string*                                                                                                                                                                                                                                                                                                                                                                                | :heavy_minus_sign:                                                                                                                                                                                                                                                                                                                                                                       | A unique key to ensure idempotent requests. This key should be a UUID v4 string.                                                                                                                                                                                                                                                                                                         | 123e4567-e89b-12d3-a456-426                                                                                                                                                                                                                                                                                                                                                              |
+| Parameter                                                                                | Type                                                                                     | Required                                                                                 | Description                                                                              |
+| ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `$request`                                                                               | [Operations\GetDraftTransferRequest](../../Models/Operations/GetDraftTransferRequest.md) | :heavy_check_mark:                                                                       | The request object to use for the request.                                               |
 
 ### Response
 
@@ -337,15 +354,18 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-$body = new Operations\CancelDraftTransferRequestBody(
-    testmode: false,
+$request = new Operations\CancelDraftTransferRequest(
+    draftTransferId: 'badrt_87GByBuj4UCcUTEbs6aGJ',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+    body: new Operations\CancelDraftTransferRequestBody(
+        testmode: false,
+    ),
 );
 
 $response = $sdk->draftTransfers->cancel(
-    draftTransferId: 'badrt_87GByBuj4UCcUTEbs6aGJ',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426',
-    body: $body
-
+    request: $request
 );
 
 if ($response->draftTransferResponse !== null) {
@@ -355,11 +375,9 @@ if ($response->draftTransferResponse !== null) {
 
 ### Parameters
 
-| Parameter                                                                                               | Type                                                                                                    | Required                                                                                                | Description                                                                                             | Example                                                                                                 |
-| ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| `draftTransferId`                                                                                       | *string*                                                                                                | :heavy_check_mark:                                                                                      | Provide the ID of the related draft transfer.                                                           | badrt_87GByBuj4UCcUTEbs6aGJ                                                                             |
-| `idempotencyKey`                                                                                        | *?string*                                                                                               | :heavy_minus_sign:                                                                                      | A unique key to ensure idempotent requests. This key should be a UUID v4 string.                        | 123e4567-e89b-12d3-a456-426                                                                             |
-| `body`                                                                                                  | [?Operations\CancelDraftTransferRequestBody](../../Models/Operations/CancelDraftTransferRequestBody.md) | :heavy_minus_sign:                                                                                      | N/A                                                                                                     |                                                                                                         |
+| Parameter                                                                                      | Type                                                                                           | Required                                                                                       | Description                                                                                    |
+| ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `$request`                                                                                     | [Operations\CancelDraftTransferRequest](../../Models/Operations/CancelDraftTransferRequest.md) | :heavy_check_mark:                                                                             | The request object to use for the request.                                                     |
 
 ### Response
 

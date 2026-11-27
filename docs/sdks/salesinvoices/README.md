@@ -94,6 +94,8 @@ $body = new Components\SalesInvoiceRequest(
 
 $response = $sdk->salesInvoices->create(
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
     body: $body
 
 );
@@ -105,10 +107,12 @@ if ($response->salesInvoiceResponse !== null) {
 
 ### Parameters
 
-| Parameter                                                                         | Type                                                                              | Required                                                                          | Description                                                                       | Example                                                                           |
-| --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| `idempotencyKey`                                                                  | *?string*                                                                         | :heavy_minus_sign:                                                                | A unique key to ensure idempotent requests. This key should be a UUID v4 string.  | 123e4567-e89b-12d3-a456-426                                                       |
-| `body`                                                                            | [?Components\SalesInvoiceRequest](../../Models/Components/SalesInvoiceRequest.md) | :heavy_minus_sign:                                                                | N/A                                                                               |                                                                                   |
+| Parameter                                                                                                                                                                               | Type                                                                                                                                                                                    | Required                                                                                                                                                                                | Description                                                                                                                                                                             | Example                                                                                                                                                                                 |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `idempotencyKey`                                                                                                                                                                        | *?string*                                                                                                                                                                               | :heavy_minus_sign:                                                                                                                                                                      | A unique key to ensure idempotent requests. This key should be a UUID v4 string.                                                                                                        | 123e4567-e89b-12d3-a456-426                                                                                                                                                             |
+| `xClientSignature`                                                                                                                                                                      | *?string*                                                                                                                                                                               | :heavy_minus_sign:                                                                                                                                                                      | A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.        | MEUCIQDx8sJvK3z...                                                                                                                                                                      |
+| `xClientSignedAt`                                                                                                                                                                       | *?string*                                                                                                                                                                               | :heavy_minus_sign:                                                                                                                                                                      | The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration. | 2025-01-01T12:00:00Z                                                                                                                                                                    |
+| `body`                                                                                                                                                                                  | [?Components\SalesInvoiceRequest](../../Models/Components/SalesInvoiceRequest.md)                                                                                                       | :heavy_minus_sign:                                                                                                                                                                      | N/A                                                                                                                                                                                     |                                                                                                                                                                                         |
 
 ### Response
 
@@ -137,6 +141,7 @@ require 'vendor/autoload.php';
 
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setTestmode(false)
@@ -147,12 +152,15 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-
+$request = new Operations\ListSalesInvoicesRequest(
+    limit: 50,
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+);
 
 $responses = $sdk->salesInvoices->list(
-    limit: 50,
-    idempotencyKey: '123e4567-e89b-12d3-a456-426'
-
+    request: $request
 );
 
 
@@ -165,12 +173,9 @@ foreach ($responses as $response) {
 
 ### Parameters
 
-| Parameter                                                                                                                                                                                                                                                                                                                                                                                | Type                                                                                                                                                                                                                                                                                                                                                                                     | Required                                                                                                                                                                                                                                                                                                                                                                                 | Description                                                                                                                                                                                                                                                                                                                                                                              | Example                                                                                                                                                                                                                                                                                                                                                                                  |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `from`                                                                                                                                                                                                                                                                                                                                                                                   | *?string*                                                                                                                                                                                                                                                                                                                                                                                | :heavy_minus_sign:                                                                                                                                                                                                                                                                                                                                                                       | Provide an ID to start the result set from the item with the given ID and onwards. This allows you to paginate the<br/>result set.                                                                                                                                                                                                                                                       |                                                                                                                                                                                                                                                                                                                                                                                          |
-| `limit`                                                                                                                                                                                                                                                                                                                                                                                  | *?int*                                                                                                                                                                                                                                                                                                                                                                                   | :heavy_minus_sign:                                                                                                                                                                                                                                                                                                                                                                       | The maximum number of items to return. Defaults to 50 items.                                                                                                                                                                                                                                                                                                                             | 50                                                                                                                                                                                                                                                                                                                                                                                       |
-| `testmode`                                                                                                                                                                                                                                                                                                                                                                               | *?bool*                                                                                                                                                                                                                                                                                                                                                                                  | :heavy_minus_sign:                                                                                                                                                                                                                                                                                                                                                                       | Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br/>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br/>setting the `testmode` query parameter to `true`.<br/><br/>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa. |                                                                                                                                                                                                                                                                                                                                                                                          |
-| `idempotencyKey`                                                                                                                                                                                                                                                                                                                                                                         | *?string*                                                                                                                                                                                                                                                                                                                                                                                | :heavy_minus_sign:                                                                                                                                                                                                                                                                                                                                                                       | A unique key to ensure idempotent requests. This key should be a UUID v4 string.                                                                                                                                                                                                                                                                                                         | 123e4567-e89b-12d3-a456-426                                                                                                                                                                                                                                                                                                                                                              |
+| Parameter                                                                                  | Type                                                                                       | Required                                                                                   | Description                                                                                |
+| ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ |
+| `$request`                                                                                 | [Operations\ListSalesInvoicesRequest](../../Models/Operations/ListSalesInvoicesRequest.md) | :heavy_check_mark:                                                                         | The request object to use for the request.                                                 |
 
 ### Response
 
@@ -197,6 +202,7 @@ require 'vendor/autoload.php';
 
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setTestmode(false)
@@ -207,12 +213,15 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-
+$request = new Operations\GetSalesInvoiceRequest(
+    salesInvoiceId: 'invoice_4Y0eZitmBnQ6IDoMqZQKh',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+);
 
 $response = $sdk->salesInvoices->get(
-    salesInvoiceId: 'invoice_4Y0eZitmBnQ6IDoMqZQKh',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426'
-
+    request: $request
 );
 
 if ($response->salesInvoiceResponse !== null) {
@@ -222,11 +231,9 @@ if ($response->salesInvoiceResponse !== null) {
 
 ### Parameters
 
-| Parameter                                                                                                                                                                                                                                                                                                                                                                                | Type                                                                                                                                                                                                                                                                                                                                                                                     | Required                                                                                                                                                                                                                                                                                                                                                                                 | Description                                                                                                                                                                                                                                                                                                                                                                              | Example                                                                                                                                                                                                                                                                                                                                                                                  |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `salesInvoiceId`                                                                                                                                                                                                                                                                                                                                                                         | *string*                                                                                                                                                                                                                                                                                                                                                                                 | :heavy_check_mark:                                                                                                                                                                                                                                                                                                                                                                       | Provide the ID of the related sales invoice.                                                                                                                                                                                                                                                                                                                                             | invoice_4Y0eZitmBnQ6IDoMqZQKh                                                                                                                                                                                                                                                                                                                                                            |
-| `testmode`                                                                                                                                                                                                                                                                                                                                                                               | *?bool*                                                                                                                                                                                                                                                                                                                                                                                  | :heavy_minus_sign:                                                                                                                                                                                                                                                                                                                                                                       | Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br/>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br/>setting the `testmode` query parameter to `true`.<br/><br/>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa. |                                                                                                                                                                                                                                                                                                                                                                                          |
-| `idempotencyKey`                                                                                                                                                                                                                                                                                                                                                                         | *?string*                                                                                                                                                                                                                                                                                                                                                                                | :heavy_minus_sign:                                                                                                                                                                                                                                                                                                                                                                       | A unique key to ensure idempotent requests. This key should be a UUID v4 string.                                                                                                                                                                                                                                                                                                         | 123e4567-e89b-12d3-a456-426                                                                                                                                                                                                                                                                                                                                                              |
+| Parameter                                                                              | Type                                                                                   | Required                                                                               | Description                                                                            |
+| -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `$request`                                                                             | [Operations\GetSalesInvoiceRequest](../../Models/Operations/GetSalesInvoiceRequest.md) | :heavy_check_mark:                                                                     | The request object to use for the request.                                             |
 
 ### Response
 
@@ -265,65 +272,68 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-$body = new Operations\UpdateSalesInvoiceRequestBody(
-    testmode: false,
-    status: Components\SalesInvoiceStatusUpdate::Draft,
-    memo: 'An updated memo!',
-    paymentTerm: Components\SalesInvoicePaymentTerm::Thirtydays,
-    paymentDetails: new Components\SalesInvoicePaymentDetails(
-        source: Components\SalesInvoicePaymentDetailsSource::PaymentLink,
-        sourceReference: 'pl_d9fQur83kFdhH8hIhaZfq',
-    ),
-    emailDetails: new Components\SalesInvoiceEmailDetails(
-        subject: 'Your invoice is available',
-        body: 'Please find your invoice enclosed.',
-    ),
-    recipientIdentifier: 'customer-xyz-0123',
-    recipient: new Components\SalesInvoiceRecipient(
-        type: Components\SalesInvoiceRecipientType::Consumer,
-        title: 'Mrs.',
-        givenName: 'Jane',
-        familyName: 'Doe',
-        organizationName: 'Organization Corp.',
-        organizationNumber: '12345678',
-        vatNumber: 'NL123456789B01',
-        email: 'example@email.com',
-        phone: '+0123456789',
-        streetAndNumber: 'Keizersgracht 126',
-        streetAdditional: '4th floor',
-        postalCode: '5678AB',
-        city: 'Amsterdam',
-        region: 'Noord-Holland',
-        country: 'NL',
-        locale: Components\SalesInvoiceRecipientLocale::NLNL,
-    ),
-    lines: [
-        new Components\SalesInvoiceLineItem(
-            description: 'LEGO 4440 Forest Police Station',
-            quantity: 1,
-            vatRate: '21.00',
-            unitPrice: new Components\Amount(
-                currency: 'EUR',
-                value: '10.00',
-            ),
-            discount: new Components\SalesInvoiceDiscount(
-                type: Components\SalesInvoiceDiscountType::Amount,
-                value: '10.00',
-            ),
+$request = new Operations\UpdateSalesInvoiceRequest(
+    salesInvoiceId: 'invoice_4Y0eZitmBnQ6IDoMqZQKh',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+    body: new Operations\UpdateSalesInvoiceRequestBody(
+        testmode: false,
+        status: Components\SalesInvoiceStatusUpdate::Draft,
+        memo: 'An updated memo!',
+        paymentTerm: Components\SalesInvoicePaymentTerm::Thirtydays,
+        paymentDetails: new Components\SalesInvoicePaymentDetails(
+            source: Components\SalesInvoicePaymentDetailsSource::PaymentLink,
+            sourceReference: 'pl_d9fQur83kFdhH8hIhaZfq',
         ),
-    ],
-    discount: new Components\SalesInvoiceDiscount(
-        type: Components\SalesInvoiceDiscountType::Amount,
-        value: '10.00',
+        emailDetails: new Components\SalesInvoiceEmailDetails(
+            subject: 'Your invoice is available',
+            body: 'Please find your invoice enclosed.',
+        ),
+        recipientIdentifier: 'customer-xyz-0123',
+        recipient: new Components\SalesInvoiceRecipient(
+            type: Components\SalesInvoiceRecipientType::Consumer,
+            title: 'Mrs.',
+            givenName: 'Jane',
+            familyName: 'Doe',
+            organizationName: 'Organization Corp.',
+            organizationNumber: '12345678',
+            vatNumber: 'NL123456789B01',
+            email: 'example@email.com',
+            phone: '+0123456789',
+            streetAndNumber: 'Keizersgracht 126',
+            streetAdditional: '4th floor',
+            postalCode: '5678AB',
+            city: 'Amsterdam',
+            region: 'Noord-Holland',
+            country: 'NL',
+            locale: Components\SalesInvoiceRecipientLocale::NLNL,
+        ),
+        lines: [
+            new Components\SalesInvoiceLineItem(
+                description: 'LEGO 4440 Forest Police Station',
+                quantity: 1,
+                vatRate: '21.00',
+                unitPrice: new Components\Amount(
+                    currency: 'EUR',
+                    value: '10.00',
+                ),
+                discount: new Components\SalesInvoiceDiscount(
+                    type: Components\SalesInvoiceDiscountType::Amount,
+                    value: '10.00',
+                ),
+            ),
+        ],
+        discount: new Components\SalesInvoiceDiscount(
+            type: Components\SalesInvoiceDiscountType::Amount,
+            value: '10.00',
+        ),
+        isEInvoice: false,
     ),
-    isEInvoice: false,
 );
 
 $response = $sdk->salesInvoices->update(
-    salesInvoiceId: 'invoice_4Y0eZitmBnQ6IDoMqZQKh',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426',
-    body: $body
-
+    request: $request
 );
 
 if ($response->salesInvoiceResponse !== null) {
@@ -333,11 +343,9 @@ if ($response->salesInvoiceResponse !== null) {
 
 ### Parameters
 
-| Parameter                                                                                             | Type                                                                                                  | Required                                                                                              | Description                                                                                           | Example                                                                                               |
-| ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| `salesInvoiceId`                                                                                      | *string*                                                                                              | :heavy_check_mark:                                                                                    | Provide the ID of the related sales invoice.                                                          | invoice_4Y0eZitmBnQ6IDoMqZQKh                                                                         |
-| `idempotencyKey`                                                                                      | *?string*                                                                                             | :heavy_minus_sign:                                                                                    | A unique key to ensure idempotent requests. This key should be a UUID v4 string.                      | 123e4567-e89b-12d3-a456-426                                                                           |
-| `body`                                                                                                | [?Operations\UpdateSalesInvoiceRequestBody](../../Models/Operations/UpdateSalesInvoiceRequestBody.md) | :heavy_minus_sign:                                                                                    | N/A                                                                                                   |                                                                                                       |
+| Parameter                                                                                    | Type                                                                                         | Required                                                                                     | Description                                                                                  |
+| -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `$request`                                                                                   | [Operations\UpdateSalesInvoiceRequest](../../Models/Operations/UpdateSalesInvoiceRequest.md) | :heavy_check_mark:                                                                           | The request object to use for the request.                                                   |
 
 ### Response
 
@@ -365,6 +373,7 @@ require 'vendor/autoload.php';
 
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setSecurity(
@@ -374,15 +383,18 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-$body = new Components\DeleteValuesSalesInvoice(
-    testmode: false,
+$request = new Operations\DeleteSalesInvoiceRequest(
+    salesInvoiceId: 'invoice_4Y0eZitmBnQ6IDoMqZQKh',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+    body: new Components\DeleteValuesSalesInvoice(
+        testmode: false,
+    ),
 );
 
 $response = $sdk->salesInvoices->delete(
-    salesInvoiceId: 'invoice_4Y0eZitmBnQ6IDoMqZQKh',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426',
-    body: $body
-
+    request: $request
 );
 
 if ($response->statusCode === 200) {
@@ -392,11 +404,9 @@ if ($response->statusCode === 200) {
 
 ### Parameters
 
-| Parameter                                                                                   | Type                                                                                        | Required                                                                                    | Description                                                                                 | Example                                                                                     |
-| ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| `salesInvoiceId`                                                                            | *string*                                                                                    | :heavy_check_mark:                                                                          | Provide the ID of the related sales invoice.                                                | invoice_4Y0eZitmBnQ6IDoMqZQKh                                                               |
-| `idempotencyKey`                                                                            | *?string*                                                                                   | :heavy_minus_sign:                                                                          | A unique key to ensure idempotent requests. This key should be a UUID v4 string.            | 123e4567-e89b-12d3-a456-426                                                                 |
-| `body`                                                                                      | [?Components\DeleteValuesSalesInvoice](../../Models/Components/DeleteValuesSalesInvoice.md) | :heavy_minus_sign:                                                                          | N/A                                                                                         |                                                                                             |
+| Parameter                                                                                    | Type                                                                                         | Required                                                                                     | Description                                                                                  |
+| -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `$request`                                                                                   | [Operations\DeleteSalesInvoiceRequest](../../Models/Operations/DeleteSalesInvoiceRequest.md) | :heavy_check_mark:                                                                           | The request object to use for the request.                                                   |
 
 ### Response
 

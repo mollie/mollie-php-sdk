@@ -51,3 +51,4 @@ The payment method, if applicable
 | `Twint`             | twint               |
 | `Vipps`             | vipps               |
 | `Voucher`           | voucher             |
+| `Wero`              | wero                |

@@ -44,6 +44,8 @@ $body = new Operations\CreateWebhookRequestBody(
 
 $response = $sdk->webhooks->create(
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
     body: $body
 
 );
@@ -55,10 +57,12 @@ if ($response->createWebhook !== null) {
 
 ### Parameters
 
-| Parameter                                                                                   | Type                                                                                        | Required                                                                                    | Description                                                                                 | Example                                                                                     |
-| ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| `idempotencyKey`                                                                            | *?string*                                                                                   | :heavy_minus_sign:                                                                          | A unique key to ensure idempotent requests. This key should be a UUID v4 string.            | 123e4567-e89b-12d3-a456-426                                                                 |
-| `body`                                                                                      | [?Operations\CreateWebhookRequestBody](../../Models/Operations/CreateWebhookRequestBody.md) | :heavy_minus_sign:                                                                          | N/A                                                                                         |                                                                                             |
+| Parameter                                                                                                                                                                               | Type                                                                                                                                                                                    | Required                                                                                                                                                                                | Description                                                                                                                                                                             | Example                                                                                                                                                                                 |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `idempotencyKey`                                                                                                                                                                        | *?string*                                                                                                                                                                               | :heavy_minus_sign:                                                                                                                                                                      | A unique key to ensure idempotent requests. This key should be a UUID v4 string.                                                                                                        | 123e4567-e89b-12d3-a456-426                                                                                                                                                             |
+| `xClientSignature`                                                                                                                                                                      | *?string*                                                                                                                                                                               | :heavy_minus_sign:                                                                                                                                                                      | A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.        | MEUCIQDx8sJvK3z...                                                                                                                                                                      |
+| `xClientSignedAt`                                                                                                                                                                       | *?string*                                                                                                                                                                               | :heavy_minus_sign:                                                                                                                                                                      | The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration. | 2025-01-01T12:00:00Z                                                                                                                                                                    |
+| `body`                                                                                                                                                                                  | [?Operations\CreateWebhookRequestBody](../../Models/Operations/CreateWebhookRequestBody.md)                                                                                             | :heavy_minus_sign:                                                                                                                                                                      | N/A                                                                                                                                                                                     |                                                                                                                                                                                         |
 
 ### Response
 
@@ -101,6 +105,8 @@ $request = new Operations\ListWebhooksRequest(
     sort: Components\Sorting::Desc,
     eventTypes: Components\WebhookEventTypes::PaymentLinkPaid,
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $responses = $sdk->webhooks->list(
@@ -136,7 +142,7 @@ foreach ($responses as $response) {
 
 Updates the webhook. You may edit the name, url and the list of subscribed event types.
 
-### Example Usage
+### Example Usage: create-webhook-200
 
 <!-- UsageSnippet language="php" operationID="update-webhook" method="patch" path="/v2/webhooks/{webhookId}" example="create-webhook-200" -->
 ```php
@@ -156,18 +162,101 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-$body = new Operations\UpdateWebhookRequestBody(
-    name: 'Webhook #1',
-    url: 'https://mollie.com/',
-    eventTypes: Components\WebhookEventTypes::PaymentLinkPaid,
-    testmode: false,
+$request = new Operations\UpdateWebhookRequest(
+    webhookId: 'hook_1234567890',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    body: new Operations\UpdateWebhookRequestBody(
+        name: 'Webhook #1',
+        url: 'https://mollie.com/',
+        eventTypes: Components\WebhookEventTypes::PaymentLinkPaid,
+        testmode: false,
+    ),
 );
 
 $response = $sdk->webhooks->update(
+    request: $request
+);
+
+if ($response->entityWebhook !== null) {
+    // handle response
+}
+```
+### Example Usage: get-webhook-200
+
+<!-- UsageSnippet language="php" operationID="update-webhook" method="patch" path="/v2/webhooks/{webhookId}" example="get-webhook-200" -->
+```php
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Mollie\Api;
+use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
+
+$sdk = Api\Client::builder()
+    ->setSecurity(
+        new Components\Security(
+            advancedAccessToken: '<YOUR_BEARER_TOKEN_HERE>',
+        )
+    )
+    ->build();
+
+$request = new Operations\UpdateWebhookRequest(
     webhookId: 'hook_1234567890',
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
-    body: $body
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+    body: new Operations\UpdateWebhookRequestBody(
+        name: 'Webhook #1',
+        url: 'https://mollie.com/',
+        eventTypes: Components\WebhookEventTypes::PaymentLinkPaid,
+        testmode: false,
+    ),
+);
 
+$response = $sdk->webhooks->update(
+    request: $request
+);
+
+if ($response->entityWebhook !== null) {
+    // handle response
+}
+```
+### Example Usage: get-webhook-200-1
+
+<!-- UsageSnippet language="php" operationID="update-webhook" method="patch" path="/v2/webhooks/{webhookId}" example="get-webhook-200-1" -->
+```php
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Mollie\Api;
+use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
+
+$sdk = Api\Client::builder()
+    ->setSecurity(
+        new Components\Security(
+            advancedAccessToken: '<YOUR_BEARER_TOKEN_HERE>',
+        )
+    )
+    ->build();
+
+$request = new Operations\UpdateWebhookRequest(
+    webhookId: 'hook_1234567890',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+    body: new Operations\UpdateWebhookRequestBody(
+        name: 'Webhook #1',
+        url: 'https://mollie.com/',
+        eventTypes: Components\WebhookEventTypes::PaymentLinkPaid,
+        testmode: false,
+    ),
+);
+
+$response = $sdk->webhooks->update(
+    request: $request
 );
 
 if ($response->entityWebhook !== null) {
@@ -177,11 +266,9 @@ if ($response->entityWebhook !== null) {
 
 ### Parameters
 
-| Parameter                                                                                   | Type                                                                                        | Required                                                                                    | Description                                                                                 | Example                                                                                     |
-| ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| `webhookId`                                                                                 | *string*                                                                                    | :heavy_check_mark:                                                                          | Provide the ID of the related webhook.                                                      | hook_1234567890                                                                             |
-| `idempotencyKey`                                                                            | *?string*                                                                                   | :heavy_minus_sign:                                                                          | A unique key to ensure idempotent requests. This key should be a UUID v4 string.            | 123e4567-e89b-12d3-a456-426                                                                 |
-| `body`                                                                                      | [?Operations\UpdateWebhookRequestBody](../../Models/Operations/UpdateWebhookRequestBody.md) | :heavy_minus_sign:                                                                          | N/A                                                                                         |                                                                                             |
+| Parameter                                                                          | Type                                                                               | Required                                                                           | Description                                                                        |
+| ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `$request`                                                                         | [Operations\UpdateWebhookRequest](../../Models/Operations/UpdateWebhookRequest.md) | :heavy_check_mark:                                                                 | The request object to use for the request.                                         |
 
 ### Response
 
@@ -208,6 +295,7 @@ require 'vendor/autoload.php';
 
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setTestmode(false)
@@ -218,12 +306,15 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-
+$request = new Operations\GetWebhookRequest(
+    webhookId: 'hook_1234567890',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+);
 
 $response = $sdk->webhooks->get(
-    webhookId: 'hook_1234567890',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426'
-
+    request: $request
 );
 
 if ($response->entityWebhook !== null) {
@@ -240,6 +331,7 @@ require 'vendor/autoload.php';
 
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setTestmode(true)
@@ -250,12 +342,15 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-
+$request = new Operations\GetWebhookRequest(
+    webhookId: 'hook_1234567890',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+);
 
 $response = $sdk->webhooks->get(
-    webhookId: 'hook_1234567890',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426'
-
+    request: $request
 );
 
 if ($response->entityWebhook !== null) {
@@ -265,11 +360,9 @@ if ($response->entityWebhook !== null) {
 
 ### Parameters
 
-| Parameter                                                                                                                                                               | Type                                                                                                                                                                    | Required                                                                                                                                                                | Description                                                                                                                                                             | Example                                                                                                                                                                 |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `webhookId`                                                                                                                                                             | *string*                                                                                                                                                                | :heavy_check_mark:                                                                                                                                                      | Provide the ID of the related webhook.                                                                                                                                  | hook_1234567890                                                                                                                                                         |
-| `testmode`                                                                                                                                                              | *?bool*                                                                                                                                                                 | :heavy_minus_sign:                                                                                                                                                      | You can enable test mode by setting the `testmode` query parameter to `true`.<br/><br/>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa. |                                                                                                                                                                         |
-| `idempotencyKey`                                                                                                                                                        | *?string*                                                                                                                                                               | :heavy_minus_sign:                                                                                                                                                      | A unique key to ensure idempotent requests. This key should be a UUID v4 string.                                                                                        | 123e4567-e89b-12d3-a456-426                                                                                                                                             |
+| Parameter                                                                    | Type                                                                         | Required                                                                     | Description                                                                  |
+| ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `$request`                                                                   | [Operations\GetWebhookRequest](../../Models/Operations/GetWebhookRequest.md) | :heavy_check_mark:                                                           | The request object to use for the request.                                   |
 
 ### Response
 
@@ -306,15 +399,18 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-$body = new Operations\DeleteWebhookRequestBody(
-    testmode: false,
+$request = new Operations\DeleteWebhookRequest(
+    webhookId: 'hook_1234567890',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+    body: new Operations\DeleteWebhookRequestBody(
+        testmode: false,
+    ),
 );
 
 $response = $sdk->webhooks->delete(
-    webhookId: 'hook_1234567890',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426',
-    body: $body
-
+    request: $request
 );
 
 if ($response->statusCode === 200) {
@@ -324,11 +420,9 @@ if ($response->statusCode === 200) {
 
 ### Parameters
 
-| Parameter                                                                                   | Type                                                                                        | Required                                                                                    | Description                                                                                 | Example                                                                                     |
-| ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| `webhookId`                                                                                 | *string*                                                                                    | :heavy_check_mark:                                                                          | Provide the ID of the related webhook.                                                      | hook_1234567890                                                                             |
-| `idempotencyKey`                                                                            | *?string*                                                                                   | :heavy_minus_sign:                                                                          | A unique key to ensure idempotent requests. This key should be a UUID v4 string.            | 123e4567-e89b-12d3-a456-426                                                                 |
-| `body`                                                                                      | [?Operations\DeleteWebhookRequestBody](../../Models/Operations/DeleteWebhookRequestBody.md) | :heavy_minus_sign:                                                                          | N/A                                                                                         |                                                                                             |
+| Parameter                                                                          | Type                                                                               | Required                                                                           | Description                                                                        |
+| ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `$request`                                                                         | [Operations\DeleteWebhookRequest](../../Models/Operations/DeleteWebhookRequest.md) | :heavy_check_mark:                                                                 | The request object to use for the request.                                         |
 
 ### Response
 
@@ -365,15 +459,18 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-$body = new Operations\TestWebhookRequestBody(
-    testmode: false,
+$request = new Operations\TestWebhookRequest(
+    webhookId: 'hook_1234567890',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+    body: new Operations\TestWebhookRequestBody(
+        testmode: false,
+    ),
 );
 
 $response = $sdk->webhooks->test(
-    webhookId: 'hook_1234567890',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426',
-    body: $body
-
+    request: $request
 );
 
 if ($response->statusCode === 200) {
@@ -383,11 +480,9 @@ if ($response->statusCode === 200) {
 
 ### Parameters
 
-| Parameter                                                                               | Type                                                                                    | Required                                                                                | Description                                                                             | Example                                                                                 |
-| --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| `webhookId`                                                                             | *string*                                                                                | :heavy_check_mark:                                                                      | Provide the ID of the related webhook.                                                  | hook_1234567890                                                                         |
-| `idempotencyKey`                                                                        | *?string*                                                                               | :heavy_minus_sign:                                                                      | A unique key to ensure idempotent requests. This key should be a UUID v4 string.        | 123e4567-e89b-12d3-a456-426                                                             |
-| `body`                                                                                  | [?Operations\TestWebhookRequestBody](../../Models/Operations/TestWebhookRequestBody.md) | :heavy_minus_sign:                                                                      | N/A                                                                                     |                                                                                         |
+| Parameter                                                                      | Type                                                                           | Required                                                                       | Description                                                                    |
+| ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ |
+| `$request`                                                                     | [Operations\TestWebhookRequest](../../Models/Operations/TestWebhookRequest.md) | :heavy_check_mark:                                                             | The request object to use for the request.                                     |
 
 ### Response
 

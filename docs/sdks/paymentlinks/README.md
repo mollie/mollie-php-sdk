@@ -127,6 +127,8 @@ $body = new Operations\CreatePaymentLinkRequestBody(
 
 $response = $sdk->paymentLinks->create(
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
     body: $body
 
 );
@@ -245,6 +247,8 @@ $body = new Operations\CreatePaymentLinkRequestBody(
 
 $response = $sdk->paymentLinks->create(
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
     body: $body
 
 );
@@ -363,6 +367,8 @@ $body = new Operations\CreatePaymentLinkRequestBody(
 
 $response = $sdk->paymentLinks->create(
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
     body: $body
 
 );
@@ -481,6 +487,8 @@ $body = new Operations\CreatePaymentLinkRequestBody(
 
 $response = $sdk->paymentLinks->create(
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
     body: $body
 
 );
@@ -492,10 +500,12 @@ if ($response->paymentLinkResponse !== null) {
 
 ### Parameters
 
-| Parameter                                                                                           | Type                                                                                                | Required                                                                                            | Description                                                                                         | Example                                                                                             |
-| --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| `idempotencyKey`                                                                                    | *?string*                                                                                           | :heavy_minus_sign:                                                                                  | A unique key to ensure idempotent requests. This key should be a UUID v4 string.                    | 123e4567-e89b-12d3-a456-426                                                                         |
-| `body`                                                                                              | [?Operations\CreatePaymentLinkRequestBody](../../Models/Operations/CreatePaymentLinkRequestBody.md) | :heavy_minus_sign:                                                                                  | N/A                                                                                                 |                                                                                                     |
+| Parameter                                                                                                                                                                               | Type                                                                                                                                                                                    | Required                                                                                                                                                                                | Description                                                                                                                                                                             | Example                                                                                                                                                                                 |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `idempotencyKey`                                                                                                                                                                        | *?string*                                                                                                                                                                               | :heavy_minus_sign:                                                                                                                                                                      | A unique key to ensure idempotent requests. This key should be a UUID v4 string.                                                                                                        | 123e4567-e89b-12d3-a456-426                                                                                                                                                             |
+| `xClientSignature`                                                                                                                                                                      | *?string*                                                                                                                                                                               | :heavy_minus_sign:                                                                                                                                                                      | A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.        | MEUCIQDx8sJvK3z...                                                                                                                                                                      |
+| `xClientSignedAt`                                                                                                                                                                       | *?string*                                                                                                                                                                               | :heavy_minus_sign:                                                                                                                                                                      | The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration. | 2025-01-01T12:00:00Z                                                                                                                                                                    |
+| `body`                                                                                                                                                                                  | [?Operations\CreatePaymentLinkRequestBody](../../Models/Operations/CreatePaymentLinkRequestBody.md)                                                                                     | :heavy_minus_sign:                                                                                                                                                                      | N/A                                                                                                                                                                                     |                                                                                                                                                                                         |
 
 ### Response
 
@@ -524,6 +534,7 @@ require 'vendor/autoload.php';
 
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setTestmode(false)
@@ -534,13 +545,16 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-
-
-$responses = $sdk->paymentLinks->list(
+$request = new Operations\ListPaymentLinksRequest(
     from: 'pl_d9fQur83kFdhH8hIhaZfq',
     limit: 50,
-    idempotencyKey: '123e4567-e89b-12d3-a456-426'
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+);
 
+$responses = $sdk->paymentLinks->list(
+    request: $request
 );
 
 
@@ -560,6 +574,7 @@ require 'vendor/autoload.php';
 
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setTestmode(true)
@@ -570,13 +585,16 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-
-
-$responses = $sdk->paymentLinks->list(
+$request = new Operations\ListPaymentLinksRequest(
     from: 'pl_d9fQur83kFdhH8hIhaZfq',
     limit: 50,
-    idempotencyKey: '123e4567-e89b-12d3-a456-426'
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+);
 
+$responses = $sdk->paymentLinks->list(
+    request: $request
 );
 
 
@@ -589,12 +607,9 @@ foreach ($responses as $response) {
 
 ### Parameters
 
-| Parameter                                                                                                                                                                                                                                                                                                                                                                                | Type                                                                                                                                                                                                                                                                                                                                                                                     | Required                                                                                                                                                                                                                                                                                                                                                                                 | Description                                                                                                                                                                                                                                                                                                                                                                              | Example                                                                                                                                                                                                                                                                                                                                                                                  |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `from`                                                                                                                                                                                                                                                                                                                                                                                   | *?string*                                                                                                                                                                                                                                                                                                                                                                                | :heavy_minus_sign:                                                                                                                                                                                                                                                                                                                                                                       | Provide an ID to start the result set from the item with the given ID and onwards. This allows you to paginate the<br/>result set.                                                                                                                                                                                                                                                       | pl_d9fQur83kFdhH8hIhaZfq                                                                                                                                                                                                                                                                                                                                                                 |
-| `limit`                                                                                                                                                                                                                                                                                                                                                                                  | *?int*                                                                                                                                                                                                                                                                                                                                                                                   | :heavy_minus_sign:                                                                                                                                                                                                                                                                                                                                                                       | The maximum number of items to return. Defaults to 50 items.                                                                                                                                                                                                                                                                                                                             | 50                                                                                                                                                                                                                                                                                                                                                                                       |
-| `testmode`                                                                                                                                                                                                                                                                                                                                                                               | *?bool*                                                                                                                                                                                                                                                                                                                                                                                  | :heavy_minus_sign:                                                                                                                                                                                                                                                                                                                                                                       | Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br/>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br/>setting the `testmode` query parameter to `true`.<br/><br/>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa. |                                                                                                                                                                                                                                                                                                                                                                                          |
-| `idempotencyKey`                                                                                                                                                                                                                                                                                                                                                                         | *?string*                                                                                                                                                                                                                                                                                                                                                                                | :heavy_minus_sign:                                                                                                                                                                                                                                                                                                                                                                       | A unique key to ensure idempotent requests. This key should be a UUID v4 string.                                                                                                                                                                                                                                                                                                         | 123e4567-e89b-12d3-a456-426                                                                                                                                                                                                                                                                                                                                                              |
+| Parameter                                                                                | Type                                                                                     | Required                                                                                 | Description                                                                              |
+| ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `$request`                                                                               | [Operations\ListPaymentLinksRequest](../../Models/Operations/ListPaymentLinksRequest.md) | :heavy_check_mark:                                                                       | The request object to use for the request.                                               |
 
 ### Response
 
@@ -621,6 +636,7 @@ require 'vendor/autoload.php';
 
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setTestmode(false)
@@ -631,12 +647,15 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-
+$request = new Operations\GetPaymentLinkRequest(
+    paymentLinkId: 'pl_d9fQur83kFdhH8hIhaZfq',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+);
 
 $response = $sdk->paymentLinks->get(
-    paymentLinkId: 'pl_d9fQur83kFdhH8hIhaZfq',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426'
-
+    request: $request
 );
 
 if ($response->paymentLinkResponse !== null) {
@@ -646,11 +665,9 @@ if ($response->paymentLinkResponse !== null) {
 
 ### Parameters
 
-| Parameter                                                                                                                                                                                                                                                                                                                                                                                | Type                                                                                                                                                                                                                                                                                                                                                                                     | Required                                                                                                                                                                                                                                                                                                                                                                                 | Description                                                                                                                                                                                                                                                                                                                                                                              | Example                                                                                                                                                                                                                                                                                                                                                                                  |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `paymentLinkId`                                                                                                                                                                                                                                                                                                                                                                          | *string*                                                                                                                                                                                                                                                                                                                                                                                 | :heavy_check_mark:                                                                                                                                                                                                                                                                                                                                                                       | Provide the ID of the related payment link.                                                                                                                                                                                                                                                                                                                                              | pl_d9fQur83kFdhH8hIhaZfq                                                                                                                                                                                                                                                                                                                                                                 |
-| `testmode`                                                                                                                                                                                                                                                                                                                                                                               | *?bool*                                                                                                                                                                                                                                                                                                                                                                                  | :heavy_minus_sign:                                                                                                                                                                                                                                                                                                                                                                       | Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br/>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br/>setting the `testmode` query parameter to `true`.<br/><br/>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa. |                                                                                                                                                                                                                                                                                                                                                                                          |
-| `idempotencyKey`                                                                                                                                                                                                                                                                                                                                                                         | *?string*                                                                                                                                                                                                                                                                                                                                                                                | :heavy_minus_sign:                                                                                                                                                                                                                                                                                                                                                                       | A unique key to ensure idempotent requests. This key should be a UUID v4 string.                                                                                                                                                                                                                                                                                                         | 123e4567-e89b-12d3-a456-426                                                                                                                                                                                                                                                                                                                                                              |
+| Parameter                                                                            | Type                                                                                 | Required                                                                             | Description                                                                          |
+| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| `$request`                                                                           | [Operations\GetPaymentLinkRequest](../../Models/Operations/GetPaymentLinkRequest.md) | :heavy_check_mark:                                                                   | The request object to use for the request.                                           |
 
 ### Response
 
@@ -687,53 +704,56 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-$body = new Operations\UpdatePaymentLinkRequestBody(
-    description: 'Chess Board',
-    minimumAmount: new Components\Amount(
-        currency: 'EUR',
-        value: '10.00',
+$request = new Operations\UpdatePaymentLinkRequest(
+    paymentLinkId: 'pl_d9fQur83kFdhH8hIhaZfq',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+    body: new Operations\UpdatePaymentLinkRequestBody(
+        description: 'Chess Board',
+        minimumAmount: new Components\Amount(
+            currency: 'EUR',
+            value: '10.00',
+        ),
+        archived: false,
+        allowedMethods: [
+            Components\PaymentLinkMethod::Ideal,
+        ],
+        lines: null,
+        billingAddress: new Components\PaymentAddress(
+            title: 'Mr.',
+            givenName: 'Piet',
+            familyName: 'Mondriaan',
+            organizationName: 'Mollie B.V.',
+            streetAndNumber: 'Keizersgracht 126',
+            streetAdditional: 'Apt. 1',
+            postalCode: '1234AB',
+            email: 'piet@example.org',
+            phone: '31208202070',
+            city: 'Amsterdam',
+            region: 'Noord-Holland',
+            country: 'NL',
+        ),
+        shippingAddress: new Components\PaymentAddress(
+            title: 'Mr.',
+            givenName: 'Piet',
+            familyName: 'Mondriaan',
+            organizationName: 'Mollie B.V.',
+            streetAndNumber: 'Keizersgracht 126',
+            streetAdditional: 'Apt. 1',
+            postalCode: '1234AB',
+            email: 'piet@example.org',
+            phone: '31208202070',
+            city: 'Amsterdam',
+            region: 'Noord-Holland',
+            country: 'NL',
+        ),
+        testmode: false,
     ),
-    archived: false,
-    allowedMethods: [
-        Components\PaymentLinkMethod::Ideal,
-    ],
-    lines: null,
-    billingAddress: new Components\PaymentAddress(
-        title: 'Mr.',
-        givenName: 'Piet',
-        familyName: 'Mondriaan',
-        organizationName: 'Mollie B.V.',
-        streetAndNumber: 'Keizersgracht 126',
-        streetAdditional: 'Apt. 1',
-        postalCode: '1234AB',
-        email: 'piet@example.org',
-        phone: '31208202070',
-        city: 'Amsterdam',
-        region: 'Noord-Holland',
-        country: 'NL',
-    ),
-    shippingAddress: new Components\PaymentAddress(
-        title: 'Mr.',
-        givenName: 'Piet',
-        familyName: 'Mondriaan',
-        organizationName: 'Mollie B.V.',
-        streetAndNumber: 'Keizersgracht 126',
-        streetAdditional: 'Apt. 1',
-        postalCode: '1234AB',
-        email: 'piet@example.org',
-        phone: '31208202070',
-        city: 'Amsterdam',
-        region: 'Noord-Holland',
-        country: 'NL',
-    ),
-    testmode: false,
 );
 
 $response = $sdk->paymentLinks->update(
-    paymentLinkId: 'pl_d9fQur83kFdhH8hIhaZfq',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426',
-    body: $body
-
+    request: $request
 );
 
 if ($response->paymentLinkResponse !== null) {
@@ -743,11 +763,9 @@ if ($response->paymentLinkResponse !== null) {
 
 ### Parameters
 
-| Parameter                                                                                           | Type                                                                                                | Required                                                                                            | Description                                                                                         | Example                                                                                             |
-| --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| `paymentLinkId`                                                                                     | *string*                                                                                            | :heavy_check_mark:                                                                                  | Provide the ID of the related payment link.                                                         | pl_d9fQur83kFdhH8hIhaZfq                                                                            |
-| `idempotencyKey`                                                                                    | *?string*                                                                                           | :heavy_minus_sign:                                                                                  | A unique key to ensure idempotent requests. This key should be a UUID v4 string.                    | 123e4567-e89b-12d3-a456-426                                                                         |
-| `body`                                                                                              | [?Operations\UpdatePaymentLinkRequestBody](../../Models/Operations/UpdatePaymentLinkRequestBody.md) | :heavy_minus_sign:                                                                                  | N/A                                                                                                 |                                                                                                     |
+| Parameter                                                                                  | Type                                                                                       | Required                                                                                   | Description                                                                                |
+| ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ |
+| `$request`                                                                                 | [Operations\UpdatePaymentLinkRequest](../../Models/Operations/UpdatePaymentLinkRequest.md) | :heavy_check_mark:                                                                         | The request object to use for the request.                                                 |
 
 ### Response
 
@@ -790,15 +808,18 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-$body = new Operations\DeletePaymentLinkRequestBody(
-    testmode: false,
+$request = new Operations\DeletePaymentLinkRequest(
+    paymentLinkId: 'pl_d9fQur83kFdhH8hIhaZfq',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+    body: new Operations\DeletePaymentLinkRequestBody(
+        testmode: false,
+    ),
 );
 
 $response = $sdk->paymentLinks->delete(
-    paymentLinkId: 'pl_d9fQur83kFdhH8hIhaZfq',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426',
-    body: $body
-
+    request: $request
 );
 
 if ($response->statusCode === 200) {
@@ -808,11 +829,9 @@ if ($response->statusCode === 200) {
 
 ### Parameters
 
-| Parameter                                                                                           | Type                                                                                                | Required                                                                                            | Description                                                                                         | Example                                                                                             |
-| --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| `paymentLinkId`                                                                                     | *string*                                                                                            | :heavy_check_mark:                                                                                  | Provide the ID of the related payment link.                                                         | pl_d9fQur83kFdhH8hIhaZfq                                                                            |
-| `idempotencyKey`                                                                                    | *?string*                                                                                           | :heavy_minus_sign:                                                                                  | A unique key to ensure idempotent requests. This key should be a UUID v4 string.                    | 123e4567-e89b-12d3-a456-426                                                                         |
-| `body`                                                                                              | [?Operations\DeletePaymentLinkRequestBody](../../Models/Operations/DeletePaymentLinkRequestBody.md) | :heavy_minus_sign:                                                                                  | N/A                                                                                                 |                                                                                                     |
+| Parameter                                                                                  | Type                                                                                       | Required                                                                                   | Description                                                                                |
+| ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ |
+| `$request`                                                                                 | [Operations\DeletePaymentLinkRequest](../../Models/Operations/DeletePaymentLinkRequest.md) | :heavy_check_mark:                                                                         | The request object to use for the request.                                                 |
 
 ### Response
 
@@ -858,6 +877,8 @@ $request = new Operations\GetPaymentLinkPaymentsRequest(
     limit: 50,
     sort: Components\Sorting::Desc,
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $responses = $sdk->paymentLinks->listPayments(

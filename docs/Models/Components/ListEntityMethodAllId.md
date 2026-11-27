@@ -35,6 +35,7 @@ method selection screen will be skipped.
 | `Paybybank`    | paybybank      |
 | `Paypal`       | paypal         |
 | `Paysafecard`  | paysafecard    |
+| `Pointofsale`  | pointofsale    |
 | `Przelewy24`   | przelewy24     |
 | `Riverty`      | riverty        |
 | `Satispay`     | satispay       |
@@ -43,3 +44,4 @@ method selection screen will be skipped.
 | `Twint`        | twint          |
 | `Vipps`        | vipps          |
 | `Voucher`      | voucher        |
+| `Wero`         | wero           |

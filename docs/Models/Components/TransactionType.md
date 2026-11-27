@@ -19,3 +19,4 @@ to handle unexpected values gracefully, so nothing breaks when that happens.
 | `Correction`        | correction          |
 | `DirectDebit`       | direct-debit        |
 | `DirectDebitRefund` | direct-debit-refund |
+| `RewardsPayout`     | rewards-payout      |

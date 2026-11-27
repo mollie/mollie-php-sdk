@@ -32,38 +32,18 @@ Developer-friendly & type-safe Php SDK specifically catered to leverage *mollie/
 * [Development](#development)
   * [Maturity](#maturity)
   * [Contributions](#contributions)
+* [mollie-automatic-api-php](#mollie-automatic-api-php)
 
 <!-- End Table of Contents [toc] -->
 
 <!-- Start SDK Installation [installation] -->
 ## SDK Installation
 
-> [!TIP]
-> To finish publishing your SDK you must [run your first generation action](https://www.speakeasy.com/docs/github-setup#step-by-step-guide).
-
-
 The SDK relies on [Composer](https://getcomposer.org/) to manage its dependencies.
 
-To install the SDK first add the below to your `composer.json` file:
-
-```json
-{
-    "repositories": [
-        {
-            "type": "github",
-            "url": "<UNSET>.git"
-        }
-    ],
-    "require": {
-        "mollie/php": "*"
-    }
-}
-```
-
-Then run the following command:
-
+To install the SDK and add it as a dependency to an existing `composer.json` file:
 ```bash
-composer update
+composer require "mollie/php"
 ```
 <!-- End SDK Installation [installation] -->
 
@@ -143,6 +123,8 @@ $request = new Operations\ListBalancesRequest(
     currency: 'EUR',
     limit: 50,
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $responses = $sdk->balances->list(
@@ -203,6 +185,7 @@ if ($response->object !== null) {
 
 ### [Accounts](docs/sdks/accounts/README.md)
 
+* [createAccount](docs/sdks/accounts/README.md#createaccount) - Create business account
 * [listAccounts](docs/sdks/accounts/README.md#listaccounts) - List business accounts
 * [getAccount](docs/sdks/accounts/README.md#getaccount) - Get business account
 * [list](docs/sdks/accounts/README.md#list) - List transactions
@@ -237,6 +220,11 @@ if ($response->object !== null) {
 * [list](docs/sdks/chargebacks/README.md#list) - List payment chargebacks
 * [get](docs/sdks/chargebacks/README.md#get) - Get payment chargeback
 * [all](docs/sdks/chargebacks/README.md#all) - List all chargebacks
+
+### [CheckoutSessions](docs/sdks/checkoutsessions/README.md)
+
+* [create](docs/sdks/checkoutsessions/README.md#create) - Create Checkout Session
+* [get](docs/sdks/checkoutsessions/README.md#get) - Get Checkout Session
 
 ### [ClientLinks](docs/sdks/clientlinks/README.md)
 
@@ -355,6 +343,11 @@ if ($response->object !== null) {
 * [cancel](docs/sdks/refunds/README.md#cancel) - Cancel payment refund
 * [all](docs/sdks/refunds/README.md#all) - List all refunds
 
+### [Reports](docs/sdks/reports/README.md)
+
+* [create](docs/sdks/reports/README.md#create) - Create report
+* [get](docs/sdks/reports/README.md#get) - Get report
+
 ### [SalesInvoices](docs/sdks/salesinvoices/README.md)
 
 * [create](docs/sdks/salesinvoices/README.md#create) - Create sales invoice
@@ -362,11 +355,6 @@ if ($response->object !== null) {
 * [get](docs/sdks/salesinvoices/README.md#get) - Get sales invoice
 * [update](docs/sdks/salesinvoices/README.md#update) - Update sales invoice
 * [delete](docs/sdks/salesinvoices/README.md#delete) - Delete sales invoice
-
-### [Sessions](docs/sdks/sessions/README.md)
-
-* [create](docs/sdks/sessions/README.md#create) - Create session
-* [get](docs/sdks/sessions/README.md#get) - Get session
 
 ### [Settlements](docs/sdks/settlements/README.md)
 
@@ -478,6 +466,8 @@ $request = new Operations\ListBalancesRequest(
     currency: 'EUR',
     limit: 50,
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $responses = $sdk->balances->list(
@@ -522,6 +512,8 @@ $request = new Operations\ListBalancesRequest(
     currency: 'EUR',
     limit: 50,
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $responses = $sdk->balances->list(

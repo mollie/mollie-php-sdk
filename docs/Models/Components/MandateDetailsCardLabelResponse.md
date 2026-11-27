@@ -10,6 +10,7 @@ The card's label. Available for card mandates, if the card label could be detect
 | `AmericanExpress` | American Express  |
 | `CartaSi`         | Carta Si          |
 | `CarteBleue`      | Carte Bleue       |
+| `CartesBancaires` | Cartes Bancaires  |
 | `Dankort`         | Dankort           |
 | `DinersClub`      | Diners Club       |
 | `Discover`        | Discover          |

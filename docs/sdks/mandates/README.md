@@ -27,6 +27,7 @@ require 'vendor/autoload.php';
 
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setSecurity(
@@ -36,25 +37,28 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-$body = new Components\MandateRequest(
-    id: 'mdt_5B8cwPMGnU',
-    method: Components\MandateMethod::Directdebit,
-    consumerName: 'John Doe',
-    consumerAccount: 'NL55INGB0000000000',
-    consumerBic: 'BANKBIC',
-    consumerEmail: 'example@email.com',
-    signatureDate: '2025-01-01',
-    mandateReference: 'ID-1023892',
-    paypalBillingAgreementId: 'B-12A34567B8901234CD',
-    payPalVaultId: '8kk8451t',
-    testmode: false,
+$request = new Operations\CreateMandateRequest(
+    customerId: 'cst_5B8cwPMGnU',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+    body: new Components\MandateRequest(
+        id: 'mdt_5B8cwPMGnU',
+        method: Components\MandateMethod::Directdebit,
+        consumerName: 'John Doe',
+        consumerAccount: 'NL55INGB0000000000',
+        consumerBic: 'BANKBIC',
+        consumerEmail: 'example@email.com',
+        signatureDate: '2025-01-01',
+        mandateReference: 'ID-1023892',
+        paypalBillingAgreementId: 'B-12A34567B8901234CD',
+        payPalVaultId: '8kk8451t',
+        testmode: false,
+    ),
 );
 
 $response = $sdk->mandates->create(
-    customerId: 'cst_5B8cwPMGnU',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426',
-    body: $body
-
+    request: $request
 );
 
 if ($response->mandateResponse !== null) {
@@ -71,6 +75,7 @@ require 'vendor/autoload.php';
 
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setSecurity(
@@ -80,25 +85,28 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-$body = new Components\MandateRequest(
-    id: 'mdt_5B8cwPMGnU',
-    method: Components\MandateMethod::Directdebit,
-    consumerName: 'John Doe',
-    consumerAccount: 'NL55INGB0000000000',
-    consumerBic: 'BANKBIC',
-    consumerEmail: 'example@email.com',
-    signatureDate: '2025-01-01',
-    mandateReference: 'ID-1023892',
-    paypalBillingAgreementId: 'B-12A34567B8901234CD',
-    payPalVaultId: '8kk8451t',
-    testmode: false,
+$request = new Operations\CreateMandateRequest(
+    customerId: 'cst_5B8cwPMGnU',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+    body: new Components\MandateRequest(
+        id: 'mdt_5B8cwPMGnU',
+        method: Components\MandateMethod::Directdebit,
+        consumerName: 'John Doe',
+        consumerAccount: 'NL55INGB0000000000',
+        consumerBic: 'BANKBIC',
+        consumerEmail: 'example@email.com',
+        signatureDate: '2025-01-01',
+        mandateReference: 'ID-1023892',
+        paypalBillingAgreementId: 'B-12A34567B8901234CD',
+        payPalVaultId: '8kk8451t',
+        testmode: false,
+    ),
 );
 
 $response = $sdk->mandates->create(
-    customerId: 'cst_5B8cwPMGnU',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426',
-    body: $body
-
+    request: $request
 );
 
 if ($response->mandateResponse !== null) {
@@ -108,11 +116,9 @@ if ($response->mandateResponse !== null) {
 
 ### Parameters
 
-| Parameter                                                                        | Type                                                                             | Required                                                                         | Description                                                                      | Example                                                                          |
-| -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| `customerId`                                                                     | *string*                                                                         | :heavy_check_mark:                                                               | Provide the ID of the related customer.                                          | cst_5B8cwPMGnU                                                                   |
-| `idempotencyKey`                                                                 | *?string*                                                                        | :heavy_minus_sign:                                                               | A unique key to ensure idempotent requests. This key should be a UUID v4 string. | 123e4567-e89b-12d3-a456-426                                                      |
-| `body`                                                                           | [?Components\MandateRequest](../../Models/Components/MandateRequest.md)          | :heavy_minus_sign:                                                               | N/A                                                                              |                                                                                  |
+| Parameter                                                                          | Type                                                                               | Required                                                                           | Description                                                                        |
+| ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `$request`                                                                         | [Operations\CreateMandateRequest](../../Models/Operations/CreateMandateRequest.md) | :heavy_check_mark:                                                                 | The request object to use for the request.                                         |
 
 ### Response
 
@@ -161,6 +167,8 @@ $request = new Operations\ListMandatesRequest(
         Components\MandateScopes::CustomerPresent,
     ],
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $responses = $sdk->mandates->list(
@@ -207,6 +215,7 @@ require 'vendor/autoload.php';
 
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setTestmode(true)
@@ -217,13 +226,16 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-
-
-$response = $sdk->mandates->get(
+$request = new Operations\GetMandateRequest(
     customerId: 'cst_5B8cwPMGnU',
     mandateId: 'mdt_5B8cwPMGnU',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426'
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+);
 
+$response = $sdk->mandates->get(
+    request: $request
 );
 
 if ($response->mandateResponse !== null) {
@@ -233,12 +245,9 @@ if ($response->mandateResponse !== null) {
 
 ### Parameters
 
-| Parameter                                                                                                                                                                                                                                                                                                                                                                                | Type                                                                                                                                                                                                                                                                                                                                                                                     | Required                                                                                                                                                                                                                                                                                                                                                                                 | Description                                                                                                                                                                                                                                                                                                                                                                              | Example                                                                                                                                                                                                                                                                                                                                                                                  |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `customerId`                                                                                                                                                                                                                                                                                                                                                                             | *string*                                                                                                                                                                                                                                                                                                                                                                                 | :heavy_check_mark:                                                                                                                                                                                                                                                                                                                                                                       | Provide the ID of the related customer.                                                                                                                                                                                                                                                                                                                                                  | cst_5B8cwPMGnU                                                                                                                                                                                                                                                                                                                                                                           |
-| `mandateId`                                                                                                                                                                                                                                                                                                                                                                              | *string*                                                                                                                                                                                                                                                                                                                                                                                 | :heavy_check_mark:                                                                                                                                                                                                                                                                                                                                                                       | Provide the ID of the related mandate.                                                                                                                                                                                                                                                                                                                                                   | mdt_5B8cwPMGnU                                                                                                                                                                                                                                                                                                                                                                           |
-| `testmode`                                                                                                                                                                                                                                                                                                                                                                               | *?bool*                                                                                                                                                                                                                                                                                                                                                                                  | :heavy_minus_sign:                                                                                                                                                                                                                                                                                                                                                                       | Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br/>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br/>setting the `testmode` query parameter to `true`.<br/><br/>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa. |                                                                                                                                                                                                                                                                                                                                                                                          |
-| `idempotencyKey`                                                                                                                                                                                                                                                                                                                                                                         | *?string*                                                                                                                                                                                                                                                                                                                                                                                | :heavy_minus_sign:                                                                                                                                                                                                                                                                                                                                                                       | A unique key to ensure idempotent requests. This key should be a UUID v4 string.                                                                                                                                                                                                                                                                                                         | 123e4567-e89b-12d3-a456-426                                                                                                                                                                                                                                                                                                                                                              |
+| Parameter                                                                    | Type                                                                         | Required                                                                     | Description                                                                  |
+| ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `$request`                                                                   | [Operations\GetMandateRequest](../../Models/Operations/GetMandateRequest.md) | :heavy_check_mark:                                                           | The request object to use for the request.                                   |
 
 ### Response
 
@@ -276,16 +285,19 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-$body = new Operations\RevokeMandateRequestBody(
-    testmode: false,
-);
-
-$response = $sdk->mandates->revoke(
+$request = new Operations\RevokeMandateRequest(
     customerId: 'cst_5B8cwPMGnU',
     mandateId: 'mdt_5B8cwPMGnU',
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
-    body: $body
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+    body: new Operations\RevokeMandateRequestBody(
+        testmode: false,
+    ),
+);
 
+$response = $sdk->mandates->revoke(
+    request: $request
 );
 
 if ($response->statusCode === 200) {
@@ -295,12 +307,9 @@ if ($response->statusCode === 200) {
 
 ### Parameters
 
-| Parameter                                                                                   | Type                                                                                        | Required                                                                                    | Description                                                                                 | Example                                                                                     |
-| ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| `customerId`                                                                                | *string*                                                                                    | :heavy_check_mark:                                                                          | Provide the ID of the related customer.                                                     | cst_5B8cwPMGnU                                                                              |
-| `mandateId`                                                                                 | *string*                                                                                    | :heavy_check_mark:                                                                          | Provide the ID of the related mandate.                                                      | mdt_5B8cwPMGnU                                                                              |
-| `idempotencyKey`                                                                            | *?string*                                                                                   | :heavy_minus_sign:                                                                          | A unique key to ensure idempotent requests. This key should be a UUID v4 string.            | 123e4567-e89b-12d3-a456-426                                                                 |
-| `body`                                                                                      | [?Operations\RevokeMandateRequestBody](../../Models/Operations/RevokeMandateRequestBody.md) | :heavy_minus_sign:                                                                          | N/A                                                                                         |                                                                                             |
+| Parameter                                                                          | Type                                                                               | Required                                                                           | Description                                                                        |
+| ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `$request`                                                                         | [Operations\RevokeMandateRequest](../../Models/Operations/RevokeMandateRequest.md) | :heavy_check_mark:                                                                 | The request object to use for the request.                                         |
 
 ### Response
 

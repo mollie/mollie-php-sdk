@@ -14,6 +14,7 @@ The preferred locale of the merchant, as set in their Mollie dashboard.
 | `DeCH` | de_CH  |
 | `DEDE` | de_DE  |
 | `DeLU` | de_LU  |
+| `ElGR` | el_GR  |
 | `EnBE` | en_BE  |
 | `EnGB` | en_GB  |
 | `EnNL` | en_NL  |
@@ -34,4 +35,6 @@ The preferred locale of the merchant, as set in their Mollie dashboard.
 | `PLPL` | pl_PL  |
 | `PTPT` | pt_PT  |
 | `SKSK` | sk_SK  |
+| `SlSI` | sl_SI  |
 | `SvSE` | sv_SE  |
+| `TRTR` | tr_TR  |

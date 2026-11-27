@@ -58,3 +58,4 @@ correction or transaction type that is not tied to a specific payment method.
 | `Twint`                 | twint                   |
 | `Vipps`                 | vipps                   |
 | `Voucher`               | voucher                 |
+| `Wero`                  | wero                    |

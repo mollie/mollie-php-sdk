@@ -67,6 +67,8 @@ $request = new Operations\ListMethodsRequest(
     includeWallets: Components\MethodIncludeWalletsParameter::Applepay,
     orderLineCategories: Components\LineCategories::Eco,
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $response = $sdk->methods->list(
@@ -110,6 +112,8 @@ $request = new Operations\ListMethodsRequest(
     includeWallets: Components\MethodIncludeWalletsParameter::Applepay,
     orderLineCategories: Components\LineCategories::Eco,
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $response = $sdk->methods->list(
@@ -153,6 +157,8 @@ $request = new Operations\ListMethodsRequest(
     includeWallets: Components\MethodIncludeWalletsParameter::Applepay,
     orderLineCategories: Components\LineCategories::Eco,
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $response = $sdk->methods->list(
@@ -221,6 +227,8 @@ $request = new Operations\ListAllMethodsRequest(
     ),
     sequenceType: Components\SequenceType::Oneoff,
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $response = $sdk->methods->all(
@@ -261,6 +269,8 @@ $request = new Operations\ListAllMethodsRequest(
     ),
     sequenceType: Components\SequenceType::Oneoff,
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $response = $sdk->methods->all(
@@ -301,6 +311,8 @@ $request = new Operations\ListAllMethodsRequest(
     ),
     sequenceType: Components\SequenceType::Oneoff,
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $response = $sdk->methods->all(
@@ -341,6 +353,8 @@ $request = new Operations\ListAllMethodsRequest(
     ),
     sequenceType: Components\SequenceType::Oneoff,
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $response = $sdk->methods->all(
@@ -407,11 +421,13 @@ $sdk = Api\Client::builder()
     ->build();
 
 $request = new Operations\GetMethodRequest(
-    methodId: Components\MethodEnum::Ideal,
+    methodId: Components\MethodId::Ideal,
     locale: Components\Locale::EnUS,
     currency: 'EUR',
     sequenceType: Components\SequenceType::Oneoff,
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $response = $sdk->methods->get(
@@ -463,6 +479,7 @@ require 'vendor/autoload.php';
 
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setSecurity(
@@ -472,13 +489,16 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-
+$request = new Operations\EnableMethodRequest(
+    profileId: 'pfl_5B8cwPMGnU',
+    methodId: Components\MethodId::Ideal,
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+);
 
 $response = $sdk->methods->enable(
-    profileId: 'pfl_5B8cwPMGnU',
-    methodId: Components\MethodEnum::Ideal,
-    idempotencyKey: '123e4567-e89b-12d3-a456-426'
-
+    request: $request
 );
 
 if ($response->entityMethodGet !== null) {
@@ -495,6 +515,7 @@ require 'vendor/autoload.php';
 
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setSecurity(
@@ -504,13 +525,16 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-
+$request = new Operations\EnableMethodRequest(
+    profileId: 'pfl_5B8cwPMGnU',
+    methodId: Components\MethodId::Ideal,
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+);
 
 $response = $sdk->methods->enable(
-    profileId: 'pfl_5B8cwPMGnU',
-    methodId: Components\MethodEnum::Ideal,
-    idempotencyKey: '123e4567-e89b-12d3-a456-426'
-
+    request: $request
 );
 
 if ($response->entityMethodGet !== null) {
@@ -527,6 +551,7 @@ require 'vendor/autoload.php';
 
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setSecurity(
@@ -536,13 +561,16 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-
+$request = new Operations\EnableMethodRequest(
+    profileId: 'pfl_5B8cwPMGnU',
+    methodId: Components\MethodId::Ideal,
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+);
 
 $response = $sdk->methods->enable(
-    profileId: 'pfl_5B8cwPMGnU',
-    methodId: Components\MethodEnum::Ideal,
-    idempotencyKey: '123e4567-e89b-12d3-a456-426'
-
+    request: $request
 );
 
 if ($response->entityMethodGet !== null) {
@@ -552,11 +580,9 @@ if ($response->entityMethodGet !== null) {
 
 ### Parameters
 
-| Parameter                                                                        | Type                                                                             | Required                                                                         | Description                                                                      | Example                                                                          |
-| -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| `profileId`                                                                      | *string*                                                                         | :heavy_check_mark:                                                               | Provide the ID of the related profile.                                           | pfl_5B8cwPMGnU                                                                   |
-| `methodId`                                                                       | [Components\MethodEnum](../../Models/Components/MethodEnum.md)                   | :heavy_check_mark:                                                               | Provide the ID of the related payment method.                                    | ideal                                                                            |
-| `idempotencyKey`                                                                 | *?string*                                                                        | :heavy_minus_sign:                                                               | A unique key to ensure idempotent requests. This key should be a UUID v4 string. | 123e4567-e89b-12d3-a456-426                                                      |
+| Parameter                                                                        | Type                                                                             | Required                                                                         | Description                                                                      |
+| -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `$request`                                                                       | [Operations\EnableMethodRequest](../../Models/Operations/EnableMethodRequest.md) | :heavy_check_mark:                                                               | The request object to use for the request.                                       |
 
 ### Response
 
@@ -566,7 +592,7 @@ if ($response->entityMethodGet !== null) {
 
 | Error Type           | Status Code          | Content Type         |
 | -------------------- | -------------------- | -------------------- |
-| Errors\ErrorResponse | 404, 429             | application/hal+json |
+| Errors\ErrorResponse | 404, 422, 429        | application/hal+json |
 | Errors\APIException  | 4XX, 5XX             | \*/\*                |
 
 ## disable
@@ -586,6 +612,7 @@ require 'vendor/autoload.php';
 
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setSecurity(
@@ -595,13 +622,16 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-
+$request = new Operations\DisableMethodRequest(
+    profileId: 'pfl_5B8cwPMGnU',
+    methodId: Components\MethodId::Ideal,
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+);
 
 $response = $sdk->methods->disable(
-    profileId: 'pfl_5B8cwPMGnU',
-    methodId: Components\MethodEnum::Ideal,
-    idempotencyKey: '123e4567-e89b-12d3-a456-426'
-
+    request: $request
 );
 
 if ($response->statusCode === 200) {
@@ -611,11 +641,9 @@ if ($response->statusCode === 200) {
 
 ### Parameters
 
-| Parameter                                                                        | Type                                                                             | Required                                                                         | Description                                                                      | Example                                                                          |
-| -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| `profileId`                                                                      | *string*                                                                         | :heavy_check_mark:                                                               | Provide the ID of the related profile.                                           | pfl_5B8cwPMGnU                                                                   |
-| `methodId`                                                                       | [Components\MethodEnum](../../Models/Components/MethodEnum.md)                   | :heavy_check_mark:                                                               | Provide the ID of the related payment method.                                    | ideal                                                                            |
-| `idempotencyKey`                                                                 | *?string*                                                                        | :heavy_minus_sign:                                                               | A unique key to ensure idempotent requests. This key should be a UUID v4 string. | 123e4567-e89b-12d3-a456-426                                                      |
+| Parameter                                                                          | Type                                                                               | Required                                                                           | Description                                                                        |
+| ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `$request`                                                                         | [Operations\DisableMethodRequest](../../Models/Operations/DisableMethodRequest.md) | :heavy_check_mark:                                                                 | The request object to use for the request.                                         |
 
 ### Response
 
@@ -662,6 +690,8 @@ $request = new Operations\EnableMethodIssuerRequest(
     methodId: Components\MethodIdWithIssuer::Voucher,
     issuerId: 'edenred-france-sports',
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
     body: new Operations\EnableMethodIssuerRequestBody(
         contractId: 'ideal',
     ),
@@ -690,7 +720,7 @@ if ($response->oneOf !== null) {
 
 | Error Type           | Status Code          | Content Type         |
 | -------------------- | -------------------- | -------------------- |
-| Errors\ErrorResponse | 404, 429             | application/hal+json |
+| Errors\ErrorResponse | 404, 422, 429        | application/hal+json |
 | Errors\APIException  | 4XX, 5XX             | \*/\*                |
 
 ## disableIssuer
@@ -712,6 +742,7 @@ require 'vendor/autoload.php';
 
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setSecurity(
@@ -721,14 +752,17 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-
-
-$response = $sdk->methods->disableIssuer(
+$request = new Operations\DisableMethodIssuerRequest(
     profileId: 'pfl_5B8cwPMGnU',
     methodId: Components\MethodIdWithIssuer::Voucher,
     issuerId: 'edenred-france-sports',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426'
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+);
 
+$response = $sdk->methods->disableIssuer(
+    request: $request
 );
 
 if ($response->statusCode === 200) {
@@ -738,12 +772,9 @@ if ($response->statusCode === 200) {
 
 ### Parameters
 
-| Parameter                                                                        | Type                                                                             | Required                                                                         | Description                                                                      | Example                                                                          |
-| -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| `profileId`                                                                      | *string*                                                                         | :heavy_check_mark:                                                               | Provide the ID of the related profile.                                           | pfl_5B8cwPMGnU                                                                   |
-| `methodId`                                                                       | [Components\MethodIdWithIssuer](../../Models/Components/MethodIdWithIssuer.md)   | :heavy_check_mark:                                                               | Provide the ID of the related payment method.                                    | voucher                                                                          |
-| `issuerId`                                                                       | *string*                                                                         | :heavy_check_mark:                                                               | Provide the ID of the related issuer.                                            | edenred-france-sports                                                            |
-| `idempotencyKey`                                                                 | *?string*                                                                        | :heavy_minus_sign:                                                               | A unique key to ensure idempotent requests. This key should be a UUID v4 string. | 123e4567-e89b-12d3-a456-426                                                      |
+| Parameter                                                                                      | Type                                                                                           | Required                                                                                       | Description                                                                                    |
+| ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `$request`                                                                                     | [Operations\DisableMethodIssuerRequest](../../Models/Operations/DisableMethodIssuerRequest.md) | :heavy_check_mark:                                                                             | The request object to use for the request.                                                     |
 
 ### Response
 
@@ -753,5 +784,5 @@ if ($response->statusCode === 200) {
 
 | Error Type           | Status Code          | Content Type         |
 | -------------------- | -------------------- | -------------------- |
-| Errors\ErrorResponse | 404, 429             | application/hal+json |
+| Errors\ErrorResponse | 404, 422, 429        | application/hal+json |
 | Errors\APIException  | 4XX, 5XX             | \*/\*                |

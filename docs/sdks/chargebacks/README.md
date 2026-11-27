@@ -40,6 +40,8 @@ $request = new Operations\ListChargebacksRequest(
     from: 'chb_xFzwUN4ci8HAmSGUACS4J',
     limit: 50,
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $responses = $sdk->chargebacks->list(
@@ -79,6 +81,8 @@ $request = new Operations\ListChargebacksRequest(
     from: 'chb_xFzwUN4ci8HAmSGUACS4J',
     limit: 50,
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $responses = $sdk->chargebacks->list(
@@ -118,6 +122,8 @@ $request = new Operations\ListChargebacksRequest(
     from: 'chb_xFzwUN4ci8HAmSGUACS4J',
     limit: 50,
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $responses = $sdk->chargebacks->list(
@@ -178,6 +184,8 @@ $request = new Operations\GetChargebackRequest(
     paymentId: 'tr_5B8cwPMGnU',
     chargebackId: 'chb_xFzwUN4ci8HAmSGUACS4J',
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $response = $sdk->chargebacks->get(
@@ -213,6 +221,8 @@ $request = new Operations\GetChargebackRequest(
     paymentId: 'tr_5B8cwPMGnU',
     chargebackId: 'chb_xFzwUN4ci8HAmSGUACS4J',
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $response = $sdk->chargebacks->get(
@@ -274,6 +284,8 @@ $request = new Operations\ListAllChargebacksRequest(
     limit: 50,
     sort: Components\Sorting::Desc,
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $responses = $sdk->chargebacks->all(
@@ -314,6 +326,8 @@ $request = new Operations\ListAllChargebacksRequest(
     limit: 50,
     sort: Components\Sorting::Desc,
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $responses = $sdk->chargebacks->all(
@@ -354,6 +368,8 @@ $request = new Operations\ListAllChargebacksRequest(
     limit: 50,
     sort: Components\Sorting::Desc,
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $responses = $sdk->chargebacks->all(

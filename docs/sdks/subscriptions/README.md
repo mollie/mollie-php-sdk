@@ -44,6 +44,7 @@ require 'vendor/autoload.php';
 
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setSecurity(
@@ -53,34 +54,37 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-$body = new Components\SubscriptionRequest(
-    amount: new Components\Amount(
-        currency: 'EUR',
-        value: '10.00',
-    ),
-    times: 6,
-    interval: '2 days',
-    startDate: '2025-01-01',
-    description: 'Subscription of streaming channel',
-    method: Components\SubscriptionMethod::Paypal,
-    applicationFee: new Components\SubscriptionRequestApplicationFee(
+$request = new Operations\CreateSubscriptionRequest(
+    customerId: 'cst_5B8cwPMGnU',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+    body: new Components\SubscriptionRequest(
         amount: new Components\Amount(
             currency: 'EUR',
             value: '10.00',
         ),
-        description: 'Platform fee',
+        times: 6,
+        interval: '2 days',
+        startDate: '2025-01-01',
+        description: 'Subscription of streaming channel',
+        method: Components\SubscriptionMethod::Paypal,
+        applicationFee: new Components\SubscriptionRequestApplicationFee(
+            amount: new Components\Amount(
+                currency: 'EUR',
+                value: '10.00',
+            ),
+            description: 'Platform fee',
+        ),
+        webhookUrl: 'https://example.com/webhook',
+        mandateId: 'mdt_5B8cwPMGnU',
+        profileId: 'pfl_5B8cwPMGnU',
+        testmode: false,
     ),
-    webhookUrl: 'https://example.com/webhook',
-    mandateId: 'mdt_5B8cwPMGnU',
-    profileId: 'pfl_5B8cwPMGnU',
-    testmode: false,
 );
 
 $response = $sdk->subscriptions->create(
-    customerId: 'cst_5B8cwPMGnU',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426',
-    body: $body
-
+    request: $request
 );
 
 if ($response->subscriptionResponse !== null) {
@@ -90,11 +94,9 @@ if ($response->subscriptionResponse !== null) {
 
 ### Parameters
 
-| Parameter                                                                         | Type                                                                              | Required                                                                          | Description                                                                       | Example                                                                           |
-| --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| `customerId`                                                                      | *string*                                                                          | :heavy_check_mark:                                                                | Provide the ID of the related customer.                                           | cst_5B8cwPMGnU                                                                    |
-| `idempotencyKey`                                                                  | *?string*                                                                         | :heavy_minus_sign:                                                                | A unique key to ensure idempotent requests. This key should be a UUID v4 string.  | 123e4567-e89b-12d3-a456-426                                                       |
-| `body`                                                                            | [?Components\SubscriptionRequest](../../Models/Components/SubscriptionRequest.md) | :heavy_minus_sign:                                                                | N/A                                                                               |                                                                                   |
+| Parameter                                                                                    | Type                                                                                         | Required                                                                                     | Description                                                                                  |
+| -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `$request`                                                                                   | [Operations\CreateSubscriptionRequest](../../Models/Operations/CreateSubscriptionRequest.md) | :heavy_check_mark:                                                                           | The request object to use for the request.                                                   |
 
 ### Response
 
@@ -140,6 +142,8 @@ $request = new Operations\ListSubscriptionsRequest(
     limit: 50,
     sort: Components\Sorting::Desc,
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $responses = $sdk->subscriptions->list(
@@ -185,6 +189,7 @@ require 'vendor/autoload.php';
 
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setTestmode(true)
@@ -195,13 +200,16 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-
-
-$response = $sdk->subscriptions->get(
+$request = new Operations\GetSubscriptionRequest(
     customerId: 'cst_5B8cwPMGnU',
     subscriptionId: 'sub_5B8cwPMGnU',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426'
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+);
 
+$response = $sdk->subscriptions->get(
+    request: $request
 );
 
 if ($response->subscriptionResponse !== null) {
@@ -211,12 +219,9 @@ if ($response->subscriptionResponse !== null) {
 
 ### Parameters
 
-| Parameter                                                                                                                                                                                                                                                                                                                                                                                | Type                                                                                                                                                                                                                                                                                                                                                                                     | Required                                                                                                                                                                                                                                                                                                                                                                                 | Description                                                                                                                                                                                                                                                                                                                                                                              | Example                                                                                                                                                                                                                                                                                                                                                                                  |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `customerId`                                                                                                                                                                                                                                                                                                                                                                             | *string*                                                                                                                                                                                                                                                                                                                                                                                 | :heavy_check_mark:                                                                                                                                                                                                                                                                                                                                                                       | Provide the ID of the related customer.                                                                                                                                                                                                                                                                                                                                                  | cst_5B8cwPMGnU                                                                                                                                                                                                                                                                                                                                                                           |
-| `subscriptionId`                                                                                                                                                                                                                                                                                                                                                                         | *string*                                                                                                                                                                                                                                                                                                                                                                                 | :heavy_check_mark:                                                                                                                                                                                                                                                                                                                                                                       | Provide the ID of the related subscription.                                                                                                                                                                                                                                                                                                                                              | sub_5B8cwPMGnU                                                                                                                                                                                                                                                                                                                                                                           |
-| `testmode`                                                                                                                                                                                                                                                                                                                                                                               | *?bool*                                                                                                                                                                                                                                                                                                                                                                                  | :heavy_minus_sign:                                                                                                                                                                                                                                                                                                                                                                       | Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br/>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br/>setting the `testmode` query parameter to `true`.<br/><br/>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa. |                                                                                                                                                                                                                                                                                                                                                                                          |
-| `idempotencyKey`                                                                                                                                                                                                                                                                                                                                                                         | *?string*                                                                                                                                                                                                                                                                                                                                                                                | :heavy_minus_sign:                                                                                                                                                                                                                                                                                                                                                                       | A unique key to ensure idempotent requests. This key should be a UUID v4 string.                                                                                                                                                                                                                                                                                                         | 123e4567-e89b-12d3-a456-426                                                                                                                                                                                                                                                                                                                                                              |
+| Parameter                                                                              | Type                                                                                   | Required                                                                               | Description                                                                            |
+| -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `$request`                                                                             | [Operations\GetSubscriptionRequest](../../Models/Operations/GetSubscriptionRequest.md) | :heavy_check_mark:                                                                     | The request object to use for the request.                                             |
 
 ### Response
 
@@ -257,26 +262,29 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-$body = new Operations\UpdateSubscriptionRequestBody(
-    amount: new Components\Amount(
-        currency: 'EUR',
-        value: '10.00',
-    ),
-    description: 'Subscription of streaming channel',
-    interval: '1 months',
-    startDate: '2025-01-01',
-    times: 6,
-    webhookUrl: 'https://example.com/webhook',
-    mandateId: 'mdt_5B8cwPMGnU',
-    testmode: false,
-);
-
-$response = $sdk->subscriptions->update(
+$request = new Operations\UpdateSubscriptionRequest(
     customerId: 'cst_5B8cwPMGnU',
     subscriptionId: 'sub_5B8cwPMGnU',
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
-    body: $body
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+    body: new Operations\UpdateSubscriptionRequestBody(
+        amount: new Components\Amount(
+            currency: 'EUR',
+            value: '10.00',
+        ),
+        description: 'Subscription of streaming channel',
+        interval: '1 months',
+        startDate: '2025-01-01',
+        times: 6,
+        webhookUrl: 'https://example.com/webhook',
+        mandateId: 'mdt_5B8cwPMGnU',
+        testmode: false,
+    ),
+);
 
+$response = $sdk->subscriptions->update(
+    request: $request
 );
 
 if ($response->subscriptionResponse !== null) {
@@ -303,26 +311,29 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-$body = new Operations\UpdateSubscriptionRequestBody(
-    amount: new Components\Amount(
-        currency: 'EUR',
-        value: '10.00',
-    ),
-    description: 'Subscription of streaming channel',
-    interval: '1 months',
-    startDate: '2025-01-01',
-    times: 6,
-    webhookUrl: 'https://example.com/webhook',
-    mandateId: 'mdt_5B8cwPMGnU',
-    testmode: false,
-);
-
-$response = $sdk->subscriptions->update(
+$request = new Operations\UpdateSubscriptionRequest(
     customerId: 'cst_5B8cwPMGnU',
     subscriptionId: 'sub_5B8cwPMGnU',
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
-    body: $body
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+    body: new Operations\UpdateSubscriptionRequestBody(
+        amount: new Components\Amount(
+            currency: 'EUR',
+            value: '10.00',
+        ),
+        description: 'Subscription of streaming channel',
+        interval: '1 months',
+        startDate: '2025-01-01',
+        times: 6,
+        webhookUrl: 'https://example.com/webhook',
+        mandateId: 'mdt_5B8cwPMGnU',
+        testmode: false,
+    ),
+);
 
+$response = $sdk->subscriptions->update(
+    request: $request
 );
 
 if ($response->subscriptionResponse !== null) {
@@ -332,12 +343,9 @@ if ($response->subscriptionResponse !== null) {
 
 ### Parameters
 
-| Parameter                                                                                             | Type                                                                                                  | Required                                                                                              | Description                                                                                           | Example                                                                                               |
-| ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| `customerId`                                                                                          | *string*                                                                                              | :heavy_check_mark:                                                                                    | Provide the ID of the related customer.                                                               | cst_5B8cwPMGnU                                                                                        |
-| `subscriptionId`                                                                                      | *string*                                                                                              | :heavy_check_mark:                                                                                    | Provide the ID of the related subscription.                                                           | sub_5B8cwPMGnU                                                                                        |
-| `idempotencyKey`                                                                                      | *?string*                                                                                             | :heavy_minus_sign:                                                                                    | A unique key to ensure idempotent requests. This key should be a UUID v4 string.                      | 123e4567-e89b-12d3-a456-426                                                                           |
-| `body`                                                                                                | [?Operations\UpdateSubscriptionRequestBody](../../Models/Operations/UpdateSubscriptionRequestBody.md) | :heavy_minus_sign:                                                                                    | N/A                                                                                                   |                                                                                                       |
+| Parameter                                                                                    | Type                                                                                         | Required                                                                                     | Description                                                                                  |
+| -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `$request`                                                                                   | [Operations\UpdateSubscriptionRequest](../../Models/Operations/UpdateSubscriptionRequest.md) | :heavy_check_mark:                                                                           | The request object to use for the request.                                                   |
 
 ### Response
 
@@ -374,16 +382,19 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-$body = new Operations\CancelSubscriptionRequestBody(
-    testmode: false,
-);
-
-$response = $sdk->subscriptions->cancel(
+$request = new Operations\CancelSubscriptionRequest(
     customerId: 'cst_5B8cwPMGnU',
     subscriptionId: 'sub_5B8cwPMGnU',
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
-    body: $body
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+    body: new Operations\CancelSubscriptionRequestBody(
+        testmode: false,
+    ),
+);
 
+$response = $sdk->subscriptions->cancel(
+    request: $request
 );
 
 if ($response->subscriptionResponse !== null) {
@@ -393,12 +404,9 @@ if ($response->subscriptionResponse !== null) {
 
 ### Parameters
 
-| Parameter                                                                                             | Type                                                                                                  | Required                                                                                              | Description                                                                                           | Example                                                                                               |
-| ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| `customerId`                                                                                          | *string*                                                                                              | :heavy_check_mark:                                                                                    | Provide the ID of the related customer.                                                               | cst_5B8cwPMGnU                                                                                        |
-| `subscriptionId`                                                                                      | *string*                                                                                              | :heavy_check_mark:                                                                                    | Provide the ID of the related subscription.                                                           | sub_5B8cwPMGnU                                                                                        |
-| `idempotencyKey`                                                                                      | *?string*                                                                                             | :heavy_minus_sign:                                                                                    | A unique key to ensure idempotent requests. This key should be a UUID v4 string.                      | 123e4567-e89b-12d3-a456-426                                                                           |
-| `body`                                                                                                | [?Operations\CancelSubscriptionRequestBody](../../Models/Operations/CancelSubscriptionRequestBody.md) | :heavy_minus_sign:                                                                                    | N/A                                                                                                   |                                                                                                       |
+| Parameter                                                                                    | Type                                                                                         | Required                                                                                     | Description                                                                                  |
+| -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `$request`                                                                                   | [Operations\CancelSubscriptionRequest](../../Models/Operations/CancelSubscriptionRequest.md) | :heavy_check_mark:                                                                           | The request object to use for the request.                                                   |
 
 ### Response
 
@@ -442,6 +450,8 @@ $sdk = Api\Client::builder()
 $request = new Operations\ListAllSubscriptionsRequest(
     limit: 50,
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $responses = $sdk->subscriptions->all(
@@ -508,6 +518,8 @@ $request = new Operations\ListSubscriptionPaymentsRequest(
     limit: 50,
     sort: Components\Sorting::Desc,
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $responses = $sdk->subscriptions->listPayments(
@@ -550,6 +562,8 @@ $request = new Operations\ListSubscriptionPaymentsRequest(
     limit: 50,
     sort: Components\Sorting::Desc,
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $responses = $sdk->subscriptions->listPayments(
@@ -592,6 +606,8 @@ $request = new Operations\ListSubscriptionPaymentsRequest(
     limit: 50,
     sort: Components\Sorting::Desc,
     idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
 );
 
 $responses = $sdk->subscriptions->listPayments(

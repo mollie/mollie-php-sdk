@@ -29,6 +29,7 @@ require 'vendor/autoload.php';
 
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setSecurity(
@@ -38,12 +39,15 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-
+$request = new Operations\ListUnmatchedCreditTransfersRequest(
+    limit: 50,
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+);
 
 $responses = $sdk->unmatchedCreditTransfers->list(
-    limit: 50,
-    idempotencyKey: '123e4567-e89b-12d3-a456-426'
-
+    request: $request
 );
 
 
@@ -56,11 +60,9 @@ foreach ($responses as $response) {
 
 ### Parameters
 
-| Parameter                                                                                                                      | Type                                                                                                                           | Required                                                                                                                       | Description                                                                                                                    | Example                                                                                                                        |
-| ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
-| `from`                                                                                                                         | *?string*                                                                                                                      | :heavy_minus_sign:                                                                                                             | Provide an ID to start the result set from the item with the given ID and onwards. This allows you to paginate the<br/>result set. |                                                                                                                                |
-| `limit`                                                                                                                        | *?int*                                                                                                                         | :heavy_minus_sign:                                                                                                             | The maximum number of items to return. Defaults to 50 items.                                                                   | 50                                                                                                                             |
-| `idempotencyKey`                                                                                                               | *?string*                                                                                                                      | :heavy_minus_sign:                                                                                                             | A unique key to ensure idempotent requests. This key should be a UUID v4 string.                                               | 123e4567-e89b-12d3-a456-426                                                                                                    |
+| Parameter                                                                                                        | Type                                                                                                             | Required                                                                                                         | Description                                                                                                      |
+| ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `$request`                                                                                                       | [Operations\ListUnmatchedCreditTransfersRequest](../../Models/Operations/ListUnmatchedCreditTransfersRequest.md) | :heavy_check_mark:                                                                                               | The request object to use for the request.                                                                       |
 
 ### Response
 
@@ -104,7 +106,9 @@ $sdk = Api\Client::builder()
 
 $response = $sdk->unmatchedCreditTransfers->get(
     unmatchedCreditTransferId: 'uct_abcDEFghij123456789',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426'
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z'
 
 );
 
@@ -115,10 +119,12 @@ if ($response->entityUnmatchedCreditTransfer !== null) {
 
 ### Parameters
 
-| Parameter                                                                        | Type                                                                             | Required                                                                         | Description                                                                      | Example                                                                          |
-| -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| `unmatchedCreditTransferId`                                                      | *string*                                                                         | :heavy_check_mark:                                                               | Provide the ID of the related unmatched credit transfer.                         | uct_abcDEFghij123456789                                                          |
-| `idempotencyKey`                                                                 | *?string*                                                                        | :heavy_minus_sign:                                                               | A unique key to ensure idempotent requests. This key should be a UUID v4 string. | 123e4567-e89b-12d3-a456-426                                                      |
+| Parameter                                                                                                                                                                               | Type                                                                                                                                                                                    | Required                                                                                                                                                                                | Description                                                                                                                                                                             | Example                                                                                                                                                                                 |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `unmatchedCreditTransferId`                                                                                                                                                             | *string*                                                                                                                                                                                | :heavy_check_mark:                                                                                                                                                                      | Provide the ID of the related unmatched credit transfer.                                                                                                                                | uct_abcDEFghij123456789                                                                                                                                                                 |
+| `idempotencyKey`                                                                                                                                                                        | *?string*                                                                                                                                                                               | :heavy_minus_sign:                                                                                                                                                                      | A unique key to ensure idempotent requests. This key should be a UUID v4 string.                                                                                                        | 123e4567-e89b-12d3-a456-426                                                                                                                                                             |
+| `xClientSignature`                                                                                                                                                                      | *?string*                                                                                                                                                                               | :heavy_minus_sign:                                                                                                                                                                      | A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.        | MEUCIQDx8sJvK3z...                                                                                                                                                                      |
+| `xClientSignedAt`                                                                                                                                                                       | *?string*                                                                                                                                                                               | :heavy_minus_sign:                                                                                                                                                                      | The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration. | 2025-01-01T12:00:00Z                                                                                                                                                                    |
 
 ### Response
 
@@ -133,9 +139,9 @@ if ($response->entityUnmatchedCreditTransfer !== null) {
 
 ## match
 
-> 🚧 Beta feature
+> 🚧
 >
-> This feature is currently in private beta, and the final specification may still change.
+> To get access to this functionality, a virtual IBAN must be assigned to your webshop. We are currently rolling out virtual IBANs to our merchant base. Contact our support team or your account/sales manager to request access today.
 
 Matches an unmatched credit transfer to one or more payments, settling the funds accordingly.
 
@@ -149,6 +155,7 @@ require 'vendor/autoload.php';
 
 use Mollie\Api;
 use Mollie\Api\Models\Components;
+use Mollie\Api\Models\Operations;
 
 $sdk = Api\Client::builder()
     ->setSecurity(
@@ -158,17 +165,20 @@ $sdk = Api\Client::builder()
     )
     ->build();
 
-$body = new Components\UnmatchedCreditTransferMatchRequest(
-    paymentIds: [
-        'tr_5B8cwPMGnU',
-    ],
+$request = new Operations\MatchUnmatchedCreditTransferRequest(
+    unmatchedCreditTransferId: 'uct_abcDEFghij123456789',
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z',
+    body: new Components\UnmatchedCreditTransferMatchRequest(
+        paymentIds: [
+            'tr_5B8cwPMGnU',
+        ],
+    ),
 );
 
 $response = $sdk->unmatchedCreditTransfers->match(
-    unmatchedCreditTransferId: 'uct_abcDEFghij123456789',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426',
-    body: $body
-
+    request: $request
 );
 
 if ($response->unmatchedCreditTransferActionResponse !== null) {
@@ -178,11 +188,9 @@ if ($response->unmatchedCreditTransferActionResponse !== null) {
 
 ### Parameters
 
-| Parameter                                                                                                         | Type                                                                                                              | Required                                                                                                          | Description                                                                                                       | Example                                                                                                           |
-| ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `unmatchedCreditTransferId`                                                                                       | *string*                                                                                                          | :heavy_check_mark:                                                                                                | Provide the ID of the related unmatched credit transfer.                                                          | uct_abcDEFghij123456789                                                                                           |
-| `idempotencyKey`                                                                                                  | *?string*                                                                                                         | :heavy_minus_sign:                                                                                                | A unique key to ensure idempotent requests. This key should be a UUID v4 string.                                  | 123e4567-e89b-12d3-a456-426                                                                                       |
-| `body`                                                                                                            | [?Components\UnmatchedCreditTransferMatchRequest](../../Models/Components/UnmatchedCreditTransferMatchRequest.md) | :heavy_minus_sign:                                                                                                | N/A                                                                                                               |                                                                                                                   |
+| Parameter                                                                                                        | Type                                                                                                             | Required                                                                                                         | Description                                                                                                      |
+| ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `$request`                                                                                                       | [Operations\MatchUnmatchedCreditTransferRequest](../../Models/Operations/MatchUnmatchedCreditTransferRequest.md) | :heavy_check_mark:                                                                                               | The request object to use for the request.                                                                       |
 
 ### Response
 
@@ -226,7 +234,9 @@ $sdk = Api\Client::builder()
 
 $response = $sdk->unmatchedCreditTransfers->return(
     unmatchedCreditTransferId: 'uct_abcDEFghij123456789',
-    idempotencyKey: '123e4567-e89b-12d3-a456-426'
+    idempotencyKey: '123e4567-e89b-12d3-a456-426',
+    xClientSignature: 'MEUCIQDx8sJvK3z...',
+    xClientSignedAt: '2025-01-01T12:00:00Z'
 
 );
 
@@ -237,10 +247,12 @@ if ($response->unmatchedCreditTransferActionResponse !== null) {
 
 ### Parameters
 
-| Parameter                                                                        | Type                                                                             | Required                                                                         | Description                                                                      | Example                                                                          |
-| -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| `unmatchedCreditTransferId`                                                      | *string*                                                                         | :heavy_check_mark:                                                               | Provide the ID of the related unmatched credit transfer.                         | uct_abcDEFghij123456789                                                          |
-| `idempotencyKey`                                                                 | *?string*                                                                        | :heavy_minus_sign:                                                               | A unique key to ensure idempotent requests. This key should be a UUID v4 string. | 123e4567-e89b-12d3-a456-426                                                      |
+| Parameter                                                                                                                                                                               | Type                                                                                                                                                                                    | Required                                                                                                                                                                                | Description                                                                                                                                                                             | Example                                                                                                                                                                                 |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `unmatchedCreditTransferId`                                                                                                                                                             | *string*                                                                                                                                                                                | :heavy_check_mark:                                                                                                                                                                      | Provide the ID of the related unmatched credit transfer.                                                                                                                                | uct_abcDEFghij123456789                                                                                                                                                                 |
+| `idempotencyKey`                                                                                                                                                                        | *?string*                                                                                                                                                                               | :heavy_minus_sign:                                                                                                                                                                      | A unique key to ensure idempotent requests. This key should be a UUID v4 string.                                                                                                        | 123e4567-e89b-12d3-a456-426                                                                                                                                                             |
+| `xClientSignature`                                                                                                                                                                      | *?string*                                                                                                                                                                               | :heavy_minus_sign:                                                                                                                                                                      | A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.        | MEUCIQDx8sJvK3z...                                                                                                                                                                      |
+| `xClientSignedAt`                                                                                                                                                                       | *?string*                                                                                                                                                                               | :heavy_minus_sign:                                                                                                                                                                      | The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration. | 2025-01-01T12:00:00Z                                                                                                                                                                    |
 
 ### Response
 
