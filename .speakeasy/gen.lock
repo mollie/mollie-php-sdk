@@ -5,15 +5,15 @@ management:
   docVersion: 1.0.0
   speakeasyVersion: 1.812.1
   generationVersion: 2.968.17
-  releaseVersion: 0.1.0-alpha.2
-  configChecksum: ca02d011124cd40b057620aa7e22dd86
+  releaseVersion: 0.1.0-alpha.3
+  configChecksum: 6e5d58d52bc1fe2b0f72292debf2bbc3
   repoURL: https://github.com/mollie/mollie-php-sdk.git
   installationURL: https://github.com/mollie/mollie-php-sdk.git
   published: true
 persistentEdits:
-  generation_id: e095ea93-68aa-4fbf-aced-d70b9d8ba522
-  pristine_commit_hash: d9eaff08d9b757e1e3035c5098573075df36cafe
-  pristine_tree_hash: 4fb493a0b6c53b605a2ef4d65272eecc3efb5f38
+  generation_id: 1d30fdfc-0a60-4d46-bc45-ae88d6ea10f2
+  pristine_commit_hash: 2fa35ed920882e3e3817e96be595f3a2a8e48ab2
+  pristine_tree_hash: 0478931c2a96bf6b86f8817d5271f943e41a8510
 features:
   php:
     core: 3.9.30
@@ -7771,8 +7771,8 @@ trackedFiles:
     pristine_git_object: d2467c96543d064c94ed32970acb54cf922784a6
   src/SDKConfiguration.php:
     id: 9d60ab0bec0b
-    last_write_checksum: sha1:2c9ed862ed625d482d789775a250179fe043f2c2
-    pristine_git_object: 39074b18482fbaa5ef860432e3c47171d05b55df
+    last_write_checksum: sha1:72bb61245a72e7f33144dd71fc8a8d6454c7e6f8
+    pristine_git_object: 5b460c627ad39b5dbb6fbe2b7a2ffb67a1bcd0b4
   src/SalesInvoices.php:
     id: 93b8c09dc420
     last_write_checksum: sha1:b400d766f689225075b01c21aaeb0ff063f1ad55
