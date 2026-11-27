@@ -1,0 +1,29 @@
+name: Validate
+permissions:
+  contents: read
+"on":
+  pull_request:
+  push:
+    branches:
+      - main
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: PHPStan
+        run: vendor/bin/phpstan analyse src --level 7 --memory-limit=1G --no-progress --error-format=table
+
+      - name: Pint (code style)
+        run: php -d memory_limit=-1 vendor/bin/pint src --test -v
