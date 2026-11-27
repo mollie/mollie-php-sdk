@@ -20,5 +20,6 @@ class HookRegistration
     {
         $mollieHook = new MollieHooks();
         $hooks->registerBeforeRequestHook($mollieHook);
+        $hooks->registerSDKInitHook($mollieHook);
     }
 }
