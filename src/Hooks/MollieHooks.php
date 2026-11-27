@@ -152,10 +152,8 @@ class MollieHooks implements BeforeRequestHook
         $flat = [];
 
         foreach ($parameters as $fields) {
-            if (is_array($fields)) {
-                foreach ($fields as $name => $value) {
-                    $flat[$name] = $value;
-                }
+            foreach ($fields as $name => $value) {
+                $flat[$name] = $value;
             }
         }
 
